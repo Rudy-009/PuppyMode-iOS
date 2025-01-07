@@ -13,10 +13,18 @@ import SnapKit
 class CalendarView: UIView {
     // MARK: - view
     // 년도
+    private let yearLabel = UILabel().then {
+        $0.text = "0000"
+        $0.font = UIFont(name: "Roboto-Medium", size: 20)
+    }
     
     // 달력 버튼
     
     // 월
+    private let monthLabel = UILabel().then {
+        $0.text = "Month"
+        $0.font = UIFont(name: "Roboto-Medium", size: 35)
+    }
     
     // 캘린더
     private let calendar = FSCalendar().then {
@@ -44,7 +52,9 @@ class CalendarView: UIView {
         super.init(frame: frame)
         self.backgroundColor = UIColor(red: 251/255, green: 251/255, blue: 251/255, alpha: 1)
         
+        calendar.delegate = self
         setView()
+        updateMonthLabel(for: calendar.currentPage)
     }
     
     required init?(coder: NSCoder) {
@@ -52,11 +62,33 @@ class CalendarView: UIView {
     }
     
     // MARK: - function
+    private func updateMonthLabel(for date: Date) {
+        let yearFormatter = DateFormatter()
+        yearFormatter.dateFormat = "yyyy"
+        yearLabel.text = yearFormatter.string(from: date)
+        
+        let monthFormatter = DateFormatter()
+        monthFormatter.dateFormat = "MMMM"
+        monthLabel.text = monthFormatter.string(from: date)
+    }
+    
     private func setView() {
         [
+            yearLabel,
+            monthLabel,
             calendar
         ].forEach {
             addSubview($0)
+        }
+        
+        yearLabel.snp.makeConstraints {
+            $0.left.equalToSuperview().offset(27)
+            $0.bottom.equalTo(monthLabel.snp.top)
+        }
+        
+        monthLabel.snp.makeConstraints {
+            $0.left.equalToSuperview().offset(23)
+            $0.bottom.equalTo(calendar.snp.top).offset(-30)
         }
         
         calendar.snp.makeConstraints {
@@ -66,4 +98,11 @@ class CalendarView: UIView {
         }
     }
 
+}
+
+// MARK: - extension
+extension CalendarView: FSCalendarDelegate {
+    func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
+        updateMonthLabel(for: calendar.currentPage)
+    }
 }
