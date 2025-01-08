@@ -23,7 +23,7 @@ class CalendarView: UIView {
     // 월
     private let monthLabel = UILabel().then {
         $0.text = "Month"
-        $0.font = UIFont(name: "Roboto-Medium", size: 35)
+        $0.font = UIFont(name: "NotoSansKR-Medium", size: 35)
     }
     
     // 캘린더
@@ -45,6 +45,8 @@ class CalendarView: UIView {
         // 현재 달만 표시
         $0.placeholderType = .none
 
+        // 한글로 변경
+        $0.locale = Locale(identifier: "ko_KR")
     }
     
     // MARK: - init
@@ -68,7 +70,7 @@ class CalendarView: UIView {
         yearLabel.text = yearFormatter.string(from: date)
         
         let monthFormatter = DateFormatter()
-        monthFormatter.dateFormat = "MMMM"
+        monthFormatter.dateFormat = "M월"
         monthLabel.text = monthFormatter.string(from: date)
     }
     
