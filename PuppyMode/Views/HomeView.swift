@@ -118,7 +118,7 @@ class HomeView: UIView {
         pro.tintColor = .progressBar
         pro.largeContentImage = UIImage(named: "ProgressBarBackground")
         pro.clipsToBounds = true
-        pro.layer.cornerRadius = 8
+        pro.layer.cornerRadius = 10.5
     }
     
     //MARK: Drinking Capacity Button
@@ -253,7 +253,7 @@ extension HomeView {
             make.centerX.equalToSuperview()
             make.top.equalTo(progressLabel.snp.bottom).offset(15)
             make.leading.trailing.equalToSuperview().inset(27)
-            make.height.equalTo(16)
+            make.height.equalTo(21)
         }
         
         bottomStack.addSubview(drinkingCapacityButton)
