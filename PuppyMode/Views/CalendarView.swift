@@ -19,7 +19,7 @@ class CalendarView: UIView {
     }
     
     // 달력 버튼
-    private let changeButton = UIButton().then {
+    public let changeButton = UIButton().then {
         $0.setImage(.iconChangeCalendar, for: .normal)
 
         
@@ -57,6 +57,11 @@ class CalendarView: UIView {
         $0.locale = Locale(identifier: "ko_KR")
     }
     
+    // 블러 배경
+    public let blurBackgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .light)).then {
+        $0.isHidden = true
+    }
+    
     // MARK: - init
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -87,7 +92,8 @@ class CalendarView: UIView {
             yearLabel,
             changeButton,
             monthLabel,
-            calendar
+            calendar,
+            blurBackgroundView
         ].forEach {
             addSubview($0)
         }
@@ -112,6 +118,10 @@ class CalendarView: UIView {
             $0.top.equalTo(safeAreaLayoutGuide).offset(210)
             $0.horizontalEdges.equalToSuperview().inset(15)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-150)
+        }
+        
+        blurBackgroundView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
         }
     }
 
