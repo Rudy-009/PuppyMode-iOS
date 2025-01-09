@@ -141,7 +141,7 @@ extension HomeView {
         
         topButtonStack.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(topButtonSuperViewSpacing)
-            make.top.equalTo(self.safeAreaLayoutGuide).offset(63)
+            make.top.equalTo(self.safeAreaLayoutGuide).offset(48)
             make.height.equalTo(topRectangleHeight)
         }
         
@@ -167,17 +167,17 @@ extension HomeView {
         }
         
         rompingLabel.snp.makeConstraints { make in
-            make.top.equalTo(rompingButton.snp.bottom)
+            make.top.equalTo(rompingButton.snp.bottom).offset(-2)
             make.centerX.equalTo(rompingButton.snp.centerX)
         }
         
         decorationLabel.snp.makeConstraints { make in
-            make.top.equalTo(decorationButton.snp.bottom)
+            make.top.equalTo(decorationButton.snp.bottom).offset(-2)
             make.centerX.equalTo(decorationButton.snp.centerX)
         }
         
         collectionLabel.snp.makeConstraints { make in
-            make.top.equalTo(collectionButton.snp.bottom)
+            make.top.equalTo(collectionButton.snp.bottom).offset(-2)
             make.centerX.equalTo(collectionButton.snp.centerX)
         }
         
@@ -211,7 +211,7 @@ extension HomeView {
         bottomStack.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.top.equalTo(puppyNameLabel.snp.bottom).offset(19)
-            make.height.equalTo(254)
+            make.height.equalTo(274)
             make.width.equalTo(361)
         }
         
@@ -240,7 +240,7 @@ extension HomeView {
         drinkingCapacityButton.snp.makeConstraints { make in
             make.width.equalTo(138)
             make.height.equalTo(107)
-            make.top.equalTo(progressBar.snp.bottom).offset(28)
+            make.top.equalTo(progressBar.snp.bottom).offset(35)
             make.leading.equalToSuperview().offset(30)
         }
         
@@ -252,7 +252,7 @@ extension HomeView {
         addDrinkingHistoryButton.snp.makeConstraints { make in
             make.width.equalTo(138)
             make.height.equalTo(107)
-            make.top.equalTo(progressBar.snp.bottom).offset(28)
+            make.top.equalTo(progressBar.snp.bottom).offset(35)
             make.trailing.equalToSuperview().offset(-30)
         }
                 
