@@ -13,6 +13,24 @@ class HomeView: UIView {
     
     let superViewSpacing: CGFloat = 16
     
+    //MARK: Dog Info
+    lazy private var topDogInfoStack = UIView()
+    
+    lazy public var dogNameLabel = UILabel().then { label in
+        label.text = "브로콜리"
+        label.font = UIFont(name: "SBAggro-Medium", size: 25)
+    }
+    
+    lazy public var dogTypeLabel = UILabel().then { label in
+        label.text = "포메라니안"
+        label.font = UIFont(name: "NotoSansKR-Regular", size: 12)
+        label.frame = CGRect(x: 0, y: 0, width: -1 , height: 26)
+    }
+    
+    lazy public var editDogNameButton = UIButton().then { button in
+        button.setImage(UIImage(named: "EditButtonIcon"), for: .normal)
+    }
+    
     //MARK: Top Buttons
     lazy private var topButtonStack = UIView()
     
@@ -23,17 +41,17 @@ class HomeView: UIView {
     let topButtonSuperViewSpacing = 22
     
     lazy public var rompingButton = UIButton().then { button in
-        button.setImage(UIImage(named: "DecorateIcon"), for: .normal)
+        button.setImage(UIImage(named: "RompingButtonImage"), for: .normal)
         button.layer.cornerRadius = topButtonsCornerRadius
     }
     
-    lazy public var decorateButton = UIButton().then { button in
-        button.setImage(UIImage(named: "DecorateIcon"), for: .normal)
+    lazy public var decorationButton = UIButton().then { button in
+        button.setImage(UIImage(named: "DecorationButtonImage"), for: .normal)
         button.layer.cornerRadius = topButtonsCornerRadius
     }
     
     lazy public var collectionButton = UIButton().then { button in
-        button.setImage(UIImage(named: "DecorateIcon"), for: .normal)
+        button.setImage(UIImage(named: "CollectionButtonImage"), for: .normal)
         button.layer.cornerRadius = topButtonsCornerRadius
     }
     
@@ -46,7 +64,7 @@ class HomeView: UIView {
         label.attributedText = NSMutableAttributedString(string: "놀아주기", attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
     }
     
-    lazy private var decorateLabel = UILabel().then { label in
+    lazy private var decorationLabel = UILabel().then { label in
         label.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)
         label.font = UIFont(name: "NotoSansKR-Bold", size: 14)
         var paragraphStyle = NSMutableParagraphStyle()
@@ -68,7 +86,7 @@ class HomeView: UIView {
         button.setImage(UIImage(named: "HomeCharacterDefaultImage"), for: .normal)
     }
     
-    //MARK: Bottom Stack
+    //MARK: Bottom Dog Info
     lazy private var bottomStack = UIView().then { view in
         view.layer.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1).cgColor
         view.layer.cornerRadius = 10
@@ -76,19 +94,37 @@ class HomeView: UIView {
         view.layer.borderColor = UIColor(red: 0.93, green: 0.93, blue: 0.93, alpha: 1).cgColor
     }
     
-    //MARK: Character Info Stack
+    lazy public var dogInfoLabel = UILabel().then { label in
+        label.text = "Level 1 아기사자 포메라니안"
+        label.font = UIFont(name: "SBAggro-Medium", size: 14)
+    }
     
+    lazy public var progressLabel = UILabel().then { label in
+        label.text = "55%"
+        label.font = UIFont(name: "SBAggro-Medium", size: 14)
+    }
     
-    //MARK: Two Buttons
+    lazy public var progressBar = UIProgressView().then{pro in
+        pro.setProgress(0.55, animated: false)
+        pro.tintColor = .progressBar
+        pro.largeContentImage = UIImage(named: "ProgressBarBackground")
+        pro.clipsToBounds = true
+        pro.layer.cornerRadius = 8
+    }
+    
+    //MARK: Drinking Capacity Button
+    lazy public var drinkingCapacityButton = HomeCustomButtonView()
+    lazy public var addDrinkingHistoryButton = HomeCustomButtonView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
+        self.addDogInfoComponents()
         self.addTopButtonComponents()
         self.addCharacterComponents()
         self.addBottomComponents()
     }
-        
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -98,14 +134,22 @@ class HomeView: UIView {
 //MARK: Add Compoments
 extension HomeView {
     
+    private func addDogInfoComponents() {
+        self.addSubview(topDogInfoStack)
+        
+        topDogInfoStack.addSubview(dogNameLabel)
+        topDogInfoStack.addSubview(dogTypeLabel)
+        topDogInfoStack.addSubview(editDogNameButton)
+    }
+    
     private func addTopButtonComponents() {
         self.addSubview(topButtonStack)
         
         topButtonStack.addSubview(rompingButton)
-        topButtonStack.addSubview(decorateButton)
+        topButtonStack.addSubview(decorationButton)
         topButtonStack.addSubview(collectionButton)
         
-        topButtonStack.addSubview(decorateLabel)
+        topButtonStack.addSubview(decorationLabel)
         topButtonStack.addSubview(rompingLabel)
         topButtonStack.addSubview(collectionLabel)
         
@@ -116,12 +160,12 @@ extension HomeView {
         }
         
         rompingButton.snp.makeConstraints { make in
-            make.trailing.equalTo(decorateButton.snp.leading).offset(-topButtonSpacing)
+            make.trailing.equalTo(decorationButton.snp.leading).offset(-topButtonSpacing)
             make.height.equalTo(topRectangleHeight)
             make.width.equalTo(topRectangleWidth)
         }
         
-        decorateButton.snp.makeConstraints { make in
+        decorationButton.snp.makeConstraints { make in
             make.trailing.equalTo(collectionButton.snp.leading).offset(-topButtonSpacing)
             make.height.equalTo(topRectangleHeight)
             make.width.equalTo(topRectangleWidth)
@@ -138,9 +182,9 @@ extension HomeView {
             make.centerX.equalTo(rompingButton.snp.centerX)
         }
         
-        decorateLabel.snp.makeConstraints { make in
-            make.top.equalTo(decorateButton.snp.bottom)
-            make.centerX.equalTo(decorateButton.snp.centerX)
+        decorationLabel.snp.makeConstraints { make in
+            make.top.equalTo(decorationButton.snp.bottom)
+            make.centerX.equalTo(decorationButton.snp.centerX)
         }
         
         collectionLabel.snp.makeConstraints { make in
@@ -164,12 +208,58 @@ extension HomeView {
     private func addBottomComponents() {
         self.addSubview(bottomStack)
         
+        bottomStack.addSubview(dogInfoLabel)
+        bottomStack.addSubview(progressLabel)
+        bottomStack.addSubview(progressBar)
+        
         bottomStack.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.top.equalTo(safeAreaLayoutGuide.snp.top).offset(439)
             make.height.equalTo(254)
             make.width.equalTo(361)
         }
+        
+        dogInfoLabel.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(27)
+            make.top.equalToSuperview().offset(31)
+        }
+        
+        progressLabel.snp.makeConstraints{ make in
+            make.trailing.equalToSuperview().offset(-37)
+            make.top.equalToSuperview().offset(31)
+        }
+        
+        progressBar.snp.makeConstraints{make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(progressLabel.snp.bottom).offset(15)
+            make.leading.trailing.equalToSuperview().inset(27)
+            make.height.equalTo(16)
+        }
+        
+        bottomStack.addSubview(drinkingCapacityButton)
+        
+        drinkingCapacityButton.setTitleLabel(to: "주량 확인")
+        drinkingCapacityButton.setSubTitleLabel(to: "술 마실 거에요")
+        
+        drinkingCapacityButton.snp.makeConstraints { make in
+            make.width.equalTo(138)
+            make.height.equalTo(107)
+            make.top.equalTo(progressBar.snp.bottom).offset(28)
+            make.leading.equalToSuperview().offset(30)
+        }
+        
+        bottomStack.addSubview(addDrinkingHistoryButton)
+        
+        addDrinkingHistoryButton.setTitleLabel(to: "음주 기록")
+        addDrinkingHistoryButton.setSubTitleLabel(to: "술 마셨어요")
+        
+        addDrinkingHistoryButton.snp.makeConstraints { make in
+            make.width.equalTo(138)
+            make.height.equalTo(107)
+            make.top.equalTo(progressBar.snp.bottom).offset(28)
+            make.trailing.equalToSuperview().offset(-30)
+        }
+        
     }
 }
 
