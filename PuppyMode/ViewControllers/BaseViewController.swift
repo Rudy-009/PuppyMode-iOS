@@ -61,5 +61,17 @@ class BaseViewController: UITabBarController {
         // 테두리
         tabBar.layer.borderWidth = 1
         tabBar.layer.borderColor = CGColor(red: 226/255, green: 226/255, blue: 226/255, alpha: 1)
+        
+        // 폰트
+        let normalAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont(name: "NotoSansKR-Medium", size: 12) ?? .systemFont(ofSize: 12)
+        ]
+        
+        let selectedAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont(name: "NotoSansKR-Regular", size: 12) ?? .systemFont(ofSize: 12)
+        ]
+        
+        UITabBarItem.appearance().setTitleTextAttributes(normalAttributes, for: .normal)
+        UITabBarItem.appearance().setTitleTextAttributes(selectedAttributes, for: .selected)
     }
 }
