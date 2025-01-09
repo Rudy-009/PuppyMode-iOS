@@ -7,17 +7,17 @@
 
 import UIKit
 
-class HomeCustomButtonView: UIView {
+class HomeCustomButtonView: UIButton {
     
-    lazy private var drinkingCapacityButtonBackgroundImage = UIImageView().then { image in
+    lazy private var backgroundImage = UIImageView().then { image in
         image.image = UIImage(named: "BottomButtonImage")
     }
     
-    lazy private var drinkingCapacityTitleLabel = UILabel().then { label in
+    lazy private var buttonTitleLabel = UILabel().then { label in
         label.font = UIFont(name: "NotoSansKR-Medium", size: 20)
     }
     
-    lazy private var drinkCapacitySubtitleLabel = UILabel().then { label in
+    lazy private var buttonSubtitleLabel = UILabel().then { label in
         label.font = UIFont(name: "NotoSansKR-Regular", size: 15)
         label.alpha = 0.78
     }
@@ -28,33 +28,34 @@ class HomeCustomButtonView: UIView {
     }
     
     func addComponents() {
-        self.addSubview(drinkingCapacityButtonBackgroundImage)
+        self.addSubview(backgroundImage)
         
-        drinkingCapacityButtonBackgroundImage.addSubview(drinkingCapacityTitleLabel)
-        drinkingCapacityButtonBackgroundImage.addSubview(drinkCapacitySubtitleLabel)
+        backgroundImage.addSubview(buttonTitleLabel)
+        backgroundImage.addSubview(buttonSubtitleLabel)
         
-        drinkingCapacityButtonBackgroundImage.snp.makeConstraints { make in
+        backgroundImage.snp.makeConstraints { make in
+            make.centerX.centerY.equalToSuperview()
             make.width.equalTo(138)
             make.height.equalTo(107)
         }
         
-        drinkingCapacityTitleLabel.snp.makeConstraints { make in
+        buttonTitleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalToSuperview().offset(26)
         }
         
-        drinkCapacitySubtitleLabel.snp.makeConstraints { make in
+        buttonSubtitleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(drinkingCapacityTitleLabel.snp.bottom).offset(6)
+            make.top.equalTo(buttonTitleLabel.snp.bottom).offset(6)
         }
     }
     
     func setTitleLabel( to title: String) {
-        drinkingCapacityTitleLabel.text = title
+        buttonTitleLabel.text = title
     }
     
     func setSubTitleLabel( to title: String) {
-        drinkCapacitySubtitleLabel.text = title
+        buttonSubtitleLabel.text = title
     }
     
     required init?(coder: NSCoder) {
