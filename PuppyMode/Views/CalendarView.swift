@@ -19,6 +19,14 @@ class CalendarView: UIView {
     }
     
     // 달력 버튼
+    private let changeButton = UIButton().then {
+        $0.setImage(.iconChangeCalendar, for: .normal)
+
+        
+        // 내부 이미지 크기 조절
+        $0.contentVerticalAlignment = .fill
+        $0.contentHorizontalAlignment = .fill
+    }
     
     // 월
     private let monthLabel = UILabel().then {
@@ -77,6 +85,7 @@ class CalendarView: UIView {
     private func setView() {
         [
             yearLabel,
+            changeButton,
             monthLabel,
             calendar
         ].forEach {
@@ -86,6 +95,12 @@ class CalendarView: UIView {
         yearLabel.snp.makeConstraints {
             $0.left.equalToSuperview().offset(27)
             $0.bottom.equalTo(monthLabel.snp.top)
+        }
+        
+        changeButton.snp.makeConstraints {
+            $0.width.height.equalTo(26)
+            $0.left.equalTo(yearLabel.snp.right).offset(9)
+            $0.bottom.equalTo(yearLabel.snp.bottom)
         }
         
         monthLabel.snp.makeConstraints {
