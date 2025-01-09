@@ -15,7 +15,6 @@ class HomeCustomButtonView: UIView {
     
     lazy private var drinkingCapacityTitleLabel = UILabel().then { label in
         label.font = UIFont(name: "NotoSansKR-Medium", size: 20)
-        label.font = .boldSystemFont(ofSize: 20)
     }
     
     lazy private var drinkCapacitySubtitleLabel = UILabel().then { label in
@@ -57,7 +56,6 @@ class HomeCustomButtonView: UIView {
     func setSubTitleLabel( to title: String) {
         drinkCapacitySubtitleLabel.text = title
     }
-    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

@@ -82,8 +82,15 @@ class HomeView: UIView {
         label.attributedText = NSMutableAttributedString(string: "컬렉션", attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
     }
     
-    lazy private var characterImageButton = UIButton().then { button in
+    //MARK: Puppy Image & Name
+    
+    lazy private var puppyImageButton = UIButton().then { button in
         button.setImage(UIImage(named: "HomeCharacterDefaultImage"), for: .normal)
+    }
+    
+    lazy private var puppyNameLabel = UILabel().then { label in
+        label.font = UIFont(name: "SBAggro-Medium", size: 25)
+        label.text = "브로콜리"
     }
     
     //MARK: Bottom Dog Info
@@ -97,11 +104,13 @@ class HomeView: UIView {
     lazy public var dogInfoLabel = UILabel().then { label in
         label.text = "Level 1 아기사자 포메라니안"
         label.font = UIFont(name: "SBAggro-Medium", size: 14)
+        label.textColor = UIColor(red: 0.624, green: 0.584, blue: 0.584, alpha: 1)
     }
     
     lazy public var progressLabel = UILabel().then { label in
         label.text = "55%"
-        label.font = UIFont(name: "SBAggro-Medium", size: 14)
+        label.font = UIFont(name: "NotoSansKR-Bold", size: 14)
+        label.textColor = UIColor(red: 0.624, green: 0.584, blue: 0.584, alpha: 1)
     }
     
     lazy public var progressBar = UIProgressView().then{pro in
@@ -121,7 +130,7 @@ class HomeView: UIView {
         self.backgroundColor = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
         self.addDogInfoComponents()
         self.addTopButtonComponents()
-        self.addCharacterComponents()
+        self.addPuppyImageAndName()
         self.addBottomComponents()
     }
 
@@ -159,13 +168,13 @@ extension HomeView {
             make.height.equalTo(topRectangleHeight)
         }
         
-        rompingButton.snp.makeConstraints { make in
-            make.trailing.equalTo(decorationButton.snp.leading).offset(-topButtonSpacing)
+        decorationButton.snp.makeConstraints { make in
+            make.trailing.equalTo(rompingButton.snp.leading).offset(-topButtonSpacing)
             make.height.equalTo(topRectangleHeight)
             make.width.equalTo(topRectangleWidth)
         }
         
-        decorationButton.snp.makeConstraints { make in
+        rompingButton.snp.makeConstraints { make in
             make.trailing.equalTo(collectionButton.snp.leading).offset(-topButtonSpacing)
             make.height.equalTo(topRectangleHeight)
             make.width.equalTo(topRectangleWidth)
@@ -194,14 +203,21 @@ extension HomeView {
         
     }
 
-    private func addCharacterComponents() {
+    private func addPuppyImageAndName() {
         
-        self.addSubview(characterImageButton)
+        self.addSubview(puppyImageButton)
         
-        characterImageButton.snp.makeConstraints { make in
+        puppyImageButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(superViewSpacing)
             make.height.equalTo(247)
             make.top.equalTo(topButtonStack.snp.bottom).offset(41)
+        }
+        
+        self.addSubview(puppyNameLabel)
+        
+        puppyNameLabel.snp.makeConstraints { make in
+            make.top.equalTo(puppyImageButton.snp.bottom).offset(14)
+            make.centerX.equalToSuperview()
         }
     }
     
@@ -214,7 +230,7 @@ extension HomeView {
         
         bottomStack.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
-            make.top.equalTo(safeAreaLayoutGuide.snp.top).offset(439)
+            make.top.equalTo(puppyNameLabel.snp.bottom).offset(19)
             make.height.equalTo(254)
             make.width.equalTo(361)
         }
@@ -264,6 +280,6 @@ extension HomeView {
 }
 
 import SwiftUI
-#Preview{
+#Preview {
     HomeViewController()
 }
