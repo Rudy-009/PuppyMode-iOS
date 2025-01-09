@@ -7,7 +7,7 @@
 		<string>NotoSansKR-Medium.ttf</string>
 		<string>NotoSansKR-Regular.ttf</string>
 		<string>NotoSansKR-Bold.ttf</string>
-		<string>SBAggro-Medium.ttf</string>
+		<string>SBAggro-Medium.otf</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

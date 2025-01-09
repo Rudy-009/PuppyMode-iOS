@@ -12,20 +12,6 @@ import Then
 class HomeView: UIView {
     
     let superViewSpacing: CGFloat = 16
-        
-    //MARK: Dog Info
-    lazy private var topDogInfoStack = UIView()
-    
-    lazy public var dogNameLabel = UILabel().then { label in
-        label.text = "브로콜리"
-        label.font = UIFont(name: "SBAggro-Medium", size: 25)
-    }
-    
-    lazy public var dogTypeLabel = UILabel().then { label in
-        label.text = "포메라니안"
-        label.font = UIFont(name: "NotoSansKR-Regular", size: 12)
-        label.frame = CGRect(x: 0, y: 0, width: -1 , height: 26)
-    }
     
     lazy public var editDogNameButton = UIButton().then { button in
         button.setImage(UIImage(named: "EditButtonIcon"), for: .normal)
@@ -89,7 +75,7 @@ class HomeView: UIView {
     }
     
     lazy private var puppyNameLabel = UILabel().then { label in
-        label.font = UIFont(name: "SBAggro-Medium", size: 25)
+        label.font = UIFont(name: "OTSBAggroM", size: 25)
         label.text = "브로콜리"
     }
     
@@ -103,7 +89,7 @@ class HomeView: UIView {
     
     lazy public var dogInfoLabel = UILabel().then { label in
         label.text = "Level 1 아기사자 포메라니안"
-        label.font = UIFont(name: "SBAggro-Medium", size: 14)
+        label.font = UIFont(name: "OTSBAggroM", size: 14)
         label.textColor = UIColor(red: 0.624, green: 0.584, blue: 0.584, alpha: 1)
     }
     
@@ -122,14 +108,12 @@ class HomeView: UIView {
     }
     
     //MARK: Drinking Capacity Button
-        
     lazy public var drinkingCapacityButton = HomeCustomButtonView()
     lazy public var addDrinkingHistoryButton = HomeCustomButtonView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
-        self.addDogInfoComponents()
         self.addTopButtonComponents()
         self.addPuppyImageAndName()
         self.addBottomComponents()
@@ -143,14 +127,6 @@ class HomeView: UIView {
 
 //MARK: Add Compoments
 extension HomeView {
-    
-    private func addDogInfoComponents() {
-        self.addSubview(topDogInfoStack)
-        
-        topDogInfoStack.addSubview(dogNameLabel)
-        topDogInfoStack.addSubview(dogTypeLabel)
-        topDogInfoStack.addSubview(editDogNameButton)
-    }
     
     private func addTopButtonComponents() {
         self.addSubview(topButtonStack)
