@@ -14,7 +14,13 @@ class LoginView: UIView {
         label.numberOfLines = 0
         label.font = UIFont(name: "NotoSansKR-Bold", size: 28)
         label.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)
+        label.backgroundColor = .clear
     }
+    
+    lazy private var underline = UIView().then { view in
+        view.backgroundColor = .main
+    }
+
     
     lazy private var subLabel = UILabel().then { label in
         label.text = "올바른 음주 습관을 가질 수 있도록 도와드릴게요"
@@ -50,11 +56,18 @@ class LoginView: UIView {
     }
     
     private func addComponents() {
+        self.addSubview(underline)
         self.addSubview(slogunLabel)
         self.addSubview(subLabel)
         self.addSubview(characterImage)
         self.addSubview(appleLoginButton)
         self.addSubview(kakaoLoginButton)
+        
+        underline.snp.makeConstraints { make in
+            make.leading.bottom.equalTo(slogunLabel)
+            make.height.equalTo(17)
+            make.width.equalTo(137)
+        }
         
         slogunLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
