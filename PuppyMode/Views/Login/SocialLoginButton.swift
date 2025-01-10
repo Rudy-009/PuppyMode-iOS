@@ -9,10 +9,6 @@ import UIKit
 
 class SocialLoginButton: UIButton {
     
-    private var outterFrame = UIView().then { frame in
-        frame.layer.cornerRadius = 6
-    }
-    
     private var nameLabel = UILabel().then { label in
         label.font = UIFont(name: "NotoSansKR-Medium", size: 15)
         label.frame = CGRect(x: 0, y: 0, width: 272, height: 23)
@@ -25,6 +21,7 @@ class SocialLoginButton: UIButton {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.layer.cornerRadius = 6
         addComponents()
     }
     
@@ -33,14 +30,10 @@ class SocialLoginButton: UIButton {
     }
     
     private func addComponents() {
-        self.addSubview(outterFrame)
         self.addSubview(nameLabel)
         self.addSubview(logoImageView)
-        
-        outterFrame.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+        self.snp.makeConstraints { make in
             make.height.equalTo(50)
-            make.width.lessThanOrEqualTo(361)
         }
         
         nameLabel.snp.makeConstraints{ make in
@@ -58,13 +51,13 @@ class SocialLoginButton: UIButton {
     func configure(name: String, logo: UIImage, backgroundColor: UIColor) {
         self.nameLabel.text = name
         self.logoImageView.image = logo
-        self.outterFrame.backgroundColor = backgroundColor
+        self.backgroundColor = backgroundColor
     }
     
     func addFrame() {
-        outterFrame.layer.cornerRadius = 6
-        outterFrame.layer.borderWidth = 1
-        outterFrame.layer.borderColor = UIColor(red: 0.757, green: 0.757, blue: 0.757, alpha: 1).cgColor
+        self.layer.cornerRadius = 6
+        self.layer.borderWidth = 1
+        self.layer.borderColor = UIColor(red: 0.757, green: 0.757, blue: 0.757, alpha: 1).cgColor
     }
 
 }

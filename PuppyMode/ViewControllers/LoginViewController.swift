@@ -27,11 +27,11 @@ extension LoginViewController {
     
     @objc
     private func popUpAppleLoginView() {
-        
+        print("Apple Login Tapped")
     }
     
     @objc
     private func popUpKakaoLoginView() {
-        
+        print("Kakao Login Tapped")
     }
 }

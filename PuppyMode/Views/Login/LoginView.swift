@@ -81,15 +81,15 @@ class LoginView: UIView {
         
         characterImage.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.height.width.equalTo(250)
+            make.height.width.equalTo(300)
             make.top.equalTo(subLabel.snp.bottom).offset(30)
         }
-                
+        
         kakaoLoginButton.configure(name: "카카오로 로그인", logo: UIImage(named: "KakaoLogin")!, backgroundColor: .kakaoLogin)
         
         kakaoLoginButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
-            make.bottom.equalTo(appleLoginButton.snp.top).offset(-40)
+            make.top.equalTo(characterImage.snp.bottom).offset(60)
         }
         
         appleLoginButton.configure(name: "Apple로 로그인", logo: UIImage(named: "AppleLogin")!, backgroundColor: .white)
@@ -97,7 +97,7 @@ class LoginView: UIView {
         
         appleLoginButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
-            make.bottom.equalToSuperview().offset(-130)
+            make.top.equalTo(kakaoLoginButton.snp.bottom).offset(30)
         }
 
     }
