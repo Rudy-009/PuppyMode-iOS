@@ -34,13 +34,14 @@ class LoginView: UIView {
         image.image = UIImage(named: "HomeCharacterDefaultImage")
     }
     
-    lazy private var appleLoginButton = SocialLoginButton()
+    lazy public var appleLoginButton = SocialLoginButton()
     
-    lazy private var kakaoLoginButton = SocialLoginButton()
+    lazy public var kakaoLoginButton = SocialLoginButton()
     
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.backgroundColor = .white
         addComponents()
     }
     
@@ -70,21 +71,22 @@ class LoginView: UIView {
             make.height.width.equalTo(250)
             make.top.equalTo(subLabel.snp.bottom).offset(30)
         }
-        
-        appleLoginButton.configure(name: "Apple로 로그인", logo: UIImage(named: "AppleLogin")!, backgroundColor: .white)
-        appleLoginButton.addFrame()
-        
-        appleLoginButton.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(16)
-            make.bottom.equalToSuperview().offset(-100)
-        }
-        
+                
         kakaoLoginButton.configure(name: "카카오로 로그인", logo: UIImage(named: "KakaoLogin")!, backgroundColor: .kakaoLogin)
         
         kakaoLoginButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.bottom.equalTo(appleLoginButton.snp.top).offset(-40)
         }
+        
+        appleLoginButton.configure(name: "Apple로 로그인", logo: UIImage(named: "AppleLogin")!, backgroundColor: .white)
+        appleLoginButton.addFrame()
+        
+        appleLoginButton.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.bottom.equalToSuperview().offset(-130)
+        }
+
     }
 }
 
