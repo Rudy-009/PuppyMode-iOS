@@ -55,7 +55,6 @@ class SocialLoginButton: UIButton {
     }
     
     func addFrame() {
-        self.layer.cornerRadius = 6
         self.layer.borderWidth = 1
         self.layer.borderColor = UIColor(red: 0.757, green: 0.757, blue: 0.757, alpha: 1).cgColor
     }
