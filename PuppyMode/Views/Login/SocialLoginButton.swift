@@ -12,6 +12,7 @@ class SocialLoginButton: UIButton {
     private var nameLabel = UILabel().then { label in
         label.font = UIFont(name: "NotoSansKR-Medium", size: 15)
         label.frame = CGRect(x: 0, y: 0, width: 272, height: 23)
+        label.textColor = .black
         label.textAlignment = .center
     }
     
