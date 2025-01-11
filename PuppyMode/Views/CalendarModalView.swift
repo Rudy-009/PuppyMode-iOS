@@ -23,6 +23,31 @@ class CalendarModalView: UIView {
         $0.layer.shadowOffset = CGSize(width: 0, height: 4)
     }
     
+    // 왼쪽
+    private let leftButton = UIButton().then {
+        $0.setImage(.iconCalendarLeft, for: .normal)
+    }
+    
+    // 년도
+    private let yearLabel = UILabel().then {
+        $0.text = "2025"
+        $0.textColor = UIColor(red: 0.055, green: 0.055, blue: 0.059, alpha: 1)
+        
+        $0.font = UIFont(name: "NotoSansKR-Medium", size: 24)
+    }
+    
+    // 오른쪽
+    private let rightButton = UIButton().then {
+        $0.setImage(.iconCalendarRight, for: .normal)
+    }
+    
+    // 년도 선택 스택뷰
+    let yearStackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.distribution = .equalSpacing
+        $0.alignment = .center
+    }
+    
     // MARK: - init
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -36,9 +61,16 @@ class CalendarModalView: UIView {
     }
 
     // MARK: - function
+    private func setStackView() {
+        [leftButton, yearLabel, rightButton].forEach { yearStackView.addArrangedSubview($0) }
+    }
+    
     private func setView() {
+        setStackView()
+        
         [
-            modalView
+            modalView,
+            yearStackView
         ].forEach {
             addSubview($0)
         }
@@ -48,5 +80,24 @@ class CalendarModalView: UIView {
             $0.bottom.equalToSuperview()
             $0.height.equalTo(382)
         }
+        
+        yearStackView.snp.makeConstraints {
+            $0.top.equalTo(modalView.snp.top).offset(20)
+            $0.horizontalEdges.equalTo(modalView).inset(20)
+            $0.height.equalTo(30)
+        }
+        
+        leftButton.snp.makeConstraints {
+            $0.width.height.equalTo(30)
+        }
+        
+        yearLabel.snp.makeConstraints {
+            $0.height.equalTo(30)
+        }
+        
+        rightButton.snp.makeConstraints {
+            $0.width.height.equalTo(30)
+        }
+        
     }
 }
