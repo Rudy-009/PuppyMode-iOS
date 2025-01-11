@@ -1,14 +1,37 @@
 import UIKit
+import AuthenticationServices
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
+        
+        let appleIDProvider = ASAuthorizationAppleIDProvider()
+        
+        if let userID = KeychainService.get(key: "UserID") {
+            appleIDProvider.getCredentialState(forUserID: userID) { (credentialState, error) in // 자동 로그인
+                switch credentialState {
+                    case .authorized:
+                       print("authorized")
+                       // The Apple ID credential is valid.
+                       DispatchQueue.main.async {
+                         //authorized된 상태이므로 바로 로그인 완료 화면으로 이동
+                           self.window?.rootViewController = BaseViewController()
+                       }
+                    case .revoked: // .revoked : 해당 ID의 인증이 취소된 상태 (회원 탈퇴한 상태)
+                       print("revoked") //??
+                    case .notFound:
+                       // The Apple ID credential is either revoked or was not found, so show the sign-in UI.
+                        self.window?.rootViewController = LoginViewController()
+                    default:
+                        break
+                }
+            }
+        }
         window?.rootViewController = LoginViewController()
         window?.makeKeyAndVisible()
     }

@@ -22,6 +22,7 @@ class LoginViewController: UIViewController{
 //MARK: Apple Social Login
 
 extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding  {
+    
     @objc
     private func popUpAppleLoginView() {
         print("Apple Login Tapped")
@@ -49,6 +50,11 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
             // Apple 계정으로 로그인 성공
             printAppleIDCredential(appleIDCredential: appleIDCredential) // appleIDCredential의 내용을 출력해보기
+            
+            // UserID를 KeyChain에 저장
+            if KeychainService.add(key: "UserID", value: appleIDCredential.user) {}
+            
+            // User의 정보를 서버에 전송
             
             
         case let passwordCredential as ASPasswordCredential:
