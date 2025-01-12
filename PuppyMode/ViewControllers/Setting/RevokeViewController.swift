@@ -29,7 +29,7 @@ extension RevokeViewController {
     @objc
     private func popButtonPressed() {
         print("Pop Button Pressed")
-        self.navigationController?.popViewController(animated: true)
+        dismiss(animated: true, completion: nil)
     }
 }
 

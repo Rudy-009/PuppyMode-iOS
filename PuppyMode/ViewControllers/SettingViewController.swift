@@ -32,9 +32,9 @@ extension SettingViewController {
     
     @objc
     private func revokeButtonPressed() {
-        let detailViewController = RevokeViewController()
-        navigationController?.setNavigationBarHidden(true, animated: false)
-        navigationController?.pushViewController(detailViewController, animated: true)
+        let viewControllerToPresent = RevokeViewController()
+        viewControllerToPresent.modalPresentationStyle = .fullScreen
+        present(viewControllerToPresent,animated: true)
     }
 }
 
