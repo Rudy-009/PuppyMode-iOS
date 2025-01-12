@@ -15,8 +15,28 @@ class SettingViewController: UIViewController {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor(red: 251/255, green: 251/255, blue: 251/255, alpha: 1)
         self.view = settingView
+        defineButtonActions()
     }
+}
 
+extension SettingViewController {
+    private func defineButtonActions() {
+        self.settingView.policyButton.addTarget(self, action: #selector(policyButtonPressed), for: .touchUpInside)
+        self.settingView.revokeButton.addTarget(self, action: #selector(revokeButtonPressed), for: .touchUpInside)
+    }
+    
+    @objc
+    private func policyButtonPressed() {
+        print("Policy Button Pressed")
+    }
+}
+
+//MARK: Revoke Account
+extension SettingViewController {
+    @objc
+    private func revokeButtonPressed() {
+        print("Revoke Button Pressed")
+    }
 }
 
 #Preview{

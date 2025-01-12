@@ -20,13 +20,13 @@ class SettingView: UIView {
     private lazy var alarmSettingView = AlarmSettingView()
     
     //MARK: Policy
-    private lazy var policyButton = SettingCustomButtonWithGreaterThan()
+    public lazy var policyButton = SettingCustomButtonWithGreaterThan()
     
     //MARK: AppVersion
     private lazy var appVersionView = AppVersionView()
         
     //MARK: Revoke
-    private lazy var revokeButton = SettingCustomButtonWithGreaterThan()
+    public lazy var revokeButton = SettingCustomButtonWithGreaterThan()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
