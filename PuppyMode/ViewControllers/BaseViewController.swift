@@ -20,7 +20,7 @@ class BaseViewController: UITabBarController {
     private let homeVC = HomeViewController()
     private let socialVC = SocialViewController()
     private let calendarVC = CalendarViewController()
-    private let settingVC = SettingViewController()
+    private let settingVC = UINavigationController(rootViewController: SettingViewController())
 
     override func viewDidLoad() {
         super.viewDidLoad()
