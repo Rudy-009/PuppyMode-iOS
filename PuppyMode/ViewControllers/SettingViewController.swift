@@ -29,13 +29,12 @@ extension SettingViewController {
     private func policyButtonPressed() {
         print("Policy Button Pressed")
     }
-}
-
-//MARK: Revoke Account
-extension SettingViewController {
+    
     @objc
     private func revokeButtonPressed() {
-        print("Revoke Button Pressed")
+        let detailViewController = RevokeViewController()
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        navigationController?.pushViewController(detailViewController, animated: true)
     }
 }
 
