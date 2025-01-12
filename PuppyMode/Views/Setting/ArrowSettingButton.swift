@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SettingCustomButtonWithGreaterThan: UIButton {
+class ArrowSettingButton: UIButton {
     
     private lazy var title = UILabel().then { label in
         label.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)

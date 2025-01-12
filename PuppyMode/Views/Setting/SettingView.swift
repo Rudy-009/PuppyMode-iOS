@@ -20,13 +20,13 @@ class SettingView: UIView {
     private lazy var alarmSettingView = AlarmSettingView()
     
     //MARK: Policy
-    public lazy var policyButton = SettingCustomButtonWithGreaterThan()
+    public lazy var termsOfServiceAndPrivacyPolicyButton = ArrowSettingButton()
     
     //MARK: AppVersion
     private lazy var appVersionView = AppVersionView()
         
     //MARK: Revoke
-    public lazy var revokeButton = SettingCustomButtonWithGreaterThan()
+    public lazy var revokeButton = ArrowSettingButton()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -41,7 +41,7 @@ class SettingView: UIView {
     private func addComponents() {
         self.addSubview(titleLabel)
         self.addSubview(alarmSettingView)
-        self.addSubview(policyButton)
+        self.addSubview(termsOfServiceAndPrivacyPolicyButton)
         self.addSubview(appVersionView)
         self.addSubview(revokeButton)
         
@@ -55,16 +55,16 @@ class SettingView: UIView {
             make.top.equalTo(titleLabel.snp.bottom).offset(30)
         }
         
-        policyButton.setTitle(for: "약관 및 개인정보 처리 동의")
+        termsOfServiceAndPrivacyPolicyButton.setTitle(for: "약관 및 개인정보 처리 동의")
         
-        policyButton.snp.makeConstraints { make in
+        termsOfServiceAndPrivacyPolicyButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.top.equalTo(alarmSettingView.snp.bottom).offset(7)
         }
         
         appVersionView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.top.equalTo(policyButton.snp.bottom).offset(7)
+            make.top.equalTo(termsOfServiceAndPrivacyPolicyButton.snp.bottom).offset(7)
         }
         
         revokeButton.setTitle(for: "탈퇴하기")

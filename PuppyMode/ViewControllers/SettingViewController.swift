@@ -21,7 +21,7 @@ class SettingViewController: UIViewController {
 
 extension SettingViewController {
     private func defineButtonActions() {
-        self.settingView.policyButton.addTarget(self, action: #selector(policyButtonPressed), for: .touchUpInside)
+        self.settingView.termsOfServiceAndPrivacyPolicyButton.addTarget(self, action: #selector(policyButtonPressed), for: .touchUpInside)
         self.settingView.revokeButton.addTarget(self, action: #selector(revokeButtonPressed), for: .touchUpInside)
     }
     
