@@ -64,6 +64,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
+    func changeRootViewController(_ viewController: UIViewController, animated: Bool) {
+        guard let window = self.window else { return }
+        
+        window.rootViewController = viewController
+        
+        if animated {
+            UIView.transition(with: window,
+                             duration: 0.5,
+                             options: .transitionFlipFromRight,
+                             animations: nil,
+                             completion: nil)
+        }
+    }
 
 }
 

@@ -48,14 +48,16 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
         //로그인 성공
         switch authorization.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
-            // Apple 계정으로 로그인 성공
-            printAppleIDCredential(appleIDCredential: appleIDCredential) // appleIDCredential의 내용을 출력해보기
+        // Apple 계정으로 로그인 성공
+            // printAppleIDCredential(appleIDCredential: appleIDCredential) // appleIDCredential의 내용을 출력해보기
             
             // UserID를 KeyChain에 저장
             if KeychainService.add(key: "UserID", value: appleIDCredential.user) {}
             
             // User의 정보를 서버에 전송
             
+            // BaseViewController 화면 으로 이동
+            changeRootViewController()
             
         case let passwordCredential as ASPasswordCredential:
             // Sign in using an existing iCloud Keychain credential.
@@ -72,6 +74,13 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
     // 로그인 실패 시
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: any Error) {
         print("로그인 실패", error.localizedDescription)
+    }
+    
+    // 로그인 성공 시, BaseViewController로 SceneDelegate의 rootView를 변경
+    func changeRootViewController() {
+        let baseViewController = BaseViewController()
+        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+        sceneDelegate?.changeRootViewController(baseViewController, animated: false)
     }
     
     // 로그인 성공시 appleIDCredential의 내용을 출력해보는 함수
