@@ -24,9 +24,9 @@ class PolicyPopoverView: UIView {
         scroll.contentSize = CGSize(width: 305, height: 146)
         scroll.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1)
         
-        scroll.isDirectionalLockEnabled = true  // 한 방향으로만 스크롤 가능
-        scroll.alwaysBounceVertical = true  // 세로 스크롤 바운스 효과 활성화
-        scroll.alwaysBounceHorizontal = false  // 가로 스크롤 바운스 효과 비활성화
+        scroll.isDirectionalLockEnabled = true
+        scroll.alwaysBounceVertical = true
+        scroll.alwaysBounceHorizontal = false  
     }
     
     private lazy var policyLabel = UILabel().then { label in
