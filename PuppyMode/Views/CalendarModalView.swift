@@ -42,10 +42,18 @@ class CalendarModalView: UIView {
     }
     
     // 년도 선택 스택뷰
-    let yearStackView = UIStackView().then {
+    public let yearStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.distribution = .equalSpacing
         $0.alignment = .center
+    }
+    
+    // 월 선택 컬렉션뷰
+    public let monthCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
+        $0.minimumInteritemSpacing = 0
+    }).then {
+        $0.isScrollEnabled = false
+        $0.register(MonthCollectionViewCell.self, forCellWithReuseIdentifier: MonthCollectionViewCell.identifier)
     }
     
     // MARK: - init
@@ -70,7 +78,8 @@ class CalendarModalView: UIView {
         
         [
             modalView,
-            yearStackView
+            yearStackView,
+            monthCollectionView
         ].forEach {
             addSubview($0)
         }
@@ -97,6 +106,12 @@ class CalendarModalView: UIView {
         
         rightButton.snp.makeConstraints {
             $0.width.height.equalTo(30)
+        }
+        
+        monthCollectionView.snp.makeConstraints {
+            $0.top.equalTo(yearStackView.snp.bottom).offset(19)
+            $0.horizontalEdges.equalToSuperview().inset(37)
+            $0.bottom.equalToSuperview().offset(-20)
         }
         
     }

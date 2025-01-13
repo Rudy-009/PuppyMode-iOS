@@ -24,7 +24,14 @@ class CalendarModalViewController: UIViewController {
         super.viewDidLoad()
         view = calendarModalView
         
+        setDelegate()
         setAction()
+    }
+    
+    // MARK: - function
+    private func setDelegate() {
+        calendarModalView.monthCollectionView.dataSource = self
+        calendarModalView.monthCollectionView.delegate = self
     }
     
     // MARK: - action
@@ -40,4 +47,30 @@ class CalendarModalViewController: UIViewController {
         dismiss(animated: true)
     }
 
+}
+
+// MARK: - extension
+extension CalendarModalViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return MonthModel.dummy().count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MonthCollectionViewCell.identifier, for: indexPath) as? MonthCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        
+        let list = MonthModel.dummy()
+        cell.monthLabel.text = list[indexPath.row].month
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let collectionViewWidth = collectionView.frame.width
+        let cellWidth = collectionViewWidth / 3
+        let cellHeight: CGFloat = 65
+        return CGSize(width: cellWidth, height: cellHeight)
+    }
+    
 }
