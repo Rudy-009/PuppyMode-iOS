@@ -28,6 +28,10 @@ extension SettingViewController {
     @objc
     private func policyButtonPressed() {
         print("Policy Button Pressed")
+        let viewControllerToPresent = PolicyPopoverViewController()
+        viewControllerToPresent.modalPresentationStyle = .overFullScreen
+        viewControllerToPresent.modalTransitionStyle = .crossDissolve
+        present(viewControllerToPresent, animated: true, completion: nil)
     }
     
     @objc
