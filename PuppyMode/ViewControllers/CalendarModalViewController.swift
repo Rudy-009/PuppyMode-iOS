@@ -106,6 +106,12 @@ extension CalendarModalViewController: UICollectionViewDataSource, UICollectionV
 
         // 현재 선택된 셀의 인덱스를 저장
         selectedIndexPath = indexPath
+        
+        // 캘린더 업데이트
+        let selectedMonth = indexPath.item + 1
+        calendarView?.updateCalendar(for: currentYear, month: selectedMonth)
+        calendarView?.blurBackgroundView.isHidden = true
+        dismiss(animated: true)
     }
     
 }

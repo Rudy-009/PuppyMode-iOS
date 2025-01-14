@@ -87,6 +87,15 @@ class CalendarView: UIView {
         monthLabel.text = monthFormatter.string(from: date)
     }
     
+    public func updateCalendar(for year: Int, month: Int) {
+        let dateComponents = DateComponents(year: year, month: month)
+        let calendar = Calendar.current
+        if let newDate = calendar.date(from: dateComponents) {
+            self.calendar.setCurrentPage(newDate, animated: true)
+            updateMonthLabel(for: newDate)
+        }
+    }
+    
     private func setView() {
         [
             yearLabel,
