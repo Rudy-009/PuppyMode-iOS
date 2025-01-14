@@ -10,7 +10,7 @@ import UIKit
 class CalendarModalView: UIView {
     // MARK: - view
     // 모달 뷰
-    private let modalView = UIView().then {
+    public let modalView = UIView().then {
         $0.backgroundColor = .white
         
         $0.layer.cornerRadius = 20
@@ -24,12 +24,12 @@ class CalendarModalView: UIView {
     }
     
     // 왼쪽
-    private let leftButton = UIButton().then {
+    public let leftButton = UIButton().then {
         $0.setImage(.iconCalendarLeft, for: .normal)
     }
     
     // 년도
-    private let yearLabel = UILabel().then {
+    public let yearLabel = UILabel().then {
         $0.text = "2025"
         $0.textColor = UIColor(red: 0.055, green: 0.055, blue: 0.059, alpha: 1)
         
@@ -37,7 +37,7 @@ class CalendarModalView: UIView {
     }
     
     // 오른쪽
-    private let rightButton = UIButton().then {
+    public let rightButton = UIButton().then {
         $0.setImage(.iconCalendarRight, for: .normal)
     }
     

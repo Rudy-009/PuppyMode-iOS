@@ -55,6 +55,9 @@ class CalendarView: UIView {
 
         // 한글로 변경
         $0.locale = Locale(identifier: "ko_KR")
+        
+        // 오늘 날짜 표시
+        $0.appearance.todayColor = .main
     }
     
     // 블러 배경
@@ -85,6 +88,15 @@ class CalendarView: UIView {
         let monthFormatter = DateFormatter()
         monthFormatter.dateFormat = "M월"
         monthLabel.text = monthFormatter.string(from: date)
+    }
+    
+    public func updateCalendar(for year: Int, month: Int) {
+        let dateComponents = DateComponents(year: year, month: month)
+        let calendar = Calendar.current
+        if let newDate = calendar.date(from: dateComponents) {
+            self.calendar.setCurrentPage(newDate, animated: true)
+            updateMonthLabel(for: newDate)
+        }
     }
     
     private func setView() {
