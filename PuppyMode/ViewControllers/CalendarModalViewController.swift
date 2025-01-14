@@ -12,6 +12,11 @@ class CalendarModalViewController: UIViewController {
     private weak var calendarView: CalendarView?
     
     private var selectedIndexPath: IndexPath?
+    private var currentYear: Int = 2025 {
+        didSet {
+            calendarModalView.yearLabel.text = "\(currentYear)"
+        }
+    }
     
     init(calendarView: CalendarView) {
         self.calendarView = calendarView
@@ -40,6 +45,9 @@ class CalendarModalViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(backgroundTapped))
         tapGesture.cancelsTouchesInView = false
         calendarModalView.addGestureRecognizer(tapGesture)
+        
+        calendarModalView.leftButton.addTarget(self, action: #selector(leftButtonTapped), for: .touchUpInside)
+        calendarModalView.rightButton.addTarget(self, action: #selector(rightButtonTapped), for: .touchUpInside)
     }
     
     // MARK: - action
@@ -51,7 +59,16 @@ class CalendarModalViewController: UIViewController {
             dismiss(animated: true)
         }
     }
-
+    
+    @objc
+    private func leftButtonTapped() {
+        currentYear -= 1
+    }
+    
+    @objc
+    private func rightButtonTapped() {
+        currentYear += 1
+    }
 }
 
 // MARK: - extension
