@@ -31,8 +31,9 @@ class SettingPopoverViewController: UIViewController {
     
     @objc func handleGrayAreaTap(_ gesture: UITapGestureRecognizer) {
         let location = gesture.location(in: view)
-        if gesture.view == view {
-            self.dismiss(animated: true, completion: nil)
+        // popover.frameView 영역을 터치했는지 확인
+        if !popover.frameView.frame.contains(location) {
+            dismiss(animated: true, completion: nil)
         }
     }
     

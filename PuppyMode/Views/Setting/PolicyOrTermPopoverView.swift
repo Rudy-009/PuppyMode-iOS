@@ -9,7 +9,7 @@ import UIKit
 
 class PolicyOrTermPopoverView: UIView {
     
-    private lazy var frameView = UIView().then { frame in
+    public lazy var frameView = UIView().then { frame in
         frame.layer.cornerRadius = 10
         frame.layer.masksToBounds = true
         frame.backgroundColor = .white
