@@ -11,6 +11,8 @@ class CalendarModalViewController: UIViewController {
     private let calendarModalView = CalendarModalView()
     private weak var calendarView: CalendarView?
     
+    private var selectedIndexPath: IndexPath?
+    
     init(calendarView: CalendarView) {
         self.calendarView = calendarView
         super.init(nibName: nil, bundle: nil)
@@ -55,17 +57,14 @@ class CalendarModalViewController: UIViewController {
 // MARK: - extension
 extension CalendarModalViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return MonthModel.dummy().count
+        return 12
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MonthCollectionViewCell.identifier, for: indexPath) as? MonthCollectionViewCell else {
             return UICollectionViewCell()
         }
-        
-        let list = MonthModel.dummy()
-        cell.monthLabel.text = list[indexPath.row].month
-        
+        cell.monthLabel.text = "\(indexPath.item + 1)월"
         return cell
     }
     
@@ -74,6 +73,22 @@ extension CalendarModalViewController: UICollectionViewDataSource, UICollectionV
         let cellWidth = collectionViewWidth / 3
         let cellHeight: CGFloat = 65
         return CGSize(width: cellWidth, height: cellHeight)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // 이전에 선택된 셀 초기화
+        if let previousIndexPath = selectedIndexPath, let previousCell = collectionView.cellForItem(at: previousIndexPath) as? MonthCollectionViewCell {
+            previousCell.backgroundColor = .clear
+            previousCell.monthLabel.font = UIFont(name: "NotoSansKR-Regular", size: 19)
+        }
+
+        // 현재 선택된 셀 
+        guard let cell = collectionView.cellForItem(at: indexPath) as? MonthCollectionViewCell else { return }
+        cell.backgroundColor = .main
+        cell.monthLabel.font = UIFont(name: "NotoSansKR-Bold", size: 20)
+
+        // 현재 선택된 셀의 인덱스를 저장
+        selectedIndexPath = indexPath
     }
     
 }
