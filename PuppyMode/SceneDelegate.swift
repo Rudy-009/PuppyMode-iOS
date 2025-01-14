@@ -1,16 +1,41 @@
 import UIKit
+import AuthenticationServices
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = BaseViewController()
         window?.makeKeyAndVisible()
+        
+        let appleIDProvider = ASAuthorizationAppleIDProvider()
+        
+        guard let userID = KeychainService.get(key: "UserID") else { // New User
+            self.window?.rootViewController = LoginViewController()
+            return
+        }
+        
+        appleIDProvider.getCredentialState(forUserID: userID) { (credentialState, error) in
+            switch credentialState {
+            case .authorized:
+                DispatchQueue.main.async {
+                    self.window?.rootViewController = BaseViewController()
+                }
+            case .revoked:
+                print("revoked or notFound")
+                self.window?.rootViewController = LoginViewController()
+            case .notFound:
+                print("notFound")
+                self.window?.rootViewController = LoginViewController()
+            case .transferred:
+                print("transferred")
+            default:
+                self.window?.rootViewController = LoginViewController()
+            }
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -41,6 +66,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
+    func changeRootViewController(_ viewController: UIViewController, animated: Bool) {
+        guard let window = self.window else { return }
+        
+        window.rootViewController = viewController
+        
+        if animated {
+            UIView.transition(with: window,
+                             duration: 0.5,
+                             options: .transitionFlipFromRight,
+                             animations: nil,
+                             completion: nil)
+        }
+    }
 
 }
 
