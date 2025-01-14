@@ -55,6 +55,9 @@ class CalendarView: UIView {
 
         // 한글로 변경
         $0.locale = Locale(identifier: "ko_KR")
+        
+        // 오늘 날짜 표시
+        $0.appearance.todayColor = .main
     }
     
     // 블러 배경
