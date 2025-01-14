@@ -34,17 +34,20 @@ class CalendarModalViewController: UIViewController {
         calendarModalView.monthCollectionView.delegate = self
     }
     
-    // MARK: - action
     private func setAction() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(backgroundTapped))
+        tapGesture.cancelsTouchesInView = false
         calendarModalView.addGestureRecognizer(tapGesture)
-        calendarModalView.isUserInteractionEnabled = true
     }
     
+    // MARK: - action
     @objc
-    private func backgroundTapped() {
-        self.calendarView?.blurBackgroundView.isHidden = true
-        dismiss(animated: true)
+    private func backgroundTapped(_ sender: UITapGestureRecognizer) {
+        let location = sender.location(in: calendarModalView)
+        if !calendarModalView.modalView.frame.contains(location) {
+            self.calendarView?.blurBackgroundView.isHidden = true
+            dismiss(animated: true)
+        }
     }
 
 }

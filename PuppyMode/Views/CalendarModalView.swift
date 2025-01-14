@@ -10,7 +10,7 @@ import UIKit
 class CalendarModalView: UIView {
     // MARK: - view
     // 모달 뷰
-    private let modalView = UIView().then {
+    public let modalView = UIView().then {
         $0.backgroundColor = .white
         
         $0.layer.cornerRadius = 20

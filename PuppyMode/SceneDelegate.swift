@@ -9,33 +9,35 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
+        window?.rootViewController = BaseViewController()
         window?.makeKeyAndVisible()
         
-        let appleIDProvider = ASAuthorizationAppleIDProvider()
-        
-        guard let userID = KeychainService.get(key: "UserID") else { // New User
-            self.window?.rootViewController = LoginViewController()
-            return
-        }
-        
-        appleIDProvider.getCredentialState(forUserID: userID) { (credentialState, error) in
-            switch credentialState {
-            case .authorized:
-                DispatchQueue.main.async {
-                    self.window?.rootViewController = BaseViewController()
-                }
-            case .revoked:
-                print("revoked or notFound")
-                self.window?.rootViewController = LoginViewController()
-            case .notFound:
-                print("notFound")
-                self.window?.rootViewController = LoginViewController()
-            case .transferred:
-                print("transferred")
-            default:
-                self.window?.rootViewController = LoginViewController()
-            }
-        }
+//
+//        let appleIDProvider = ASAuthorizationAppleIDProvider()
+//        
+//        guard let userID = KeychainService.get(key: "UserID") else { // New User
+//            self.window?.rootViewController = LoginViewController()
+//            return
+//        }
+//        
+//        appleIDProvider.getCredentialState(forUserID: userID) { (credentialState, error) in
+//            switch credentialState {
+//            case .authorized:
+//                DispatchQueue.main.async {
+//                    self.window?.rootViewController = BaseViewController()
+//                }
+//            case .revoked:
+//                print("revoked or notFound")
+//                self.window?.rootViewController = LoginViewController()
+//            case .notFound:
+//                print("notFound")
+//                self.window?.rootViewController = LoginViewController()
+//            case .transferred:
+//                print("transferred")
+//            default:
+//                self.window?.rootViewController = LoginViewController()
+//            }
+//        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
