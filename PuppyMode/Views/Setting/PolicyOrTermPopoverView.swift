@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PolicyPopoverView: UIView {
+class PolicyOrTermPopoverView: UIView {
     
     private lazy var frameView = UIView().then { frame in
         frame.layer.cornerRadius = 10
@@ -103,5 +103,5 @@ class PolicyPopoverView: UIView {
 }
 
 #Preview{
-    PolicyPopoverViewController()
+    SettingPopoverViewController()
 }

@@ -21,14 +21,24 @@ class SettingViewController: UIViewController {
 
 extension SettingViewController {
     private func defineButtonActions() {
-        self.settingView.termsOfServiceAndPrivacyPolicyButton.addTarget(self, action: #selector(policyButtonPressed), for: .touchUpInside)
+        self.settingView.termsOfServiceButton.addTarget(self, action: #selector(termsOfServiceButtonPressed), for: .touchUpInside)
+        self.settingView.PrivacyPolicyButton.addTarget(self, action: #selector(privacyPolicyButtonPressed), for: .touchUpInside)
         self.settingView.revokeButton.addTarget(self, action: #selector(revokeButtonPressed), for: .touchUpInside)
     }
     
     @objc
-    private func policyButtonPressed() {
-        print("Policy Button Pressed")
-        let viewControllerToPresent = PolicyPopoverViewController()
+    private func termsOfServiceButtonPressed() {
+        let viewControllerToPresent = SettingPopoverViewController()
+        viewControllerToPresent.configurePopoverView(title: "이용약관", content: K.String.policy)
+        viewControllerToPresent.modalPresentationStyle = .overFullScreen
+        viewControllerToPresent.modalTransitionStyle = .crossDissolve
+        present(viewControllerToPresent, animated: true, completion: nil)
+    }
+    
+    @objc
+    private func privacyPolicyButtonPressed() {
+        let viewControllerToPresent = SettingPopoverViewController()
+        viewControllerToPresent.configurePopoverView(title: "개인정보 처리 방침", content: K.String.policy)
         viewControllerToPresent.modalPresentationStyle = .overFullScreen
         viewControllerToPresent.modalTransitionStyle = .crossDissolve
         present(viewControllerToPresent, animated: true, completion: nil)

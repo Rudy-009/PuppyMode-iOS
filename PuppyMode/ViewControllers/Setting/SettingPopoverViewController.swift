@@ -7,20 +7,23 @@
 
 import UIKit
 
-class PolicyPopoverViewController: UIViewController {
+class SettingPopoverViewController: UIViewController {
 
-    let popover = PolicyPopoverView()
+    let popover = PolicyOrTermPopoverView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = popover
-        popover.configure(title: "이용 약관", content: K.String.policy)
         popover.confirmButton.addTarget(self, action: #selector(popView), for: .touchUpInside)
     }
     
     @objc
     func popView() {
         dismiss(animated: true, completion: nil)
+    }
+    
+    public func configurePopoverView(title: String, content: String) {
+        popover.configure(title: title, content: content)
     }
 
 }

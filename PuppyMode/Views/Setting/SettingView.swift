@@ -16,16 +16,19 @@ class SettingView: UIView {
         label.textAlignment = .center
     }
     
-    //MARK: Notification
+    //Notification
     private lazy var alarmSettingView = AlarmSettingView()
     
-    //MARK: Policy
-    public lazy var termsOfServiceAndPrivacyPolicyButton = ArrowSettingButton()
+    //Terms of Service
+    public lazy var termsOfServiceButton = ArrowSettingButton()
     
-    //MARK: AppVersion
+    //Privacy Policy
+    public lazy var PrivacyPolicyButton = ArrowSettingButton()
+    
+    //AppVersion
     private lazy var appVersionView = AppVersionView()
         
-    //MARK: Revoke
+    //Revoke
     public lazy var revokeButton = ArrowSettingButton()
     
     override init(frame: CGRect) {
@@ -41,7 +44,8 @@ class SettingView: UIView {
     private func addComponents() {
         self.addSubview(titleLabel)
         self.addSubview(alarmSettingView)
-        self.addSubview(termsOfServiceAndPrivacyPolicyButton)
+        self.addSubview(termsOfServiceButton)
+        self.addSubview(PrivacyPolicyButton)
         self.addSubview(appVersionView)
         self.addSubview(revokeButton)
         
@@ -55,16 +59,23 @@ class SettingView: UIView {
             make.top.equalTo(titleLabel.snp.bottom).offset(30)
         }
         
-        termsOfServiceAndPrivacyPolicyButton.setTitle(for: "약관 및 개인정보 처리 동의")
+        termsOfServiceButton.setTitle(for: "이용약관")
         
-        termsOfServiceAndPrivacyPolicyButton.snp.makeConstraints { make in
+        termsOfServiceButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.top.equalTo(alarmSettingView.snp.bottom).offset(7)
         }
         
+        PrivacyPolicyButton.setTitle(for: "개인정보 처리 동의")
+        
+        PrivacyPolicyButton.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.top.equalTo(termsOfServiceButton.snp.bottom).offset(7)
+        }
+        
         appVersionView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.top.equalTo(termsOfServiceAndPrivacyPolicyButton.snp.bottom).offset(7)
+            make.top.equalTo(PrivacyPolicyButton.snp.bottom).offset(7)
         }
         
         revokeButton.setTitle(for: "탈퇴하기")
