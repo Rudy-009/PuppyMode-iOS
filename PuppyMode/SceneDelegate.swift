@@ -9,31 +9,31 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
+        window?.makeKeyAndVisible()
         
         let appleIDProvider = ASAuthorizationAppleIDProvider()
         
-        if let userID = KeychainService.get(key: "UserID") {
-            appleIDProvider.getCredentialState(forUserID: userID) { (credentialState, error) in // 자동 로그인
-                switch credentialState {
-                    case .authorized:
-                       print("authorized")
-                       // The Apple ID credential is valid.
-                       DispatchQueue.main.async {
-                         //authorized된 상태이므로 바로 로그인 완료 화면으로 이동
-                           self.window?.rootViewController = BaseViewController()
-                       }
-                    case .revoked: // .revoked : 해당 ID의 인증이 취소된 상태 (회원 탈퇴한 상태)
-                       print("revoked") //??
-                    case .notFound:
-                       // The Apple ID credential is either revoked or was not found, so show the sign-in UI.
-                        self.window?.rootViewController = LoginViewController()
-                    default:
-                        break
-                }
+        guard let userID = KeychainService.get(key: "UserID") else { // New User
+            self.window?.rootViewController = LoginViewController()
+            return
+        }
+        
+        appleIDProvider.getCredentialState(forUserID: userID) { (credentialState, error) in
+            switch credentialState {
+            case .authorized:
+                self.window?.rootViewController = BaseViewController()
+            case .revoked:
+                print("revoked or notFound")
+                self.window?.rootViewController = LoginViewController()
+            case .notFound:
+                print("notFound")
+                self.window?.rootViewController = LoginViewController()
+            case .transferred:
+                print("transferred")
+            default:
+                self.window?.rootViewController = LoginViewController()
             }
         }
-        window?.rootViewController = LoginViewController()
-        window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
