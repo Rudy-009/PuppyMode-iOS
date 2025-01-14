@@ -21,7 +21,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         appleIDProvider.getCredentialState(forUserID: userID) { (credentialState, error) in
             switch credentialState {
             case .authorized:
-                self.window?.rootViewController = BaseViewController()
+                DispatchQueue.main.async {
+                    self.window?.rootViewController = BaseViewController()
+                }
             case .revoked:
                 print("revoked or notFound")
                 self.window?.rootViewController = LoginViewController()
