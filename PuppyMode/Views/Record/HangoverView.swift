@@ -24,6 +24,17 @@ class HangoverView: UIView {
     }
     
     // 질문 + 설명
+    private let questionLabel = UILabel().then {
+        $0.text = "Q. 어떤 숙취를 겪으셨나요?"
+        $0.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)
+        $0.font = UIFont(name: "NotoSansKR-Medium", size: 24)
+    }
+    
+    private let descLabel = UILabel().then {
+        $0.text = "숙취가 없으시면 건너뛰기를 눌러주세요"
+        $0.textColor = UIColor(red: 0.467, green: 0.467, blue: 0.467, alpha: 1)
+        $0.font = UIFont(name: "NotoSansKR-Medium", size: 15)
+    }
     
     // 숙취 컬렉션뷰
     
@@ -45,7 +56,9 @@ class HangoverView: UIView {
     private func setView() {
         [
             backButton,
-            titleLabel
+            titleLabel,
+            questionLabel,
+            descLabel
         ].forEach {
             addSubview($0)
         }
@@ -60,6 +73,16 @@ class HangoverView: UIView {
         titleLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.centerY.equalTo(backButton)
+        }
+        
+        questionLabel.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(72)
+            $0.left.equalToSuperview().offset(33)
+        }
+        
+        descLabel.snp.makeConstraints {
+            $0.top.equalTo(questionLabel.snp.bottom).offset(9)
+            $0.left.equalTo(questionLabel.snp.left).offset(32)
         }
     }
 }
