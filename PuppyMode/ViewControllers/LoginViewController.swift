@@ -7,8 +7,9 @@
 
 import UIKit
 import AuthenticationServices
+import Alamofire
 
-class LoginViewController: UIViewController{
+class LoginViewController: UIViewController {
     
     let loginView = LoginView()
     
@@ -21,7 +22,7 @@ class LoginViewController: UIViewController{
 }
 //MARK: Apple Social Login
 
-extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding  {
+extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
     
     @objc
     private func popUpAppleLoginView() {

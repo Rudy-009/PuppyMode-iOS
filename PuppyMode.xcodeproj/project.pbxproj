@@ -11,6 +11,7 @@
 		23A04E452D2C3752008473B1 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 23A04E442D2C3752008473B1 /* SnapKit */; };
 		23A04E482D2C375D008473B1 /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = 23A04E472D2C375D008473B1 /* Then */; };
 		23A04E662D2D71DF008473B1 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
+		63BFBBC42D373EA0000AA549 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 63BFBBC32D373EA0000AA549 /* Alamofire */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63BFBBC42D373EA0000AA549 /* Alamofire in Frameworks */,
 				23A04E452D2C3752008473B1 /* SnapKit in Frameworks */,
 				2324D6C42D2F156800C38607 /* FSCalendar in Frameworks */,
 				23A04E662D2D71DF008473B1 /* (null) in Frameworks */,
@@ -92,6 +94,7 @@
 				23A04E442D2C3752008473B1 /* SnapKit */,
 				23A04E472D2C375D008473B1 /* Then */,
 				2324D6C32D2F156800C38607 /* FSCalendar */,
+				63BFBBC32D373EA0000AA549 /* Alamofire */,
 			);
 			productName = PuppyMode;
 			productReference = 23A04E1C2D2C0972008473B1 /* PuppyMode.app */;
@@ -125,6 +128,7 @@
 				23A04E432D2C3752008473B1 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				23A04E462D2C375D008473B1 /* XCRemoteSwiftPackageReference "Then" */,
 				2324D6C22D2F156800C38607 /* XCRemoteSwiftPackageReference "FSCalendar" */,
+				63BFBBC22D373EA0000AA549 /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 23A04E1D2D2C0972008473B1 /* Products */;
@@ -164,6 +168,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2QJX795Q3R;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PuppyMode/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -190,6 +195,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2QJX795Q3R;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PuppyMode/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -376,6 +382,14 @@
 				minimumVersion = 3.0.0;
 			};
 		};
+		63BFBBC22D373EA0000AA549 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.10.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -393,6 +407,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 23A04E462D2C375D008473B1 /* XCRemoteSwiftPackageReference "Then" */;
 			productName = Then;
+		};
+		63BFBBC32D373EA0000AA549 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 63BFBBC22D373EA0000AA549 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
