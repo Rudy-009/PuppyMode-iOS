@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import KakaoSDKUser
 
 class SettingViewController: UIViewController {
     
@@ -24,6 +25,7 @@ extension SettingViewController {
         self.settingView.termsOfServiceButton.addTarget(self, action: #selector(termsOfServiceButtonPressed), for: .touchUpInside)
         self.settingView.PrivacyPolicyButton.addTarget(self, action: #selector(privacyPolicyButtonPressed), for: .touchUpInside)
         self.settingView.revokeButton.addTarget(self, action: #selector(revokeButtonPressed), for: .touchUpInside)
+        self.settingView.logoutButton.addTarget(self, action: #selector(logoutButtonPressed), for: .touchUpInside)
     }
     
     @objc
@@ -49,6 +51,26 @@ extension SettingViewController {
         let viewControllerToPresent = RevokeViewController()
         viewControllerToPresent.modalPresentationStyle = .fullScreen
         present(viewControllerToPresent,animated: true)
+    }
+    
+    @objc
+    private func logoutButtonPressed() {
+        UserApi.shared.logout {(error) in
+            if let error = error {
+                print(error)
+            }
+            else {
+                self.changeRootToLoginViewController()
+                print("logout() success.")
+            }
+        }
+    }
+    
+    
+    func changeRootToLoginViewController() {
+        let baseViewController = LoginViewController()
+        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+        sceneDelegate?.changeRootViewController(baseViewController, animated: false)
     }
 }
 

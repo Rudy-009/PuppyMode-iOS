@@ -31,6 +31,9 @@ class SettingView: UIView {
     //Revoke
     public lazy var revokeButton = ArrowSettingButton()
     
+    //Logout
+    public lazy var logoutButton = ArrowSettingButton()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = UIColor(red: 251/255, green: 251/255, blue: 251/255, alpha: 1)
@@ -48,6 +51,7 @@ class SettingView: UIView {
         self.addSubview(PrivacyPolicyButton)
         self.addSubview(appVersionView)
         self.addSubview(revokeButton)
+        self.addSubview(logoutButton)
         
         titleLabel.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
@@ -83,6 +87,13 @@ class SettingView: UIView {
         revokeButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.top.equalTo(appVersionView.snp.bottom).offset(7)
+        }
+        
+        logoutButton.setTitle(for: "로그아웃")
+        
+        logoutButton.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.top.equalTo(revokeButton.snp.bottom).offset(7)
         }
         
     }
