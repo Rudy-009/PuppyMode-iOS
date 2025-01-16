@@ -1,0 +1,11 @@
+//
+//  Security.xcconfig
+//  PuppyMode
+//
+//  Created by 이승준 on 1/16/25.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+Kakao_App_API = "9c8a58a5b723d243978a1e1a09fd93e4"

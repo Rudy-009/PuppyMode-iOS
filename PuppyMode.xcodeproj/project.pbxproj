@@ -12,10 +12,15 @@
 		23A04E482D2C375D008473B1 /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = 23A04E472D2C375D008473B1 /* Then */; };
 		23A04E662D2D71DF008473B1 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		63BFBBC42D373EA0000AA549 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 63BFBBC32D373EA0000AA549 /* Alamofire */; };
+		63C7AAD62D391F5400E36D77 /* KakaoSDKAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 63C7AAD52D391F5400E36D77 /* KakaoSDKAuth */; };
+		63C7AAD82D391F5400E36D77 /* KakaoSDKCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 63C7AAD72D391F5400E36D77 /* KakaoSDKCommon */; };
+		63C7AADA2D391F5400E36D77 /* KakaoSDKUser in Frameworks */ = {isa = PBXBuildFile; productRef = 63C7AAD92D391F5400E36D77 /* KakaoSDKUser */; };
+		63C7AADC2D3921B000E36D77 /* Security.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 63C7AADB2D3921B000E36D77 /* Security.xcconfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		23A04E1C2D2C0972008473B1 /* PuppyMode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PuppyMode.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		63C7AADB2D3921B000E36D77 /* Security.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Security.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -45,10 +50,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				63BFBBC42D373EA0000AA549 /* Alamofire in Frameworks */,
+				63C7AAD82D391F5400E36D77 /* KakaoSDKCommon in Frameworks */,
 				23A04E452D2C3752008473B1 /* SnapKit in Frameworks */,
 				2324D6C42D2F156800C38607 /* FSCalendar in Frameworks */,
+				63C7AADA2D391F5400E36D77 /* KakaoSDKUser in Frameworks */,
 				23A04E662D2D71DF008473B1 /* (null) in Frameworks */,
 				23A04E482D2C375D008473B1 /* Then in Frameworks */,
+				63C7AAD62D391F5400E36D77 /* KakaoSDKAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -58,6 +66,7 @@
 		23A04E132D2C0972008473B1 = {
 			isa = PBXGroup;
 			children = (
+				63C7AADB2D3921B000E36D77 /* Security.xcconfig */,
 				23A04E1E2D2C0972008473B1 /* PuppyMode */,
 				23A04E1D2D2C0972008473B1 /* Products */,
 			);
@@ -95,6 +104,9 @@
 				23A04E472D2C375D008473B1 /* Then */,
 				2324D6C32D2F156800C38607 /* FSCalendar */,
 				63BFBBC32D373EA0000AA549 /* Alamofire */,
+				63C7AAD52D391F5400E36D77 /* KakaoSDKAuth */,
+				63C7AAD72D391F5400E36D77 /* KakaoSDKCommon */,
+				63C7AAD92D391F5400E36D77 /* KakaoSDKUser */,
 			);
 			productName = PuppyMode;
 			productReference = 23A04E1C2D2C0972008473B1 /* PuppyMode.app */;
@@ -129,6 +141,7 @@
 				23A04E462D2C375D008473B1 /* XCRemoteSwiftPackageReference "Then" */,
 				2324D6C22D2F156800C38607 /* XCRemoteSwiftPackageReference "FSCalendar" */,
 				63BFBBC22D373EA0000AA549 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				63C7AAD42D391F5400E36D77 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 23A04E1D2D2C0972008473B1 /* Products */;
@@ -145,6 +158,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63C7AADC2D3921B000E36D77 /* Security.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -163,6 +177,7 @@
 /* Begin XCBuildConfiguration section */
 		23A04E302D2C0987008473B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 63C7AADB2D3921B000E36D77 /* Security.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -190,6 +205,7 @@
 		};
 		23A04E312D2C0987008473B1 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 63C7AADB2D3921B000E36D77 /* Security.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -390,6 +406,14 @@
 				minimumVersion = 5.10.2;
 			};
 		};
+		63C7AAD42D391F5400E36D77 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kakao/kakao-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.23.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -412,6 +436,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 63BFBBC22D373EA0000AA549 /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
+		};
+		63C7AAD52D391F5400E36D77 /* KakaoSDKAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 63C7AAD42D391F5400E36D77 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKAuth;
+		};
+		63C7AAD72D391F5400E36D77 /* KakaoSDKCommon */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 63C7AAD42D391F5400E36D77 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKCommon;
+		};
+		63C7AAD92D391F5400E36D77 /* KakaoSDKUser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 63C7AAD42D391F5400E36D77 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKUser;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
