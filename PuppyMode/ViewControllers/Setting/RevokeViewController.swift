@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import KakaoSDKUser
 
 class RevokeViewController: UIViewController {
     
@@ -38,5 +39,25 @@ extension RevokeViewController {
     @objc
     private func revokeButtonPressed() {
         print("Revoke Button Pressed")
+        kakaoUnlink()
+        
+    }
+    
+    func kakaoUnlink() {
+        UserApi.shared.unlink {(error) in
+            if let error = error {
+                print(error)
+            }
+            else {
+                self.changeRootToLoginViewController()
+                print("unlink() success.")
+            }
+        }
+    }
+    
+    func changeRootToLoginViewController() {
+        let baseViewController = LoginViewController()
+        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+        sceneDelegate?.changeRootViewController(baseViewController, animated: false)
     }
 }
