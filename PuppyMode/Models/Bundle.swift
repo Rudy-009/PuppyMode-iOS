@@ -9,6 +9,6 @@ import Foundation
 
 extension Bundle {
     var kakaoAppKey: String? {
-        return infoDictionary?["Kakao_APP_KEY"] as? String
+        return infoDictionary?["Kakao_App_Key"] as? String
     }
 }

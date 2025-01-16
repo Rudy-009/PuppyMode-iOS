@@ -20,6 +20,12 @@ class LoginViewController: UIViewController {
         connectButtonActions()
     }
     
+    // 로그인 성공 시, BaseViewController로 SceneDelegate의 rootView를 변경
+    func changeRootToBaseViewController() {
+        let baseViewController = BaseViewController()
+        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+        sceneDelegate?.changeRootViewController(baseViewController, animated: false)
+    }
 }
 
 //MARK: Apple Social Login
@@ -54,12 +60,12 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
             // printAppleIDCredential(appleIDCredential: appleIDCredential) // appleIDCredential의 내용을 출력해보기
             
             // UserID를 KeyChain에 저장
-            if KeychainService.add(key: "UserID", value: appleIDCredential.user) {}
+            if KeychainService.add(key: "AppleUserID", value: appleIDCredential.user) {}
             
             // User의 정보를 서버에 전송
             
             // BaseViewController 화면 으로 이동
-            changeRootViewController()
+            changeRootToBaseViewController()
             
         case let passwordCredential as ASPasswordCredential:
             // Sign in using an existing iCloud Keychain credential.
@@ -76,13 +82,6 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
     // 로그인 실패 시
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: any Error) {
         print("로그인 실패", error.localizedDescription)
-    }
-    
-    // 로그인 성공 시, BaseViewController로 SceneDelegate의 rootView를 변경
-    func changeRootViewController() {
-        let baseViewController = BaseViewController()
-        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-        sceneDelegate?.changeRootViewController(baseViewController, animated: false)
     }
     
     // 로그인 성공시 appleIDCredential의 내용을 출력해보는 함수
@@ -118,6 +117,7 @@ extension LoginViewController {
     @objc
     private func popUpKakaoLoginView() {
         print("Kakao Login Tapped")
+        KakaoLogin()
     }
     
     func KakaoLogin() {
@@ -129,6 +129,7 @@ extension LoginViewController {
             // 카카오 계정으로 로그인
             kakaoLoginWithAccount()
         }
+        getUserInfo()
     }
     
     func kakaoLonginWithApp() {
@@ -138,8 +139,7 @@ extension LoginViewController {
             }
             else {
                 print("loginWithKakaoTalk() success.")
-                //do something
-                _ = oauthToken
+                self.changeRootToBaseViewController()
             }
         }
     }
@@ -152,8 +152,28 @@ extension LoginViewController {
             }
             else {
                 print("loginWithKakaoAccount() success.")
+                self.changeRootToBaseViewController()
+            }
+        }
+    }
+    
+    func getUserInfo() {
+        UserApi.shared.me() {(user, error) in
+            if let error = error {
+                print(error)
+            }
+            else {
+                print("me() success.")
+                
                 //do something
-                _ = oauthToken
+                if let userName = user?.kakaoAccount?.name
+                , let userEmail = user?.kakaoAccount?.email
+                    , let userProfile = user?.kakaoAccount?.profile?.profileImageUrl {
+                    
+                    print("이름: \(userName)")
+                    print("이메일: \(userEmail)")
+                    print("프로필: \(userProfile)")
+                }
             }
         }
     }

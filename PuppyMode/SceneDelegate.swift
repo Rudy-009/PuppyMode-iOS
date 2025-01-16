@@ -13,32 +13,40 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.rootViewController = BaseViewController()
         window?.makeKeyAndVisible()
         
-//
-//        let appleIDProvider = ASAuthorizationAppleIDProvider()
-//        
-//        guard let userID = KeychainService.get(key: "UserID") else { // New User
-//            self.window?.rootViewController = LoginViewController()
-//            return
-//        }
-//        
-//        appleIDProvider.getCredentialState(forUserID: userID) { (credentialState, error) in
-//            switch credentialState {
-//            case .authorized:
-//                DispatchQueue.main.async {
-//                    self.window?.rootViewController = BaseViewController()
-//                }
-//            case .revoked:
-//                print("revoked or notFound")
-//                self.window?.rootViewController = LoginViewController()
-//            case .notFound:
-//                print("notFound")
-//                self.window?.rootViewController = LoginViewController()
-//            case .transferred:
-//                print("transferred")
-//            default:
-//                self.window?.rootViewController = LoginViewController()
-//            }
-//        }
+        let appleIDProvider = ASAuthorizationAppleIDProvider()
+        
+        guard let userID = KeychainService.get(key: "AppleUserID") else { // New User
+            self.window?.rootViewController = LoginViewController()
+            return
+        }
+        
+        appleIDProvider.getCredentialState(forUserID: userID) { (credentialState, error) in
+            switch credentialState {
+            case .authorized:
+                DispatchQueue.main.async {
+                    self.window?.rootViewController = BaseViewController()
+                }
+            case .revoked:
+                print("revoked or notFound")
+                self.window?.rootViewController = LoginViewController()
+            case .notFound:
+                print("notFound")
+                self.window?.rootViewController = LoginViewController()
+            case .transferred:
+                print("transferred")
+            default:
+                self.window?.rootViewController = LoginViewController()
+            }
+        }
+    }
+    
+    // 로그인이 화면 이동 후, 다시 앱으로 돌아오는 UI가 관련된 설정
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        if let url = URLContexts.first?.url {
+            if (AuthApi.isKakaoTalkLoginUrl(url)) {
+                _ = AuthController.handleOpenUrl(url: url)
+            }
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -67,15 +75,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
-    }
-    
-    // 로그인이 화면 이동 후, 다시 앱으로 돌아오는 UI가 관련된 설정
-    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        if let url = URLContexts.first?.url {
-            if (AuthApi.isKakaoTalkLoginUrl(url)) {
-                _ = AuthController.handleOpenUrl(url: url)
-            }
-        }
     }
 
     func changeRootViewController(_ viewController: UIViewController, animated: Bool) {
