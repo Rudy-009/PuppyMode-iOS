@@ -8,7 +8,9 @@
 import UIKit
 import AuthenticationServices
 import Alamofire
+import KakaoSDKAuth
 import KakaoSDKUser
+import KakaoSDKCommon
 
 class LoginViewController: UIViewController {
     
@@ -125,11 +127,12 @@ extension LoginViewController {
         if (UserApi.isKakaoTalkLoginAvailable()) {
             // 카카오톡 앱으로 로그인 인증
             kakaoLonginWithApp()
+            saveKakaoUserID()
         } else { // 카톡이 설치가 안 되어 있을 때
             // 카카오 계정으로 로그인
             kakaoLoginWithAccount()
+            saveKakaoUserID()
         }
-        getUserInfo()
     }
     
     func kakaoLonginWithApp() {
@@ -157,27 +160,19 @@ extension LoginViewController {
         }
     }
     
-    func getUserInfo() {
-        UserApi.shared.me() {(user, error) in
+    func saveKakaoUserID() {
+        UserApi.shared.me {(user, error) in
             if let error = error {
                 print(error)
-            }
-            else {
-                print("me() success.")
-                
-                //do something
-                if let userName = user?.kakaoAccount?.name
-                , let userEmail = user?.kakaoAccount?.email
-                    , let userProfile = user?.kakaoAccount?.profile?.profileImageUrl {
-                    
-                    print("이름: \(userName)")
-                    print("이메일: \(userEmail)")
-                    print("프로필: \(userProfile)")
+            } else {
+                guard let userId = user?.id else {return}
+                if KeychainService.add(key: "KakaoUserID", value: "\(userId)") {
+                    print("kakao user id \(userId) is saved")
                 }
             }
         }
     }
-    
+        
 }
 
 //MARK: Connect Button Actions

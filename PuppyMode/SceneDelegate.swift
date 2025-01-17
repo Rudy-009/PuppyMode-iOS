@@ -1,6 +1,7 @@
 import UIKit
 import AuthenticationServices
 import KakaoSDKAuth
+import KakaoSDKUser
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -15,29 +16,35 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let appleIDProvider = ASAuthorizationAppleIDProvider()
         
-        guard let userID = KeychainService.get(key: "AppleUserID") else { // New User
-            self.window?.rootViewController = LoginViewController()
+        if let appleUserID = KeychainService.get(key: "AppleUserID") {
+            appleIDProvider.getCredentialState(forUserID: appleUserID) { (credentialState, error) in
+                switch credentialState {
+                case .authorized:
+                    DispatchQueue.main.async {
+                        self.window?.rootViewController = BaseViewController()
+                    }
+                case .revoked:
+                    print("revoked")
+                    self.window?.rootViewController = LoginViewController()
+                case .notFound:
+                    print("notFound")
+                    self.window?.rootViewController = LoginViewController()
+                case .transferred:
+                    print("transferred")
+                default:
+                    self.window?.rootViewController = LoginViewController()
+                }
+            }
             return
         }
         
-        appleIDProvider.getCredentialState(forUserID: userID) { (credentialState, error) in
-            switch credentialState {
-            case .authorized:
-                DispatchQueue.main.async {
-                    self.window?.rootViewController = BaseViewController()
-                }
-            case .revoked:
-                print("revoked or notFound")
-                self.window?.rootViewController = LoginViewController()
-            case .notFound:
-                print("notFound")
-                self.window?.rootViewController = LoginViewController()
-            case .transferred:
-                print("transferred")
-            default:
-                self.window?.rootViewController = LoginViewController()
-            }
+        if let kakaoUserID = KeychainService.get(key: "KakaoUserID") {
+            print("KakaoUserID is \(kakaoUserID) in SceneDelegate")
         }
+        
+        // New User
+        self.window?.rootViewController = LoginViewController()
+        return
     }
     
     // 로그인이 화면 이동 후, 다시 앱으로 돌아오는 UI가 관련된 설정
