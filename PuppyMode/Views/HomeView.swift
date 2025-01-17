@@ -141,7 +141,7 @@ extension HomeView {
         
         topButtonStack.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(topButtonSuperViewSpacing)
-            make.top.equalTo(self.safeAreaLayoutGuide).offset(48)
+            make.top.equalTo(self.safeAreaLayoutGuide).offset(18)
             make.height.equalTo(topRectangleHeight)
         }
         
