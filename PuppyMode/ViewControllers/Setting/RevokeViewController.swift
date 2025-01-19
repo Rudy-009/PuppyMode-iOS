@@ -22,6 +22,7 @@ class RevokeViewController: UIViewController {
 }
 
 extension RevokeViewController {
+    
     private func defineButtonActions() {
         revokeView.popButton.addTarget(self, action: #selector(popButtonPressed), for: .touchUpInside)
         revokeView.revokeButton.addTarget(self, action: #selector(revokeButtonPressed), for: .touchUpInside)
@@ -40,11 +41,15 @@ extension RevokeViewController {
     @objc
     private func revokeButtonPressed() {
         print("Revoke Button Pressed")
-        kakaoUnlink()
         
+        if let _ = KeychainService.get(key: K.String.kakaoUserID) {
+            if KeychainService.delete(key: K.String.kakaoUserID) {
+                self.kakaoRevoke()
+            }
+        }
     }
     
-    private func kakaoUnlink() {
+    private func kakaoRevoke() {
         UserApi.shared.unlink {(error) in
             if let error = error {
                 print(error)

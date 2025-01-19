@@ -114,7 +114,7 @@ class RevokeView: UIView {
         
     }
     
-    func configure(characterName: String) {
+    public func configure(characterName: String) {
         self.characterName = characterName
     }
 }

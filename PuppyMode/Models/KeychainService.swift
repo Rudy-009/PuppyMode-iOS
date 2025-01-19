@@ -10,8 +10,6 @@ import Security
 
 class KeychainService {
     
-    private let shared = KeychainService()
-    
     static func add(key: String, value: String) -> Bool {
         let addQuery: [CFString: Any] = [kSecClass: kSecClassGenericPassword,
                                          kSecAttrAccount: key,

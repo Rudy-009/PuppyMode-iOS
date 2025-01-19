@@ -27,7 +27,7 @@ class SettingView: UIView {
     
     //AppVersion
     private lazy var appVersionView = AppVersionView()
-        
+    
     //Revoke
     public lazy var revokeButton = ArrowSettingButton()
     

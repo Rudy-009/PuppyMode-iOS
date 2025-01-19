@@ -16,7 +16,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let appleIDProvider = ASAuthorizationAppleIDProvider()
         
-        if let appleUserID = KeychainService.get(key: "AppleUserID") {
+        if let appleUserID = KeychainService.get(key: K.String.appleUserID) {
             appleIDProvider.getCredentialState(forUserID: appleUserID) { (credentialState, error) in
                 switch credentialState {
                 case .authorized:
@@ -25,21 +25,27 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     }
                 case .revoked:
                     print("revoked")
-                    self.window?.rootViewController = LoginViewController()
+                    DispatchQueue.main.async {
+                        self.window?.rootViewController = LoginViewController()
+                    }
                 case .notFound:
                     print("notFound")
-                    self.window?.rootViewController = LoginViewController()
+                    DispatchQueue.main.async {
+                        self.window?.rootViewController = LoginViewController()
+                    }
                 case .transferred:
                     print("transferred")
                 default:
-                    self.window?.rootViewController = LoginViewController()
+                    DispatchQueue.main.async {
+                        self.window?.rootViewController = LoginViewController()
+                    }
                 }
             }
             return
         }
         
-        if let kakaoUserID = KeychainService.get(key: "KakaoUserID") {
-            print("KakaoUserID is \(kakaoUserID) in SceneDelegate")
+        if let kakaoUserID = KeychainService.get(key: K.String.kakaoUserID) { // Automatic Login
+            
         }
         
         // New User
@@ -90,13 +96,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.rootViewController = viewController
         
         if animated {
-            UIView.transition(with: window,
-                             duration: 0.5,
-                             options: .transitionFlipFromRight,
+            UIView.transition(with: window, duration: 0.5, options: .transitionFlipFromRight,
                              animations: nil,
                              completion: nil)
         }
     }
 
 }
-

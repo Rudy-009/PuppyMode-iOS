@@ -30,7 +30,6 @@ class LoginView: UIView {
         paragraphStyle.lineHeightMultiple = 0.97
         label.textAlignment = .center
         label.attributedText = NSMutableAttributedString(string: "올바른 음주 습관을 가질 수 있도록 도와드릴게요", attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
-
     }
     
     private lazy var characterImage = UIImageView().then { image in
@@ -82,22 +81,22 @@ class LoginView: UIView {
             make.top.equalTo(subLabel.snp.bottom).offset(30)
         }
         
-        kakaoLoginButton.configure(name: "카카오로 로그인", logo: UIImage(named: "KakaoLogin")!, backgroundColor: .kakaoLogin)
+        kakaoLoginButton.configure(name: "카카오로 로그인", logo: .kakaoLogin , backgroundColor: .kakaoLogin)
         
         kakaoLoginButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.top.equalTo(characterImage.snp.bottom).offset(60)
         }
         
-        appleLoginButton.configure(name: "Apple로 로그인", logo: UIImage(named: "AppleLogin")!, backgroundColor: .white)
+        appleLoginButton.configure(name: "Apple로 로그인", logo: .appleLogin , backgroundColor: .white)
         appleLoginButton.addBorderline()
         
         appleLoginButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.top.equalTo(kakaoLoginButton.snp.bottom).offset(30)
         }
-
     }
+    
 }
 
 import SwiftUI
