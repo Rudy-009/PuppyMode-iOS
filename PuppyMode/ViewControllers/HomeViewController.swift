@@ -9,7 +9,7 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
-    let homeView = HomeView()
+    private lazy var homeView = HomeView()
 
     override func viewDidLoad() {
         super.viewDidLoad()

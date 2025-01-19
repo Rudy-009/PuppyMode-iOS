@@ -53,7 +53,7 @@ class PolicyOrTermPopoverView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func addComponents() {
+    private func addComponents() {
         self.addSubview(frameView)
         
         frameView.snp.makeConstraints { make in

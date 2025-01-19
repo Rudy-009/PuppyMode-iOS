@@ -9,7 +9,7 @@ import UIKit
 
 class SocialViewController: UIViewController {
     
-    let socialView = SocialView()
+    private lazy var socialView = SocialView()
 
     override func viewDidLoad() {
         super.viewDidLoad()

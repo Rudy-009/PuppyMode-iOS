@@ -9,15 +9,15 @@ import UIKit
 
 class HomeCustomButtonView: UIButton {
     
-    lazy private var backgroundImage = UIImageView().then { image in
+    private lazy var backgroundImage = UIImageView().then { image in
         image.image = UIImage(named: "BottomButtonImage")
     }
     
-    lazy private var buttonTitleLabel = UILabel().then { label in
+    private lazy var buttonTitleLabel = UILabel().then { label in
         label.font = UIFont(name: "NotoSansKR-Medium", size: 22)
     }
     
-    lazy private var buttonSubtitleLabel = UILabel().then { label in
+    private lazy var buttonSubtitleLabel = UILabel().then { label in
         label.font = UIFont(name: "NotoSansKR-Regular", size: 17)
         label.alpha = 0.78
     }
@@ -27,7 +27,11 @@ class HomeCustomButtonView: UIButton {
         addComponents()
     }
     
-    func addComponents() {
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func addComponents() {
         self.addSubview(backgroundImage)
         
         backgroundImage.addSubview(buttonTitleLabel)
@@ -58,7 +62,4 @@ class HomeCustomButtonView: UIButton {
         buttonSubtitleLabel.text = title
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 }

@@ -14,7 +14,7 @@ import KakaoSDKCommon
 
 class LoginViewController: UIViewController {
     
-    let loginView = LoginView()
+    private lazy var loginView = LoginView()
     
     override func viewDidLoad() {
         super.viewDidLoad()

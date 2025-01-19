@@ -9,7 +9,7 @@ import UIKit
 
 class LoginView: UIView {
     
-    lazy private var slogunLabel = UILabel().then { label in
+    private lazy var slogunLabel = UILabel().then { label in
         label.text = "어차피 못지킬 약속,\n강아지 모드가 도와드립니다."
         label.numberOfLines = 0
         label.font = UIFont(name: "NotoSansKR-Bold", size: 28)
@@ -17,32 +17,29 @@ class LoginView: UIView {
         label.backgroundColor = .clear
     }
     
-    lazy private var underline = UIView().then { view in
+    private lazy var underline = UIView().then { view in
         view.backgroundColor = .main
     }
-
     
-    lazy private var subLabel = UILabel().then { label in
+    private lazy var subLabel = UILabel().then { label in
         label.text = "올바른 음주 습관을 가질 수 있도록 도와드릴게요"
         label.numberOfLines = 0
         label.font = UIFont(name: "NotoSansKR-Medium", size: 17)
         label.textColor = UIColor(red: 0.541, green: 0.541, blue: 0.557, alpha: 1)
         var paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineHeightMultiple = 0.97
-        // Line height: 24 pt
-        // (identical to box height)
         label.textAlignment = .center
         label.attributedText = NSMutableAttributedString(string: "올바른 음주 습관을 가질 수 있도록 도와드릴게요", attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
 
     }
     
-    lazy private var characterImage = UIImageView().then { image in
+    private lazy var characterImage = UIImageView().then { image in
         image.image = UIImage(named: "HomeCharacterDefaultImage")
     }
     
-    lazy public var appleLoginButton = SocialLoginButton()
+    public lazy var appleLoginButton = SocialLoginButton()
     
-    lazy public var kakaoLoginButton = SocialLoginButton()
+    public lazy var kakaoLoginButton = SocialLoginButton()
     
     
     override init(frame: CGRect) {
@@ -93,7 +90,7 @@ class LoginView: UIView {
         }
         
         appleLoginButton.configure(name: "Apple로 로그인", logo: UIImage(named: "AppleLogin")!, backgroundColor: .white)
-        appleLoginButton.addFrame()
+        appleLoginButton.addBorderline()
         
         appleLoginButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)

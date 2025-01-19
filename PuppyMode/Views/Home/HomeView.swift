@@ -18,7 +18,7 @@ class HomeView: UIView {
     }
     
     //MARK: Top Buttons
-    lazy private var topButtonStack = UIView()
+    private lazy var topButtonStack = UIView()
     
     let topRectangleHeight = 53
     let topRectangleWidth = 53
@@ -26,22 +26,22 @@ class HomeView: UIView {
     let topButtonSpacing = 11
     let topButtonSuperViewSpacing = 22
     
-    lazy public var decorationButton = UIButton().then { button in
+    public lazy var decorationButton = UIButton().then { button in
         button.setImage(UIImage(named: "DecorationButtonImage"), for: .normal)
         button.layer.cornerRadius = topButtonsCornerRadius
     }
     
-    lazy public var rompingButton = UIButton().then { button in
+    public lazy var rompingButton = UIButton().then { button in
         button.setImage(UIImage(named: "RompingButtonImage"), for: .normal)
         button.layer.cornerRadius = topButtonsCornerRadius
     }
     
-    lazy public var collectionButton = UIButton().then { button in
+    public lazy var collectionButton = UIButton().then { button in
         button.setImage(UIImage(named: "CollectionButtonImage"), for: .normal)
         button.layer.cornerRadius = topButtonsCornerRadius
     }
     
-    lazy private var decorationLabel = UILabel().then { label in
+    private lazy var decorationLabel = UILabel().then { label in
         label.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)
         label.font = UIFont(name: "NotoSansKR-Bold", size: 14)
         var paragraphStyle = NSMutableParagraphStyle()
@@ -50,7 +50,7 @@ class HomeView: UIView {
         label.attributedText = NSMutableAttributedString(string: "꾸미기", attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
     }
     
-    lazy private var rompingLabel = UILabel().then { label in
+    private lazy var rompingLabel = UILabel().then { label in
         label.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)
         label.font = UIFont(name: "NotoSansKR-Bold", size: 14)
         var paragraphStyle = NSMutableParagraphStyle()
@@ -59,7 +59,7 @@ class HomeView: UIView {
         label.attributedText = NSMutableAttributedString(string: "놀아주기", attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
     }
     
-    lazy private var collectionLabel = UILabel().then { label in
+    private lazy var collectionLabel = UILabel().then { label in
         label.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)
         label.font = UIFont(name: "NotoSansKR-Bold", size: 14)
         var paragraphStyle = NSMutableParagraphStyle()
@@ -70,36 +70,36 @@ class HomeView: UIView {
     
     //MARK: Puppy Image & Name
     
-    lazy public var puppyImageButton = UIButton().then { button in
+    public lazy var puppyImageButton = UIButton().then { button in
         button.setImage(UIImage(named: "HomeCharacterDefaultImage"), for: .normal)
     }
     
-    lazy private var puppyNameLabel = UILabel().then { label in
+    private lazy var puppyNameLabel = UILabel().then { label in
         label.font = UIFont(name: "OTSBAggroM", size: 25)
         label.text = "브로콜리"
     }
     
     //MARK: Bottom Dog Info
-    lazy private var bottomStack = UIView().then { view in
+    private lazy var bottomStack = UIView().then { view in
         view.layer.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1).cgColor
         view.layer.cornerRadius = 10
         view.layer.borderWidth = 1
         view.layer.borderColor = UIColor(red: 0.93, green: 0.93, blue: 0.93, alpha: 1).cgColor
     }
     
-    lazy public var dogInfoLabel = UILabel().then { label in
+    public lazy var dogInfoLabel = UILabel().then { label in
         label.text = "Level 1 아기사자 포메라니안"
         label.font = UIFont(name: "OTSBAggroM", size: 14)
         label.textColor = UIColor(red: 0.624, green: 0.584, blue: 0.584, alpha: 1)
     }
     
-    lazy public var progressLabel = UILabel().then { label in
+    public lazy var progressLabel = UILabel().then { label in
         label.text = "55%"
         label.font = UIFont(name: "NotoSansKR-Bold", size: 14)
         label.textColor = UIColor(red: 0.624, green: 0.584, blue: 0.584, alpha: 1)
     }
     
-    lazy public var progressBar = UIProgressView().then{pro in
+    public lazy var progressBar = UIProgressView().then{pro in
         pro.setProgress(0.55, animated: false)
         pro.tintColor = .main
         pro.largeContentImage = UIImage(named: "ProgressBarBackground")
@@ -108,8 +108,8 @@ class HomeView: UIView {
     }
     
     //MARK: Drinking Capacity Button
-    lazy public var drinkingCapacityButton = HomeCustomButtonView()
-    lazy public var addDrinkingHistoryButton = HomeCustomButtonView()
+    public lazy var drinkingCapacityButton = HomeCustomButtonView()
+    public lazy var addDrinkingHistoryButton = HomeCustomButtonView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
