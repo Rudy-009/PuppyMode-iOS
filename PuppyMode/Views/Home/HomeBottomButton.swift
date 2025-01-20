@@ -7,7 +7,7 @@
 
 import UIKit
 
-class HomeCustomButtonView: UIButton {
+class HomeBottomButton: UIButton {
     
     private lazy var backgroundImage = UIImageView().then { image in
         image.image = UIImage(named: "BottomButtonImage")
@@ -38,9 +38,9 @@ class HomeCustomButtonView: UIButton {
         backgroundImage.addSubview(buttonSubtitleLabel)
         
         backgroundImage.snp.makeConstraints { make in
-            make.centerX.centerY.equalToSuperview()
-            make.width.equalTo(155)
+            make.edges.equalToSuperview()
             make.height.equalTo(125)
+            make.width.equalTo(150)
         }
         
         buttonTitleLabel.snp.makeConstraints { make in

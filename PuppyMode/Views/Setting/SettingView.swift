@@ -16,6 +16,11 @@ class SettingView: UIView {
         label.textAlignment = .center
     }
     
+    private lazy var stackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 7
+    }
+    
     //Notification
     private lazy var alarmSettingView = AlarmSettingView()
     
@@ -46,55 +51,31 @@ class SettingView: UIView {
     
     private func addComponents() {
         self.addSubview(titleLabel)
-        self.addSubview(alarmSettingView)
-        self.addSubview(termsOfServiceButton)
-        self.addSubview(PrivacyPolicyButton)
-        self.addSubview(appVersionView)
-        self.addSubview(revokeButton)
-        self.addSubview(logoutButton)
+        self.addSubview(stackView)
+        stackView.addArrangedSubview(alarmSettingView)
+        stackView.addArrangedSubview(termsOfServiceButton)
+        stackView.addArrangedSubview(PrivacyPolicyButton)
+        stackView.addArrangedSubview(appVersionView)
+        stackView.addArrangedSubview(revokeButton)
+        stackView.addArrangedSubview(logoutButton)
         
         titleLabel.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.top.equalTo(safeAreaLayoutGuide.snp.top).offset(30)
         }
         
-        alarmSettingView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.top.equalTo(titleLabel.snp.bottom).offset(30)
+        stackView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
+            $0.top.equalTo(titleLabel.snp.bottom).offset(30)
         }
         
         termsOfServiceButton.setTitle(for: "이용약관")
         
-        termsOfServiceButton.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.top.equalTo(alarmSettingView.snp.bottom).offset(7)
-        }
-        
         PrivacyPolicyButton.setTitle(for: "개인정보 처리 동의")
-        
-        PrivacyPolicyButton.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.top.equalTo(termsOfServiceButton.snp.bottom).offset(7)
-        }
-        
-        appVersionView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.top.equalTo(PrivacyPolicyButton.snp.bottom).offset(7)
-        }
         
         revokeButton.setTitle(for: "탈퇴하기")
         
-        revokeButton.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.top.equalTo(appVersionView.snp.bottom).offset(7)
-        }
-        
         logoutButton.setTitle(for: "로그아웃")
-        
-        logoutButton.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.top.equalTo(revokeButton.snp.bottom).offset(7)
-        }
         
     }
 }
