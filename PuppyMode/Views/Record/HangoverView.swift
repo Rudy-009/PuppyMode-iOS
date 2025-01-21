@@ -53,7 +53,7 @@ class HangoverView: UIView {
         $0.alignment = .center
     }
     
-    private let skipButton = UIButton().then {
+    public let skipButton = UIButton().then {
         $0.backgroundColor = .white
         
         $0.setTitle("건너뛰기", for: .normal)
@@ -70,7 +70,7 @@ class HangoverView: UIView {
         $0.layer.shadowOffset = CGSize(width: 0, height: 4)
     }
     
-    private let nextButton = UIButton().then {
+    public let nextButton = UIButton().then {
         $0.backgroundColor = .white
 
         $0.setTitle("다음", for: .normal)

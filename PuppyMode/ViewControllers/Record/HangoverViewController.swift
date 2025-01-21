@@ -25,12 +25,24 @@ class HangoverViewController: UIViewController {
     
     private func setAction() {
         hangoverView.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
+        hangoverView.skipButton.addTarget(self, action: #selector(skipButtonTapped), for: .touchUpInside)
+        hangoverView.nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
     }
     
     // MARK: - action
     @objc
     private func backButtonTapped() {
         self.navigationController?.popViewController(animated: true)
+    }
+    
+    @objc
+    private func skipButtonTapped() {
+        hangoverView.skipButton.backgroundColor = .main
+    }
+    
+    @objc
+    private func nextButtonTapped() {
+        hangoverView.nextButton.backgroundColor = .main
     }
 }
 
