@@ -46,6 +46,46 @@ class HangoverView: UIView {
     }
     
     // 버튼 스택뷰
+    private let buttonStackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.spacing = 10
+        $0.distribution = .fillEqually
+        $0.alignment = .center
+    }
+    
+    private let skipButton = UIButton().then {
+        $0.backgroundColor = .white
+        
+        $0.setTitle("건너뛰기", for: .normal)
+        $0.setTitleColor(UIColor(red: 0.35, green: 0.35, blue: 0.35, alpha: 1), for: .normal)
+        $0.titleLabel?.font = UIFont(name: "NotoSansKR-Medium", size: 20)
+
+        $0.layer.borderWidth = 1
+        $0.layer.borderColor = UIColor(red: 212/255, green: 212/255, blue: 212/255, alpha: 1).cgColor
+        $0.layer.cornerRadius = 10
+        
+        $0.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+        $0.layer.shadowOpacity = 1
+        $0.layer.shadowRadius = 2
+        $0.layer.shadowOffset = CGSize(width: 0, height: 4)
+    }
+    
+    private let nextButton = UIButton().then {
+        $0.backgroundColor = .white
+
+        $0.setTitle("다음", for: .normal)
+        $0.setTitleColor(UIColor(red: 0.35, green: 0.35, blue: 0.35, alpha: 1), for: .normal)
+        $0.titleLabel?.font = UIFont(name: "NotoSansKR-Medium", size: 20)
+
+        $0.layer.borderWidth = 1
+        $0.layer.borderColor = UIColor(red: 212/255, green: 212/255, blue: 212/255, alpha: 1).cgColor
+        $0.layer.cornerRadius = 10
+        
+        $0.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+        $0.layer.shadowOpacity = 1
+        $0.layer.shadowRadius = 2
+        $0.layer.shadowOffset = CGSize(width: 0, height: 4)
+    }
     
     // MARK: - init
     override init(frame: CGRect) {
@@ -60,13 +100,20 @@ class HangoverView: UIView {
     }
     
     // MARK: - function
+    private func setStackView() {
+        [ skipButton, nextButton ].forEach { buttonStackView.addArrangedSubview($0) }
+    }
+    
     private func setView() {
+        setStackView()
+        
         [
             backButton,
             titleLabel,
             questionLabel,
             descLabel,
-            hangoverCollectionView
+            hangoverCollectionView,
+            buttonStackView
         ].forEach {
             addSubview($0)
         }
@@ -97,6 +144,19 @@ class HangoverView: UIView {
             $0.top.equalTo(descLabel.snp.bottom).offset(30)
             $0.horizontalEdges.equalToSuperview().inset(35)
             $0.height.equalTo(230)
+        }
+        
+        buttonStackView.snp.makeConstraints {
+            $0.bottom.equalToSuperview().offset(-42)
+            $0.horizontalEdges.equalToSuperview().inset(16)
+        }
+        
+        skipButton.snp.makeConstraints {
+            $0.height.equalTo(60)
+        }
+        
+        nextButton.snp.makeConstraints {
+            $0.height.equalTo(60)
         }
     }
 }
