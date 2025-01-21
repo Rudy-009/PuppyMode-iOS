@@ -50,6 +50,12 @@ class RankingTableViewCell: UITableViewCell {
         rankLabel.text = String(index + 1)
         userNameLabel.text = rankCell.name
         characterInfoLabel.text = "\(rankCell.characterName), Level\(rankCell.characterLevel)"
+        
+        trophyImageView.removeFromSuperview() // 기존 트로피 이미지 제거
+        
+        if index < 3 {
+            addTrophyComponent(rank: Rank(rawValue: index + 1) ?? .first)
+        }
     }
     
     private func addComponents() {

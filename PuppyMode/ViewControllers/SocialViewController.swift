@@ -50,9 +50,6 @@ extension SocialViewController: UITableViewDelegate, UITableViewDataSource {
             return UITableViewCell()
         }
         cell.configure(index: indexPath.row, rankCell: data)
-        if indexPath.row < 3 {
-            cell.addTrophyComponent(rank: Rank(rawValue: indexPath.row + 1) ?? Rank.first)
-        }
         return cell
     }
     
