@@ -62,6 +62,7 @@ extension HomeViewController {
         print("Add Drinking History Button Pressed")
         let hangoverVC = HangoverViewController()
         self.navigationController?.isNavigationBarHidden = true
+        hangoverVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(hangoverVC, animated: true)
     }
     
