@@ -37,6 +37,13 @@ class HangoverView: UIView {
     }
     
     // 숙취 컬렉션뷰
+    public let hangoverCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
+        $0.estimatedItemSize = .init(width: 90, height: 110)
+        $0.minimumInteritemSpacing = 10
+    }).then {
+        $0.backgroundColor = .clear
+        $0.register(HangoverCollectionViewCell.self, forCellWithReuseIdentifier: HangoverCollectionViewCell.identifier)
+    }
     
     // 버튼 스택뷰
     
@@ -58,7 +65,8 @@ class HangoverView: UIView {
             backButton,
             titleLabel,
             questionLabel,
-            descLabel
+            descLabel,
+            hangoverCollectionView
         ].forEach {
             addSubview($0)
         }
@@ -83,6 +91,12 @@ class HangoverView: UIView {
         descLabel.snp.makeConstraints {
             $0.top.equalTo(questionLabel.snp.bottom).offset(9)
             $0.left.equalTo(questionLabel.snp.left).offset(32)
+        }
+        
+        hangoverCollectionView.snp.makeConstraints {
+            $0.top.equalTo(descLabel.snp.bottom).offset(30)
+            $0.horizontalEdges.equalToSuperview().inset(35)
+            $0.height.equalTo(230)
         }
     }
 }

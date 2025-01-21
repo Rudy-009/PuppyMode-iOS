@@ -14,10 +14,15 @@ class HangoverViewController: UIViewController {
         super.viewDidLoad()
         view = hangoverView
         
+        setDelegate()
         setAction()
     }
     
     // MARK: - function
+    private func setDelegate() {
+        hangoverView.hangoverCollectionView.dataSource = self
+    }
+    
     private func setAction() {
         hangoverView.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
     }
@@ -26,5 +31,22 @@ class HangoverViewController: UIViewController {
     @objc
     private func backButtonTapped() {
         self.navigationController?.popViewController(animated: true)
+    }
+}
+
+// MARK: - extension
+extension HangoverViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 6
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HangoverCollectionViewCell.identifier, for: indexPath) as? HangoverCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        
+        let list = HangoverModel.dummy()
+        cell.hangoverLabel.text = list[indexPath.row].label
+        return cell
     }
 }
