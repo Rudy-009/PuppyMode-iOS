@@ -20,12 +20,20 @@ class DrinkingViewController: UIViewController {
     // MARK: - function
     private func setAction() {
         drinkingView.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
+        drinkingView.plusButton.addTarget(self, action: #selector(plusButtonTapped), for: .touchUpInside)
     }
     
     // MARK: - action
     @objc
     private func backButtonTapped() {
         self.navigationController?.popViewController(animated: true)
+    }
+    
+    @objc
+    private func plusButtonTapped() {
+        let alcoholVC = AlcoholViewController()
+        self.navigationController?.isNavigationBarHidden = true
+        self.navigationController?.pushViewController(alcoholVC, animated: true)
     }
 
 }
