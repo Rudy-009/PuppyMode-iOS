@@ -10,6 +10,7 @@ import UIKit
 class SocialViewController: UIViewController {
     
     private lazy var socialView = SocialView()
+    private var currentData: [RankCell] = DummyRankModel.allData
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,10 +28,15 @@ class SocialViewController: UIViewController {
     @objc
     private func segmentedControlValueChanged(segment: UISegmentedControl) {
         if segment.selectedSegmentIndex == 0 {
-            
+            print("segment index is ",segment.selectedSegmentIndex)
+            currentData = DummyRankModel.allData
+            socialView.addMyRankView()
         } else {
-            
+            print("segment index is ",segment.selectedSegmentIndex)
+            currentData = DummyRankModel.friendData
+            socialView.removeMyRankView()
         }
+        socialView.rankingTableView.reloadData()
     }
 
 }
@@ -38,11 +44,11 @@ class SocialViewController: UIViewController {
 extension SocialViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return DummyRankModel.allData.count
+        return currentData.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let data = DummyRankModel.allData[indexPath.row]
+        let data = currentData[indexPath.row]
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: RankingTableViewCell.identifier,
             for: indexPath) as? RankingTableViewCell

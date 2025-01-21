@@ -27,14 +27,17 @@ class SocialView: UIView {
         ], for: .normal)
     }
     
+    public lazy var myRankView = RankingTableViewCell()
+    
     public lazy var rankingTableView = UITableView().then {
         $0.rowHeight = UITableView.automaticDimension
         // $0.estimatedRowHeight = 60
         $0.separatorStyle = .none
         $0.sectionHeaderTopPadding = 10
-        $0.backgroundColor = .kakaoLogin // UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
+        $0.backgroundColor = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
         $0.rowHeight = 65
         $0.separatorInset = UIEdgeInsets(top: 5, left: 0, bottom: 5, right: 0)
+        $0.allowsSelection = false
         $0.register( RankingTableViewCell.self, forCellReuseIdentifier: RankingTableViewCell.identifier)
     }
     
@@ -52,6 +55,7 @@ class SocialView: UIView {
         self.addSubview(rankingIcon)
         self.addSubview(titleLabel)
         self.addSubview(segmentView)
+        self.addSubview(myRankView)
         self.addSubview(rankingTableView)
         
         rankingIcon.snp.makeConstraints { make in
@@ -70,13 +74,41 @@ class SocialView: UIView {
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(42)
         }
+                
+        myRankView.configure(index: 18, rankCell: RankCell(name: "Me", characterName: "요크셔테리어", characterLevel: 3))
+
+        
+        myRankView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.top.equalTo(segmentView.snp.bottom).offset(10)
+            make.height.equalTo(65)
+        }
         
         rankingTableView.snp.makeConstraints { make in
-            make.top.equalTo(segmentView.snp.bottom).offset(10)
+            make.top.equalTo(myRankView.snp.bottom)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
+    }
+    
+    public func addMyRankView() {
         
+        myRankView.isHidden = false
+        
+        rankingTableView.snp.remakeConstraints { make in
+            make.top.equalTo(myRankView.snp.bottom)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
+        
+    }
+    
+    public func removeMyRankView() {
+        myRankView.isHidden = true
+        
+        rankingTableView.snp.remakeConstraints { make in
+            make.top.equalTo(segmentView.snp.bottom).offset(10)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
     }
 }
 

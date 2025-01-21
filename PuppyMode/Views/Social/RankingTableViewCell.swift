@@ -26,7 +26,8 @@ class RankingTableViewCell: UITableViewCell {
         $0.clipsToBounds = true
     }
     
-    private lazy var infoFrame = UIView()    
+    private lazy var infoFrame = UIView()
+    
     private lazy var userNameLabel = UILabel().then {
         $0.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)
         $0.font = UIFont(name: "NotoSansKR-Medium", size: 16)
@@ -52,9 +53,14 @@ class RankingTableViewCell: UITableViewCell {
         characterInfoLabel.text = "\(rankCell.characterName), Level\(rankCell.characterLevel)"
         
         trophyImageView.removeFromSuperview() // 기존 트로피 이미지 제거
+        self.backgroundColor = .clear
         
         if index < 3 {
             addTrophyComponent(rank: Rank(rawValue: index + 1) ?? .first)
+        }
+        
+        if rankCell.name == "Me" {
+            self.backgroundColor = UIColor(red: 0.451, green: 0.784, blue: 0.694, alpha: 0.5)
         }
     }
     
@@ -113,6 +119,8 @@ class RankingTableViewCell: UITableViewCell {
         }
         
     }
+    
+    
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
