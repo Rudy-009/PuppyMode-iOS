@@ -51,6 +51,7 @@ class RankingTableViewCell: UITableViewCell {
         rankLabel.text = String(index + 1)
         userNameLabel.text = rankCell.name
         characterInfoLabel.text = "\(rankCell.characterName), Level\(rankCell.characterLevel)"
+<<<<<<< HEAD
         
         trophyImageView.removeFromSuperview() // 기존 트로피 이미지 제거
         self.backgroundColor = .clear
@@ -62,6 +63,8 @@ class RankingTableViewCell: UITableViewCell {
         if rankCell.name == "Me" {
             self.backgroundColor = UIColor(red: 0.451, green: 0.784, blue: 0.694, alpha: 0.5)
         }
+=======
+>>>>>>> parent of 315ff8c (fix: Show Trophies only in first, second, third place Users)
     }
     
     private func addComponents() {
