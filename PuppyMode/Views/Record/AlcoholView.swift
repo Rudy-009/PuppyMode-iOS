@@ -23,6 +23,21 @@ class AlcoholView: UIView {
         $0.font = UIFont(name: "NotoSansKR-Medium", size: 20)
     }
     
+    // 주종 옵션 컬렉션뷰
+    public let alcoholCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
+        $0.scrollDirection = .horizontal
+        $0.estimatedItemSize = .init(width: 58, height: 58)
+        $0.minimumLineSpacing = 25
+    }).then {
+        $0.backgroundColor = .clear
+        $0.isScrollEnabled = true
+        $0.showsHorizontalScrollIndicator = false
+        $0.register(AlcoholKindCollectionViewCell.self, forCellWithReuseIdentifier: AlcoholKindCollectionViewCell.identifier)
+        
+        // padding 값 설정
+        $0.contentInset = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
+    }
+    
     // 다음 버튼
     public let nextButton = UIButton().then {
         $0.backgroundColor = .main
@@ -58,6 +73,7 @@ class AlcoholView: UIView {
         [
             backButton,
             titleLabel,
+            alcoholCollectionView,
             nextButton
         ].forEach {
             addSubview($0)
@@ -73,6 +89,12 @@ class AlcoholView: UIView {
         titleLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.centerY.equalTo(backButton)
+        }
+        
+        alcoholCollectionView.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(30)
+            $0.horizontalEdges.equalToSuperview()
+            $0.height.equalTo(58)
         }
         
         nextButton.snp.makeConstraints {
