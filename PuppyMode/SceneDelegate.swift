@@ -12,7 +12,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.rootViewController = BaseViewController()
         window?.makeKeyAndVisible()
         
-//
 //        let appleIDProvider = ASAuthorizationAppleIDProvider()
 //        
 //        guard let userID = KeychainService.get(key: "UserID") else { // New User
