@@ -28,11 +28,9 @@ class SocialViewController: UIViewController {
     @objc
     private func segmentedControlValueChanged(segment: UISegmentedControl) {
         if segment.selectedSegmentIndex == 0 {
-            print("segment index is ",segment.selectedSegmentIndex)
             currentData = DummyRankModel.allData
             socialView.addMyRankView()
         } else {
-            print("segment index is ",segment.selectedSegmentIndex)
             currentData = DummyRankModel.friendData
             socialView.removeMyRankView()
         }

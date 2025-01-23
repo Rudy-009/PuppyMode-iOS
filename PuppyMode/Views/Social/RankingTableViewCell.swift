@@ -13,6 +13,10 @@ class RankingTableViewCell: UITableViewCell {
     
     static let identifier = "RankingTableViewCell"
     
+    private lazy var spacing = UIView().then {
+        $0.backgroundColor = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
+    }
+    
     private lazy var rankLabel = UILabel().then {
         $0.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)
         $0.font = UIFont(name: "NotoSansKR-Regular", size: 16)
@@ -42,34 +46,40 @@ class RankingTableViewCell: UITableViewCell {
         $0.contentMode = .scaleAspectFit
     }
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        super.prepareForReuse()
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        addComponents()
     }
     
     public func configure(index: Int, rankCell: RankCell) {
         rankLabel.text = String(index + 1)
         userNameLabel.text = rankCell.name
         characterInfoLabel.text = "\(rankCell.characterName), Level\(rankCell.characterLevel)"
+        self.backgroundColor = .white
         
         trophyImageView.removeFromSuperview() // 기존 트로피 이미지 제거
-        self.backgroundColor = .clear
         
         if index < 3 {
             addTrophyComponent(rank: Rank(rawValue: index + 1) ?? .first)
         }
         
         if rankCell.name == "Me" {
-            self.backgroundColor = UIColor(red: 0.451, green: 0.784, blue: 0.694, alpha: 0.5)
+            self.backgroundColor = UIColor(red: 0.451, green: 0.784, blue: 0.694, alpha: 1)
         }
     }
     
     private func addComponents() {
+        self.addSubview(spacing)
         self.addSubview(rankLabel)
         self.addSubview(profileImage)
         self.addSubview(infoFrame)
         infoFrame.addSubview(userNameLabel)
         infoFrame.addSubview(characterInfoLabel)
+        
+        spacing.snp.makeConstraints { make in
+            make.height.equalTo(5)
+            make.leading.trailing.top.equalToSuperview()
+        }
         
         rankLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview()
@@ -91,13 +101,14 @@ class RankingTableViewCell: UITableViewCell {
         }
         
         userNameLabel.snp.makeConstraints { make in
-            make.leading.top.equalToSuperview()
+            make.leading.equalToSuperview()
+            make.top.equalToSuperview().offset(6)
         }
         
         characterInfoLabel.snp.makeConstraints { make in
-            make.leading.bottom.equalToSuperview()
+            make.leading.equalToSuperview()
+            make.top.equalTo(userNameLabel.snp.bottom).offset(1)
         }
-        
     }
     
     public func addTrophyComponent(rank: Rank) {
@@ -117,14 +128,11 @@ class RankingTableViewCell: UITableViewCell {
             make.leading.equalTo(userNameLabel.snp.trailing).offset(6)
             make.height.width.equalTo(19)
         }
-        
     }
     
-    
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        addComponents()
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        super.prepareForReuse()
     }
     
     required init?(coder: NSCoder) {
