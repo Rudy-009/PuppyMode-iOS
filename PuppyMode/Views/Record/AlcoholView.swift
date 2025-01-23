@@ -38,6 +38,14 @@ class AlcoholView: UIView {
         $0.contentInset = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 30)
     }
     
+    // 주종 세부 테이블뷰
+    public let alcoholTableView = UITableView().then {
+        $0.register(AlcoholDetailTableViewCell.self, forCellReuseIdentifier: AlcoholDetailTableViewCell.identifier)
+        $0.backgroundColor = .clear
+        $0.showsVerticalScrollIndicator = false
+        $0.separatorStyle = .none
+    }
+    
     // 다음 버튼
     public let nextButton = UIButton().then {
         $0.backgroundColor = .main
@@ -74,6 +82,7 @@ class AlcoholView: UIView {
             backButton,
             titleLabel,
             alcoholCollectionView,
+            alcoholTableView,
             nextButton
         ].forEach {
             addSubview($0)
@@ -95,6 +104,12 @@ class AlcoholView: UIView {
             $0.top.equalTo(titleLabel.snp.bottom).offset(30)
             $0.horizontalEdges.equalToSuperview()
             $0.height.equalTo(58)
+        }
+        
+        alcoholTableView.snp.makeConstraints {
+            $0.top.equalTo(alcoholCollectionView.snp.bottom).offset(30)
+            $0.horizontalEdges.equalToSuperview().inset(16)
+            $0.bottom.equalTo(nextButton.snp.top).offset(-30)
         }
         
         nextButton.snp.makeConstraints {

@@ -21,6 +21,8 @@ class AlcoholViewController: UIViewController {
     // MARK: - function
     private func setDelegate() {
         alcoholView.alcoholCollectionView.dataSource = self
+        alcoholView.alcoholTableView.dataSource = self
+        alcoholView.alcoholTableView.delegate = self
     }
     
     private func setAction() {
@@ -47,6 +49,23 @@ extension AlcoholViewController: UICollectionViewDataSource {
         
         let list = ["소주", "맥주", "와인", "위스키", "기타"]
         cell.titleLabel.text = list[indexPath.row]
+        return cell
+    }
+}
+
+extension AlcoholViewController: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        AlcoholDetailModel.dummy().count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: AlcoholDetailTableViewCell.identifier, for: indexPath) as? AlcoholDetailTableViewCell else {
+            return UITableViewCell()
+        }
+        
+        let item = AlcoholDetailModel.dummy()[indexPath.row]
+        cell.titleLabel.text = "\(item.name) \(item.volume)ml"
+        cell.degreeLabel.text = "\(item.degree)도"
         return cell
     }
 }
