@@ -46,6 +46,20 @@ class AlcoholView: UIView {
         $0.separatorStyle = .none
     }
     
+    // 직접 추가 버튼
+    private let plusButton = UIButton().then {
+        $0.setImage(.iconPlus, for: .normal)
+        $0.imageView?.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.width.height.equalTo(20)
+        }
+        
+        $0.setTitle("직접 추가", for: .normal)
+        $0.setTitleColor(UIColor(red: 0.61, green: 0.61, blue: 0.61, alpha: 1), for: .normal)
+        $0.titleLabel?.font = UIFont(name: "NotoSansKR-Medium", size: 15)
+    }
+
+    
     // 다음 버튼
     public let nextButton = UIButton().then {
         $0.backgroundColor = .main
@@ -83,6 +97,7 @@ class AlcoholView: UIView {
             titleLabel,
             alcoholCollectionView,
             alcoholTableView,
+            plusButton,
             nextButton
         ].forEach {
             addSubview($0)
@@ -109,7 +124,12 @@ class AlcoholView: UIView {
         alcoholTableView.snp.makeConstraints {
             $0.top.equalTo(alcoholCollectionView.snp.bottom).offset(30)
             $0.horizontalEdges.equalToSuperview().inset(16)
-            $0.bottom.equalTo(nextButton.snp.top).offset(-30)
+            $0.bottom.equalTo(plusButton.snp.top).offset(-20)
+        }
+        
+        plusButton.snp.makeConstraints {
+            $0.bottom.equalTo(nextButton.snp.top).offset(-20)
+            $0.centerX.equalToSuperview()
         }
         
         nextButton.snp.makeConstraints {
