@@ -33,7 +33,9 @@ extension HomeViewController {
     
     @objc
     private func decorationButtonPressed() {
-        print("Decoration Button Pressed")
+        let decoVC = DecoViewController()
+        decoVC.hidesBottomBarWhenPushed = true  // 탭바 숨기기 설정
+        navigationController?.pushViewController(decoVC, animated: true)
     }
     
     @objc
@@ -43,7 +45,9 @@ extension HomeViewController {
     
     @objc
     private func collectionPressed() {
-        print("Collection Button Pressed")
+        let collectionVC = CollectionViewController()
+        collectionVC.hidesBottomBarWhenPushed = true  
+        navigationController?.pushViewController(collectionVC, animated: true)
     }
     
     @objc
