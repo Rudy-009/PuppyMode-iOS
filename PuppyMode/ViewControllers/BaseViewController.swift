@@ -17,7 +17,7 @@ class CustomTabBar: UITabBar {
 }
 
 class BaseViewController: UITabBarController {
-    private let homeVC = HomeViewController()
+    private let homeVC = UINavigationController(rootViewController: HomeViewController())
     private let socialVC = SocialViewController()
     private let calendarVC = CalendarViewController()
     private let settingVC = SettingViewController()
