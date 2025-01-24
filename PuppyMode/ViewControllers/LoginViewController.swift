@@ -71,7 +71,7 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
             
         case let passwordCredential as ASPasswordCredential:
             // iCloud Keychain credential. (AppleID & Password)
-            let username = passwordCredential.user
+            let _ = passwordCredential.user
             // let password = passwordCredential.password
             
             // print("apple username: \(username)")
