@@ -101,7 +101,7 @@ class HomeView: UIView {
     
     lazy public var progressBar = UIProgressView().then{pro in
         pro.setProgress(0.55, animated: false)
-        pro.tintColor = .progressBar
+        pro.tintColor = .main
         pro.largeContentImage = UIImage(named: "ProgressBarBackground")
         pro.clipsToBounds = true
         pro.layer.cornerRadius = 10.5
