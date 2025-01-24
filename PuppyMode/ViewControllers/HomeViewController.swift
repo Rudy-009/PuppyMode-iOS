@@ -72,20 +72,19 @@ extension HomeViewController {
     private func addDrinkingHistoryButtonPressed() {
         print("Add Drinking History Button Pressed")
         
+        
+        /* 음주 중 화면으로 이동 분기
         let drinkingVC = DrinkingViewController()
         
-        // 네비게이션 컨트롤러를 통해 화면 전환
         if let navigationController = self.navigationController {
             navigationController.pushViewController(drinkingVC, animated: true)
         } else {
-            // 네비게이션 컨트롤러가 없으면 새로 생성하여 표시
             let navController = UINavigationController(rootViewController: drinkingVC)
             navController.modalPresentationStyle = .fullScreen
             self.present(navController, animated: true, completion: nil)
         }
+        */
     }
-    
-    
 }
 
 import SwiftUI

@@ -76,23 +76,10 @@ class DrinkingInfoViewController: UIViewController, UICollectionViewDelegate {
         }
     }
 
-    
     // 뒤로가기 버튼 동작
     @objc private func didTapBackButton() {
-        // Access the tab bar controller and switch to the "Home" tab
-        if let tabBarController = self.tabBarController as? BaseViewController {
-            UIView.transition(with: tabBarController.view, duration: 0.3, options: .transitionCrossDissolve, animations: {
-                tabBarController.selectedIndex = 0 // Set the selected index to 0 (homeVC)
-            }, completion: nil)
-        } else if let window = UIApplication.shared.windows.first {
-            // If not already in a tab bar controller, reset the root view to BaseViewController with animation
-            let baseVC = BaseViewController()
-            UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: {
-                window.rootViewController = baseVC
-            }, completion: nil)
-        }
+        dismiss(animated: true, completion: nil)
     }
-
     
     // 버튼 액션 설정
     private func setupActions() {
