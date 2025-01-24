@@ -16,11 +16,13 @@
 		6397957C2D43260D00947ACA /* KakaoSDKAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 6397957B2D43260C00947ACA /* KakaoSDKAuth */; };
 		6397957E2D43260D00947ACA /* KakaoSDKCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 6397957D2D43260D00947ACA /* KakaoSDKCommon */; };
 		639795802D43260D00947ACA /* KakaoSDKUser in Frameworks */ = {isa = PBXBuildFile; productRef = 6397957F2D43260D00947ACA /* KakaoSDKUser */; };
+		639795822D43E7AA00947ACA /* API_Keys.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 639795812D43E7AA00947ACA /* API_Keys.xcconfig */; };
 		63BFBBC42D373EA0000AA549 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 63BFBBC32D373EA0000AA549 /* Alamofire */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		23A04E1C2D2C0972008473B1 /* PuppyMode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PuppyMode.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		639795812D43E7AA00947ACA /* API_Keys.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = API_Keys.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -68,6 +70,7 @@
 		23A04E132D2C0972008473B1 = {
 			isa = PBXGroup;
 			children = (
+				639795812D43E7AA00947ACA /* API_Keys.xcconfig */,
 				23A04E1E2D2C0972008473B1 /* PuppyMode */,
 				23A04E1D2D2C0972008473B1 /* Products */,
 			);
@@ -162,6 +165,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				639795822D43E7AA00947ACA /* API_Keys.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -180,9 +184,11 @@
 /* Begin XCBuildConfiguration section */
 		23A04E302D2C0987008473B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 639795812D43E7AA00947ACA /* API_Keys.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = PuppyMode/PuppyMode.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2QJX795Q3R;
@@ -207,9 +213,11 @@
 		};
 		23A04E312D2C0987008473B1 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 639795812D43E7AA00947ACA /* API_Keys.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = PuppyMode/PuppyMode.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2QJX795Q3R;
