@@ -46,6 +46,8 @@ class AlcoholDetailTableViewCell: UITableViewCell {
         self.layer.borderWidth = 1
         self.layer.borderColor = UIColor(red: 0.953, green: 0.957, blue: 0.965, alpha: 1).cgColor
         
+        self.selectionStyle = .none
+        
         setView()
     }
     
