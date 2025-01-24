@@ -28,12 +28,27 @@ class AlcoholViewController: UIViewController {
     
     private func setAction() {
         alcoholView.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
+        alcoholView.nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
     }
 
     // MARK: - action
     @objc
     private func backButtonTapped() {
         self.navigationController?.popViewController(animated: true)
+    }
+    
+    @objc
+    private func nextButtonTapped() {
+        if let indexPath = selectedIndexPath {
+            let selectedItem = AlcoholDetailModel.dummy()[indexPath.row]
+            print("선택된 셀 정보: \(selectedItem.name) \(selectedItem.volume)ml, \(selectedItem.degree)도")
+            
+            let intakeVC = IntakeViewController()
+            self.navigationController?.isNavigationBarHidden = true
+            self.navigationController?.pushViewController(intakeVC, animated: true)
+        } else {
+            print("선택된 셀이 없습니다.")
+        }
     }
 }
 
