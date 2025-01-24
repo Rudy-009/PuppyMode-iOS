@@ -38,7 +38,7 @@ class HangoverViewController: UIViewController {
     @objc
     private func skipButtonTapped() {
         hangoverView.skipButton.backgroundColor = .main
-        let drinkingVC = DrinkingViewController()
+        let drinkingVC = DrinkingRecordViewController()
         self.navigationController?.isNavigationBarHidden = true
         self.navigationController?.pushViewController(drinkingVC, animated: true)
     }
@@ -46,7 +46,7 @@ class HangoverViewController: UIViewController {
     @objc
     private func nextButtonTapped() {
         hangoverView.nextButton.backgroundColor = .main
-        let drinkingVC = DrinkingViewController()
+        let drinkingVC = DrinkingRecordViewController()
         self.navigationController?.isNavigationBarHidden = true
         self.navigationController?.pushViewController(drinkingVC, animated: true)
     }

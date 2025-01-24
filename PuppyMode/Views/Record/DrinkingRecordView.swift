@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DrinkingView: UIView {
+class DrinkingRecordView: UIView {
     // MARK: - view
     // 뒤로가기
     public let backButton = UIButton().then {

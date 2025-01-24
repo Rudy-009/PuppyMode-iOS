@@ -7,8 +7,8 @@
 
 import UIKit
 
-class DrinkingViewController: UIViewController {
-    private let drinkingView = DrinkingView()
+class DrinkingRecordViewController: UIViewController {
+    private let drinkingView = DrinkingRecordView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
