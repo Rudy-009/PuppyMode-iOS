@@ -10,7 +10,7 @@ import UIKit
 class HomeViewController: UIViewController {
     
     let homeView = HomeView()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor(red: 251/255, green: 251/255, blue: 251/255, alpha: 1)
@@ -51,15 +51,40 @@ extension HomeViewController {
         print("Puppy Image Button Pressed")
     }
     
-    @objc
-    private func drinkingCapacityButtonPressed() {
+    // 주량 확인 페이지 이동 함수
+    @objc private func drinkingCapacityButtonPressed() {
         print("Drinking Capacity Button Pressed")
+        
+        let drinkingInfoVC = DrinkingInfoViewController()
+        
+        // 네비게이션 컨트롤러를 통해 화면 전환
+        if let navigationController = self.navigationController {
+            navigationController.pushViewController(drinkingInfoVC, animated: true)
+        } else {
+            // 네비게이션 컨트롤러가 없으면 새로 생성하여 표시
+            let navController = UINavigationController(rootViewController: drinkingInfoVC)
+            navController.modalPresentationStyle = .fullScreen
+            self.present(navController, animated: true, completion: nil)
+        }
     }
     
     @objc
     private func addDrinkingHistoryButtonPressed() {
         print("Add Drinking History Button Pressed")
+        
+        let drinkingVC = DrinkingViewController()
+        
+        // 네비게이션 컨트롤러를 통해 화면 전환
+        if let navigationController = self.navigationController {
+            navigationController.pushViewController(drinkingVC, animated: true)
+        } else {
+            // 네비게이션 컨트롤러가 없으면 새로 생성하여 표시
+            let navController = UINavigationController(rootViewController: drinkingVC)
+            navController.modalPresentationStyle = .fullScreen
+            self.present(navController, animated: true, completion: nil)
+        }
     }
+    
     
 }
 
