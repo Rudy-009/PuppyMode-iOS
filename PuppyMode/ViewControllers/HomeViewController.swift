@@ -15,6 +15,7 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor(red: 251/255, green: 251/255, blue: 251/255, alpha: 1)
         self.view = homeView
+        self.navigationController?.isNavigationBarHidden = true
         self.defineButtonActions()
     }
 
@@ -75,8 +76,12 @@ extension HomeViewController {
     @objc
     private func addDrinkingHistoryButtonPressed() {
         print("Add Drinking History Button Pressed")
-        
-        
+
+        let hangoverVC = HangoverViewController()
+        self.navigationController?.isNavigationBarHidden = true
+        hangoverVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(hangoverVC, animated: true)
+
         /* 음주 중 화면으로 이동 분기
         let drinkingVC = DrinkingViewController()
         
