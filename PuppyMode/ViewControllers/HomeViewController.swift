@@ -61,6 +61,7 @@ extension HomeViewController {
         print("Drinking Capacity Button Pressed")
         
         let drinkingInfoVC = DrinkingInfoViewController()
+        drinkingInfoVC.hidesBottomBarWhenPushed = true  // 탭 바 숨기기 설정
         
         // 네비게이션 컨트롤러를 통해 화면 전환
         if let navigationController = self.navigationController {

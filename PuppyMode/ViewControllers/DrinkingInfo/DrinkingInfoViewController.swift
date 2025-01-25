@@ -42,7 +42,7 @@ class DrinkingInfoViewController: UIViewController, UICollectionViewDelegate {
         
         // Add constraints for the navigation bar using SnapKit
         navigationBar.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(-30)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top) // safeAreaLayoutGuide 기준으로 설정
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(56) // Adjust height as needed
         }
@@ -57,7 +57,7 @@ class DrinkingInfoViewController: UIViewController, UICollectionViewDelegate {
         
         // Add constraints for the title label using SnapKit
         titleLabel.snp.makeConstraints { make in
-            make.center.equalTo(navigationBar)
+            make.center.equalTo(navigationBar) // 네비게이션 바의 중앙에 위치
         }
         
         // Create a close button (back button) for the left side of the navigation bar
@@ -69,8 +69,8 @@ class DrinkingInfoViewController: UIViewController, UICollectionViewDelegate {
         
         // Add constraints for the close button using SnapKit
         closeButton.snp.makeConstraints { make in
-            make.leading.equalTo(navigationBar).offset(37)
-            make.centerY.equalTo(navigationBar)
+            make.leading.equalTo(navigationBar.snp.leading).offset(16) // safeAreaLayoutGuide와 동일한 위치로 설정
+            make.centerY.equalTo(navigationBar) // 네비게이션 바의 수직 중앙에 위치
             make.width.equalTo(13)
             make.height.equalTo(20)
         }
@@ -78,7 +78,13 @@ class DrinkingInfoViewController: UIViewController, UICollectionViewDelegate {
 
     // 뒤로가기 버튼 동작
     @objc private func didTapBackButton() {
-        dismiss(animated: true, completion: nil)
+        if let navigationController = self.navigationController {
+            // 네비게이션 스택에서 이전 화면으로 이동
+            navigationController.popViewController(animated: true)
+        } else {
+            // 네비게이션 컨트롤러가 없으면 모달 닫기
+            dismiss(animated: true, completion: nil)
+        }
     }
     
     // 버튼 액션 설정
