@@ -9,6 +9,11 @@ import UIKit
 
 class SocialView: UIView {
     
+    private lazy var rankingIcon = UIImageView().then {
+        $0.image = .rankingIcon
+        $0.contentMode = .scaleAspectFit
+    }
+    
     private lazy var titleLabel = UILabel().then { label in
         label.text = "랭킹"
         label.font = UIFont(name: "NotoSansKR-Medium", size: 20)
@@ -22,19 +27,20 @@ class SocialView: UIView {
         ], for: .normal)
     }
     
-    public lazy var label01 = UILabel().then { label in
-        label.text = "전체 랭킹"
-        label.font = UIFont(name: "NotoSansKR-Medium", size: 40)
-    }
+    public lazy var myRankView = RankingTableViewCell()
     
-    public lazy var label02 = UILabel().then { label in
-        label.text = "친구 랭킹"
-        label.font = UIFont(name: "NotoSansKR-Medium", size: 40)
+    public lazy var rankingTableView = UITableView().then {
+        $0.rowHeight = UITableView.automaticDimension
+        $0.separatorStyle = .none
+        $0.backgroundColor = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
+        $0.rowHeight = 65
+        $0.allowsSelection = false
+        $0.register( RankingTableViewCell.self, forCellReuseIdentifier: RankingTableViewCell.identifier)
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .white
+        self.backgroundColor = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
         addComponents()
     }
     
@@ -43,10 +49,17 @@ class SocialView: UIView {
     }
     
     private func addComponents() {
+        self.addSubview(rankingIcon)
         self.addSubview(titleLabel)
         self.addSubview(segmentView)
-        self.addSubview(label01)
-        self.addSubview(label02)
+        self.addSubview(myRankView)
+        self.addSubview(rankingTableView)
+        
+        rankingIcon.snp.makeConstraints { make in
+            make.centerY.equalTo(titleLabel.snp.centerY)
+            make.trailing.equalTo(titleLabel.snp.leading).offset(-8)
+            make.width.height.equalTo(22)
+        }
         
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
@@ -58,20 +71,44 @@ class SocialView: UIView {
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(42)
         }
+                
+        myRankView.configure(index: 18, rankCell: RankCell(name: "Me", characterName: "요크셔테리어", characterLevel: 3))
+
         
-        label01.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+        myRankView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.top.equalTo(segmentView.snp.bottom).offset(10)
+            make.height.equalTo(65)
         }
         
-        label02.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+        rankingTableView.snp.makeConstraints { make in
+            make.top.equalTo(myRankView.snp.bottom)
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
         }
+    }
+    
+    public func addMyRankView() {
         
-        label02.isHidden = true
+        myRankView.isHidden = false
+        
+        rankingTableView.snp.remakeConstraints { make in
+            make.top.equalTo(myRankView.snp.bottom)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
+    }
+    
+    public func removeMyRankView() {
+        myRankView.isHidden = true
+        
+        rankingTableView.snp.remakeConstraints { make in
+            make.top.equalTo(segmentView.snp.bottom).offset(10)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
     }
 }
 
-#Preview{
+#Preview {
     SocialViewController()
 }
 
