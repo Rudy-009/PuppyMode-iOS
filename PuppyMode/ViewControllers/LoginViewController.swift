@@ -8,10 +8,13 @@
 import UIKit
 import AuthenticationServices
 import Alamofire
+import KakaoSDKAuth
+import KakaoSDKUser
+import KakaoSDKCommon
 
 class LoginViewController: UIViewController {
     
-    let loginView = LoginView()
+    private lazy var loginView = LoginView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,6 +22,12 @@ class LoginViewController: UIViewController {
         connectButtonActions()
     }
     
+    // 로그인 성공 시, BaseViewController로 SceneDelegate의 rootView를 변경
+    func changeRootToBaseViewController() {
+        let baseViewController = BaseViewController()
+        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+        sceneDelegate?.changeRootViewController(baseViewController, animated: false)
+    }
 }
 //MARK: Apple Social Login
 
@@ -53,7 +62,7 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
             // printAppleIDCredential(appleIDCredential: appleIDCredential) // appleIDCredential의 내용을 출력해보기
             
             // UserID를 KeyChain에 저장
-            if KeychainService.add(key: "UserID", value: appleIDCredential.user) {}
+            if KeychainService.add(key: K.String.appleUserID, value: appleIDCredential.user) {}
             
             // User의 정보를 서버에 전송
             
@@ -61,12 +70,12 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
             changeRootViewController()
             
         case let passwordCredential as ASPasswordCredential:
-            // Sign in using an existing iCloud Keychain credential.
-            let username = passwordCredential.user
-            let password = passwordCredential.password
-                        
-            print("username: \(username)")
-            print("password: \(password)")
+            // iCloud Keychain credential. (AppleID & Password)
+            let _ = passwordCredential.user
+            // let password = passwordCredential.password
+            
+            // print("apple username: \(username)")
+            // print("apple password: \(password)")
         default:
             break
         }
@@ -74,7 +83,7 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
     
     // 로그인 실패 시
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: any Error) {
-        print("로그인 실패", error.localizedDescription)
+        print("Apple Login Failed", error.localizedDescription)
     }
     
     // 로그인 성공 시, BaseViewController로 SceneDelegate의 rootView를 변경
@@ -113,12 +122,63 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
 }
 
 //MARK: Kakao Social Login
-
 extension LoginViewController {
+    
     @objc
     private func popUpKakaoLoginView() {
-        print("Kakao Login Tapped")
+        KakaoLogin()
     }
+    
+    func KakaoLogin() {
+        // 카카오톡 실행 가능 여부 확인
+        if (UserApi.isKakaoTalkLoginAvailable()) {
+            // 카카오톡 앱으로 로그인 인증
+            kakaoLonginWithApp()
+            //saveKakaoUserID()
+        } else { // 카톡이 설치가 안 되어 있을 때
+            // 카카오 계정으로 로그인
+            kakaoLoginWithAccount()
+        }
+    }
+    
+    func kakaoLonginWithApp() {
+        UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
+            if let error = error {
+                print(error)
+            }
+            else {
+                print("loginWithKakaoTalk() success.")
+                self.changeRootToBaseViewController()
+            }
+        }
+    }
+    
+    func kakaoLoginWithAccount() {
+        UserApi.shared.loginWithKakaoAccount {(oauthToken, error) in
+            if let error = error {
+                print(error)
+            }
+            else {
+                print("loginWithKakaoAccount() success.")
+                self.saveKakaoUserID()
+                self.changeRootToBaseViewController()
+            }
+        }
+    }
+    
+    func saveKakaoUserID() {
+        UserApi.shared.me {(user, error) in
+            if let error = error {
+                print(error)
+            } else {
+                guard let userId = user?.id else {return}
+                if KeychainService.add(key: "KakaoUserID", value: "\(userId)") {
+                    print("kakao user id \(userId) is saved")
+                }
+            }
+        }
+    }
+        
 }
 
 //MARK: Connect Button Actions
@@ -128,4 +188,3 @@ extension LoginViewController {
         loginView.kakaoLoginButton.addTarget(self, action: #selector(popUpKakaoLoginView), for: .touchUpInside)
     }
 }
-

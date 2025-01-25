@@ -9,7 +9,7 @@ import UIKit
 
 class SettingPopoverViewController: UIViewController {
     
-    let popover = PolicyOrTermPopoverView()
+    private lazy var popover = PolicyOrTermPopoverView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,7 +29,8 @@ class SettingPopoverViewController: UIViewController {
         popover.configure(title: title, content: content)
     }
     
-    @objc func handleGrayAreaTap(_ gesture: UITapGestureRecognizer) {
+    @objc
+    func handleGrayAreaTap(_ gesture: UITapGestureRecognizer) {
         let location = gesture.location(in: view)
         // popover.frameView 영역을 터치했는지 확인
         if !popover.frameView.frame.contains(location) {
