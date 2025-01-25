@@ -16,7 +16,6 @@
 		6397957C2D43260D00947ACA /* KakaoSDKAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 6397957B2D43260C00947ACA /* KakaoSDKAuth */; };
 		6397957E2D43260D00947ACA /* KakaoSDKCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 6397957D2D43260D00947ACA /* KakaoSDKCommon */; };
 		639795802D43260D00947ACA /* KakaoSDKUser in Frameworks */ = {isa = PBXBuildFile; productRef = 6397957F2D43260D00947ACA /* KakaoSDKUser */; };
-		639795822D43E7AA00947ACA /* API_Keys.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 639795812D43E7AA00947ACA /* API_Keys.xcconfig */; };
 		63BFBBC42D373EA0000AA549 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 63BFBBC32D373EA0000AA549 /* Alamofire */; };
 /* End PBXBuildFile section */
 
@@ -70,7 +69,6 @@
 		23A04E132D2C0972008473B1 = {
 			isa = PBXGroup;
 			children = (
-				639795812D43E7AA00947ACA /* API_Keys.xcconfig */,
 				23A04E1E2D2C0972008473B1 /* PuppyMode */,
 				23A04E1D2D2C0972008473B1 /* Products */,
 			);
@@ -165,7 +163,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				639795822D43E7AA00947ACA /* API_Keys.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
