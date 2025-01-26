@@ -126,17 +126,13 @@ extension LoginViewController {
     
     @objc
     private func popUpKakaoLoginView() {
-        KakaoLogin()
+        kakaoLoginWithAccount()
     }
     
     func KakaoLogin() {
-        // 카카오톡 실행 가능 여부 확인
-        if (UserApi.isKakaoTalkLoginAvailable()) {
-            // 카카오톡 앱으로 로그인 인증
+        if (UserApi.isKakaoTalkLoginAvailable()) { // 카카오톡 앱으로 로그인 인증
             kakaoLonginWithApp()
-            //saveKakaoUserID()
-        } else { // 카톡이 설치가 안 되어 있을 때
-            // 카카오 계정으로 로그인
+        } else {
             kakaoLoginWithAccount()
         }
     }
@@ -147,7 +143,7 @@ extension LoginViewController {
                 print(error)
             }
             else {
-                print("loginWithKakaoTalk() success.")
+                self.saveKakaoUserID()
                 self.changeRootToBaseViewController()
             }
         }
@@ -159,7 +155,6 @@ extension LoginViewController {
                 print(error)
             }
             else {
-                print("loginWithKakaoAccount() success.")
                 self.saveKakaoUserID()
                 self.changeRootToBaseViewController()
             }
@@ -178,7 +173,59 @@ extension LoginViewController {
             }
         }
     }
-        
+    
+    func getUserInfo() {
+        UserApi.shared.me() {(user, error) in
+            if let error = error {
+                print(error)
+            }
+            else {
+                print("me() success.")
+                
+                //do something
+                if let userName = user?.kakaoAccount?.name,
+                    let userEmail = user?.kakaoAccount?.email,
+                    let userProfile = user?.kakaoAccount?.profile?.profileImageUrl
+                    {
+                    print("이름: \(userName)")
+                    print("이메일: \(userEmail)")
+                    print("프로필: \(userProfile)")
+                }
+            }
+        }
+    }
+}
+
+//MARK: Kakao Login Communication
+extension LoginViewController {
+    
+    func request(code: String) {
+        let baseURL = "https://puppy-mode.site/auth/kakao/callback"
+        let parameters: [String: String] = ["code": code]
+        let headers: HTTPHeaders = [
+            "accept": "*/*"
+        ]
+
+        AF.request(baseURL,
+                  method: .get,
+                  parameters: parameters,
+                  headers: headers)
+            .responseData { response in
+                switch response.result {
+                case .success(let data):
+                    do {
+                        // JSON 응답을 처리하는 경우
+                        if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                            print("Response: \(json)")
+                        }
+                    } catch {
+                        print("JSON 파싱 에러: \(error)")
+                    }
+                case .failure(let error):
+                    print("Error: \(error)")
+                }
+            }
+    }
 }
 
 //MARK: Connect Button Actions

@@ -16,5 +16,7 @@ struct K {
         static let kakaoAppKey = "KAKAO_APP_KEY"
         
         static let appleUserID = "AppleUserID"
+        
+        static let puppymodeLink = "https://puppy-mode.site/"
     }
 }

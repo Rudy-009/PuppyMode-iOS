@@ -2,6 +2,7 @@ import UIKit
 import AuthenticationServices
 import KakaoSDKAuth
 import KakaoSDKUser
+import KakaoSDKCommon
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -11,7 +12,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = BaseViewController()
+        window?.rootViewController = LoginViewController()
         window?.makeKeyAndVisible()
         
 //        let appleIDProvider = ASAuthorizationAppleIDProvider()
