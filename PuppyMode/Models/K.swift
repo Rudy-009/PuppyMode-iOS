@@ -17,6 +17,6 @@ struct K {
         
         static let appleUserID = "AppleUserID"
         
-        static let puppymodeLink = "https://puppy-mode.site/"
+        static let puppymodeLink = "https://puppy-mode.site"
     }
 }

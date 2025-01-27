@@ -153,10 +153,21 @@ extension LoginViewController {
         UserApi.shared.loginWithKakaoAccount {(oauthToken, error) in
             if let error = error {
                 print(error)
-            }
-            else {
-                self.saveKakaoUserID()
-                self.changeRootToBaseViewController()
+            } else {
+                // 로그인 성공 token 발급
+                UserApi.shared.me() {(user, error) in
+                    if let error = error {
+                        print(error)
+                    }
+                    else {
+                    }
+                }
+                
+                
+                if let accessToekn = oauthToken?.accessToken {
+                    self.fetchKakaoUserInfo(with: accessToekn)
+                    self.changeRootToBaseViewController()
+                }
             }
         }
     }
@@ -166,23 +177,37 @@ extension LoginViewController {
             if let error = error {
                 print(error)
             } else {
-                guard let userId = user?.id else {return}
-                if KeychainService.add(key: "KakaoUserID", value: "\(userId)") {
-                    print("kakao user id \(userId) is saved")
+                guard let kakaoUserId = user?.id else { return }
+                if KeychainService.add(key: K.String.kakaoUserID, value: "\(kakaoUserId)") {
+                    
                 }
             }
         }
     }
     
+    func fetchKakaoUserInfo(with accessToken: String) {
+        AF.request(K.String.puppymodeLink + "/auth/kakao/login",
+                   method: .get,
+                   parameters: ["accessToken": accessToken],
+                   headers: ["accept": "*/*"])
+            .responseDecodable(of: LoginResponse.self) { response in
+                switch response.result {
+                case .success(let loginResponse):
+                    if UserInfoModel.addUserInfo(userInfo: loginResponse.result) {
+                        print("UserInfo save succeed")
+                    }
+                case .failure(let error):
+                    print("Error LoginResponse \(K.String.puppymodeLink)/auth/kakao/login: \(error)")
+                }
+            }
+    }
+        
     func getUserInfo() {
         UserApi.shared.me() {(user, error) in
             if let error = error {
                 print(error)
             }
             else {
-                print("me() success.")
-                
-                //do something
                 if let userName = user?.kakaoAccount?.name,
                     let userEmail = user?.kakaoAccount?.email,
                     let userProfile = user?.kakaoAccount?.profile?.profileImageUrl
