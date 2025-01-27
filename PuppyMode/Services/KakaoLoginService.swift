@@ -51,8 +51,10 @@ class KakaoLoginService {
             switch response.result {
             case .success(let loginResponse):
                 if UserInfoService.addUserInfo(userInfo: loginResponse.result) {
-                    print("jwt: \(loginResponse.result.jwt)")
                     print("UserInfo save succeed")
+                    if let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue ) {
+                        print("JWT: \(jwt)")
+                    }
                 }
                 RootViewControllerService.toBaseViewController()
             case .failure(let error):
