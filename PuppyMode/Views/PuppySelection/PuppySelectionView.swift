@@ -17,21 +17,23 @@ class PuppySelectionView: UIView {
         $0.numberOfLines = 0
     }
     
-    private lazy var pomeranianButton = UIButton().then {
-        $0.setTitle("포메라리안", for: .selected)
+    public lazy var pomeranianButton = UIButton().then {
+        $0.setTitle("포메라리안", for: .normal)
         $0.titleLabel?.font = UIFont(name: "NotoSansKR-Bold", size: 20)
         $0.setTitleColor(.black, for: .normal)
         $0.backgroundColor = .caution
     }
     
-    private lazy var welshCorgiButton = UIButton().then {
-        $0.setTitle("웰시코기", for: .selected)
+    public lazy var welshCorgiButton = UIButton().then {
+        $0.setTitle("웰시코기", for: .normal)
+        $0.setTitleColor(.black, for: .normal)
         $0.titleLabel?.font = UIFont(name: "NotoSansKR-Bold", size: 20)
         $0.backgroundColor = .kakaoLogin
     }
     
-    private lazy var bichonButton = UIButton().then {
-        $0.setTitle("비숑", for: .selected)
+    public lazy var bichonButton = UIButton().then {
+        $0.setTitle("비숑", for: .normal)
+        $0.setTitleColor(.black, for: .normal)
         $0.titleLabel?.font = UIFont(name: "NotoSansKR-Bold", size: 20)
         $0.backgroundColor = .main
     }
