@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FSCalendar
 
 class CalendarViewController: UIViewController {
     private let calendarView = CalendarView()
@@ -14,7 +15,13 @@ class CalendarViewController: UIViewController {
         super.viewDidLoad()
         view = calendarView
         
+        setDelegate()
         setAction()
+    }
+    
+    // MARK: - function
+    private func setDelegate() {
+        calendarView.calendar.delegate = self
     }
     
     // MARK: - action
@@ -30,4 +37,18 @@ class CalendarViewController: UIViewController {
         present(modalVC, animated: true)
     }
 
+}
+
+extension CalendarViewController: FSCalendarDelegate {
+    func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy.MM.dd"
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        let formattedDate = dateFormatter.string(from: date)
+        
+        let detailVC = CalendarDetailViewController()
+        detailVC.calendarDetailView.dateLabel.text = formattedDate
+        self.navigationController?.isNavigationBarHidden = true
+        self.navigationController?.pushViewController(detailVC, animated: true)
+    }
 }

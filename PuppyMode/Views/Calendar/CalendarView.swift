@@ -35,7 +35,7 @@ class CalendarView: UIView {
     }
     
     // 캘린더
-    private let calendar = FSCalendar().then {
+    public let calendar = FSCalendar().then {
         // 배경
         $0.backgroundColor = .clear
         
