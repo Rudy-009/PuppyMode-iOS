@@ -11,6 +11,9 @@
 		23A04E452D2C3752008473B1 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 23A04E442D2C3752008473B1 /* SnapKit */; };
 		23A04E482D2C375D008473B1 /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = 23A04E472D2C375D008473B1 /* Then */; };
 		23A04E662D2D71DF008473B1 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
+		638828A72D464CC2007288E4 /* KakaoSDKFriend in Frameworks */ = {isa = PBXBuildFile; productRef = 638828A62D464CC2007288E4 /* KakaoSDKFriend */; };
+		638828A92D464CC2007288E4 /* KakaoSDKFriendCore in Frameworks */ = {isa = PBXBuildFile; productRef = 638828A82D464CC2007288E4 /* KakaoSDKFriendCore */; };
+		638828AB2D464CC2007288E4 /* KakaoSDKTalk in Frameworks */ = {isa = PBXBuildFile; productRef = 638828AA2D464CC2007288E4 /* KakaoSDKTalk */; };
 		639795772D4325EE00947ACA /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 639795762D4325EE00947ACA /* FirebaseCore */; };
 		639795792D4325EE00947ACA /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 639795782D4325EE00947ACA /* FirebaseMessaging */; };
 		6397957C2D43260D00947ACA /* KakaoSDKAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 6397957B2D43260C00947ACA /* KakaoSDKAuth */; };
@@ -27,6 +30,7 @@
 		23A04E2E2D2C0987008473B1 /* Exceptions for "PuppyMode" folder in "PuppyMode" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				API_Keys.xcconfig,
 				Info.plist,
 			);
 			target = 23A04E1B2D2C0972008473B1 /* PuppyMode */;
@@ -55,7 +59,10 @@
 				2324D6C42D2F156800C38607 /* FSCalendar in Frameworks */,
 				6397957E2D43260D00947ACA /* KakaoSDKCommon in Frameworks */,
 				23A04E662D2D71DF008473B1 /* (null) in Frameworks */,
+				638828A72D464CC2007288E4 /* KakaoSDKFriend in Frameworks */,
+				638828AB2D464CC2007288E4 /* KakaoSDKTalk in Frameworks */,
 				639795772D4325EE00947ACA /* FirebaseCore in Frameworks */,
+				638828A92D464CC2007288E4 /* KakaoSDKFriendCore in Frameworks */,
 				23A04E482D2C375D008473B1 /* Then in Frameworks */,
 				639795802D43260D00947ACA /* KakaoSDKUser in Frameworks */,
 				6397957C2D43260D00947ACA /* KakaoSDKAuth in Frameworks */,
@@ -110,6 +117,9 @@
 				6397957B2D43260C00947ACA /* KakaoSDKAuth */,
 				6397957D2D43260D00947ACA /* KakaoSDKCommon */,
 				6397957F2D43260D00947ACA /* KakaoSDKUser */,
+				638828A62D464CC2007288E4 /* KakaoSDKFriend */,
+				638828A82D464CC2007288E4 /* KakaoSDKFriendCore */,
+				638828AA2D464CC2007288E4 /* KakaoSDKTalk */,
 			);
 			productName = PuppyMode;
 			productReference = 23A04E1C2D2C0972008473B1 /* PuppyMode.app */;
@@ -123,7 +133,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1610;
-				LastUpgradeCheck = 1610;
+				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					23A04E1B2D2C0972008473B1 = {
 						CreatedOnToolsVersion = 16.1;
@@ -180,6 +190,8 @@
 /* Begin XCBuildConfiguration section */
 		23A04E302D2C0987008473B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 23A04E1E2D2C0972008473B1 /* PuppyMode */;
+			baseConfigurationReferenceRelativePath = API_Keys.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -208,6 +220,8 @@
 		};
 		23A04E312D2C0987008473B1 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 23A04E1E2D2C0972008473B1 /* PuppyMode */;
+			baseConfigurationReferenceRelativePath = API_Keys.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -442,6 +456,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 23A04E462D2C375D008473B1 /* XCRemoteSwiftPackageReference "Then" */;
 			productName = Then;
+		};
+		638828A62D464CC2007288E4 /* KakaoSDKFriend */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6397957A2D43260C00947ACA /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKFriend;
+		};
+		638828A82D464CC2007288E4 /* KakaoSDKFriendCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6397957A2D43260C00947ACA /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKFriendCore;
+		};
+		638828AA2D464CC2007288E4 /* KakaoSDKTalk */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6397957A2D43260C00947ACA /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKTalk;
 		};
 		639795762D4325EE00947ACA /* FirebaseCore */ = {
 			isa = XCSwiftPackageProductDependency;

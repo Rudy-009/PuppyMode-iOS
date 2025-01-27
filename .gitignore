@@ -91,8 +91,7 @@ iOSInjectionProject/
 ### SwiftPackageManager ###
 Packages
 xcuserdata
-*.xcodeproj
-
+.build/
 
 ### Xcode ###
 
@@ -106,5 +105,12 @@ xcuserdata
 !*.xcworkspace/contents.xcworkspacedata
 /*.gcno
 **/xcshareddata/WorkspaceSettings.xcsettings
+
+### Firebase ###
+GoogleService-Info.plist
+**/GoogleService-Info.plist
+Puppymode Firebase Service Info.plist
+**/Puppymode Firebase Service Info.plist
+*.p8
 
 # End of https://www.toptal.com/developers/gitignore/api/xcode,swiftpackagemanager,swiftAPI_Keys.xcconfig
