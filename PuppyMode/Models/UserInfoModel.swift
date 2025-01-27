@@ -7,7 +7,7 @@
 
 import Foundation
 
-class UserInfoModel {
+class UserInfoService {
     
     static func addUserInfo(userInfo: LoginResult) -> Bool {
         return KeychainService.add(key: UserInfoKey.jwt.rawValue, value: userInfo.jwt) &&

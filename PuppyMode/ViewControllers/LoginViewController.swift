@@ -28,7 +28,25 @@ class LoginViewController: UIViewController {
         let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
         sceneDelegate?.changeRootViewController(baseViewController, animated: false)
     }
+    
+    // 회원가입 성공 시, PuppySelectionViewController로 변경
+    func changeRootToPuppySelectionViewController() {
+        let baseViewController = PuppySelectionViewController()
+        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+        sceneDelegate?.changeRootViewController(baseViewController, animated: false)
+    }
 }
+
+//MARK: Kakao Social Login
+extension LoginViewController {
+    @objc
+    private func showKakaoLoginView() {
+        Task {
+            await KakaoLoginService.kakaoLoginWithAccount()
+        }
+    }
+}
+
 //MARK: Apple Social Login
 
 extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
@@ -58,7 +76,7 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
         //로그인 성공
         switch authorization.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
-        // Apple 계정으로 로그인 성공
+            // Apple 계정으로 로그인 성공
             // printAppleIDCredential(appleIDCredential: appleIDCredential) // appleIDCredential의 내용을 출력해보기
             
             // UserID를 KeyChain에 저장
@@ -67,7 +85,7 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
             // User의 정보를 서버에 전송
             
             // BaseViewController 화면 으로 이동
-            changeRootViewController()
+            RootViewControllerService.toBaseViewController()
             
         case let passwordCredential as ASPasswordCredential:
             // iCloud Keychain credential. (AppleID & Password)
@@ -86,17 +104,10 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
         print("Apple Login Failed", error.localizedDescription)
     }
     
-    // 로그인 성공 시, BaseViewController로 SceneDelegate의 rootView를 변경
-    func changeRootViewController() {
-        let baseViewController = BaseViewController()
-        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-        sceneDelegate?.changeRootViewController(baseViewController, animated: false)
-    }
-    
     // 로그인 성공시 appleIDCredential의 내용을 출력해보는 함수
     func printAppleIDCredential(appleIDCredential: ASAuthorizationAppleIDCredential) {
         // fullName과 email 같은 경우는 개인정보이다 보니, 처음 로그인 하는 경우에만 제공되며 두 번째부터는 제공이 되지 않는다.
-
+        
         // user: 처음 로그인을 하게 되면, 유저에게 주어지는 고유 식별
         // identityToken: 사용자에 대한 정보를 앱에 안전히 전달하는 JWT
         // authorizationCode: 앱이 서버와 상호 작용하는 데 사용하는 토큰
@@ -121,142 +132,10 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
     }
 }
 
-//MARK: Kakao Social Login
-extension LoginViewController {
-    
-    @objc
-    private func popUpKakaoLoginView() {
-        kakaoLoginWithAccount()
-    }
-    
-    func KakaoLogin() {
-        if (UserApi.isKakaoTalkLoginAvailable()) { // 카카오톡 앱으로 로그인 인증
-            kakaoLonginWithApp()
-        } else {
-            kakaoLoginWithAccount()
-        }
-    }
-    
-    func kakaoLonginWithApp() {
-        UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
-            if let error = error {
-                print(error)
-            }
-            else {
-                self.saveKakaoUserID()
-                self.changeRootToBaseViewController()
-            }
-        }
-    }
-    
-    func kakaoLoginWithAccount() {
-        UserApi.shared.loginWithKakaoAccount {(oauthToken, error) in
-            if let error = error {
-                print(error)
-            } else {
-                // 로그인 성공 token 발급
-                UserApi.shared.me() {(user, error) in
-                    if let error = error {
-                        print(error)
-                    }
-                    else {
-                    }
-                }
-                
-                
-                if let accessToekn = oauthToken?.accessToken {
-                    self.fetchKakaoUserInfo(with: accessToekn)
-                    self.changeRootToBaseViewController()
-                }
-            }
-        }
-    }
-    
-    func saveKakaoUserID() {
-        UserApi.shared.me {(user, error) in
-            if let error = error {
-                print(error)
-            } else {
-                guard let kakaoUserId = user?.id else { return }
-                if KeychainService.add(key: K.String.kakaoUserID, value: "\(kakaoUserId)") {
-                    
-                }
-            }
-        }
-    }
-    
-    func fetchKakaoUserInfo(with accessToken: String) {
-        AF.request(K.String.puppymodeLink + "/auth/kakao/login",
-                   method: .get,
-                   parameters: ["accessToken": accessToken],
-                   headers: ["accept": "*/*"])
-            .responseDecodable(of: LoginResponse.self) { response in
-                switch response.result {
-                case .success(let loginResponse):
-                    if UserInfoModel.addUserInfo(userInfo: loginResponse.result) {
-                        print("UserInfo save succeed")
-                    }
-                case .failure(let error):
-                    print("Error LoginResponse \(K.String.puppymodeLink)/auth/kakao/login: \(error)")
-                }
-            }
-    }
-        
-    func getUserInfo() {
-        UserApi.shared.me() {(user, error) in
-            if let error = error {
-                print(error)
-            }
-            else {
-                if let userName = user?.kakaoAccount?.name,
-                    let userEmail = user?.kakaoAccount?.email,
-                    let userProfile = user?.kakaoAccount?.profile?.profileImageUrl
-                    {
-                    print("이름: \(userName)")
-                    print("이메일: \(userEmail)")
-                    print("프로필: \(userProfile)")
-                }
-            }
-        }
-    }
-}
-
-//MARK: Kakao Login Communication
-extension LoginViewController {
-    
-    func request(code: String) {
-        let baseURL = "https://puppy-mode.site/auth/kakao/callback"
-        let parameters: [String: String] = ["code": code]
-        let headers: HTTPHeaders = [
-            "accept": "*/*"
-        ]
-
-        AF.request(baseURL,
-                  method: .get,
-                  parameters: parameters,
-                  headers: headers)
-            .responseData { response in
-                switch response.result {
-                case .success(let data):
-                    do {
-                        // JSON 응답을 처리하는 경우
-                        if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                            print("Response: \(json)")
-                        }
-                    } catch {
-                        print("JSON 파싱 에러: \(error)")
-                    }
-                case .failure(let error):
-                    print("Error: \(error)")
-                }
-            }
-    }
-}
-
 //MARK: Connect Button Actions
 extension LoginViewController {
     private func connectButtonActions() {
         loginView.appleLoginButton.addTarget(self, action: #selector(popUpAppleLoginView), for: .touchUpInside)
-        loginView.kakaoLoginButton.addTarget(self, action: #selector(popUpKakaoLoginView), for: .touchUpInside)
+        loginView.kakaoLoginButton.addTarget(self, action: #selector(showKakaoLoginView), for: .touchUpInside)
     }
 }

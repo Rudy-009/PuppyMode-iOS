@@ -20,16 +20,20 @@ class PuppySelectionView: UIView {
     private lazy var pomeranianButton = UIButton().then {
         $0.setTitle("포메라리안", for: .selected)
         $0.titleLabel?.font = UIFont(name: "NotoSansKR-Bold", size: 20)
+        $0.setTitleColor(.black, for: .normal)
+        $0.backgroundColor = .caution
     }
     
     private lazy var welshCorgiButton = UIButton().then {
         $0.setTitle("웰시코기", for: .selected)
         $0.titleLabel?.font = UIFont(name: "NotoSansKR-Bold", size: 20)
+        $0.backgroundColor = .kakaoLogin
     }
     
     private lazy var bichonButton = UIButton().then {
         $0.setTitle("비숑", for: .selected)
         $0.titleLabel?.font = UIFont(name: "NotoSansKR-Bold", size: 20)
+        $0.backgroundColor = .main
     }
     
     override init(frame: CGRect) {
@@ -38,7 +42,6 @@ class PuppySelectionView: UIView {
     }
     
     private func addComponents() {
-        
         self.addSubview(mainTitleLabel)
         self.addSubview(pomeranianButton)
         self.addSubview(welshCorgiButton)
@@ -51,16 +54,19 @@ class PuppySelectionView: UIView {
         
         pomeranianButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(20)
             make.top.equalTo(mainTitleLabel.snp.bottom).offset(30)
         }
         
         welshCorgiButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(20)
             make.top.equalTo(pomeranianButton.snp.bottom).offset(30)
         }
         
         bichonButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(20)
             make.top.equalTo(welshCorgiButton.snp.bottom).offset(30)
         }
         
@@ -70,4 +76,9 @@ class PuppySelectionView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+}
+
+import SwiftUI
+#Preview{
+    PuppySelectionViewController()
 }
