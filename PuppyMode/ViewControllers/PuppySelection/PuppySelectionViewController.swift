@@ -20,33 +20,21 @@ class PuppySelectionViewController: UIViewController {
     }
     
     private func connectButtonActions() {
-        puppySelectionView.bichonButton.addTarget(self, action: #selector(bichonButtonPressed), for: .touchUpInside)
-        puppySelectionView.welshCorgiButton.addTarget(self, action: #selector(welshCorgiButtonPressed), for: .touchUpInside)
-        puppySelectionView.pomeranianButton.addTarget(self, action: #selector(pomeranianButtonPressed), for: .touchUpInside)
+        puppySelectionView.cardButton03.addTarget(self, action: #selector(showConfirmVC), for: .touchUpInside)
+        puppySelectionView.cardButton02.addTarget(self, action: #selector(showConfirmVC), for: .touchUpInside)
+        puppySelectionView.cardButton01.addTarget(self, action: #selector(showConfirmVC), for: .touchUpInside)
     }
     
     @objc
-    private func bichonButtonPressed() {
-        confirmVC.configure(puppy: .babyBichon)
-        showConfirmVC()
-    }
-    
-    @objc
-    private func welshCorgiButtonPressed() {
-        confirmVC.configure(puppy: .babyWelshCorgi)
-        showConfirmVC()
-    }
-    
-    @objc
-    private func pomeranianButtonPressed() {
-        confirmVC.configure(puppy: .babyPomeranian)
-        showConfirmVC()
-    }
-    
     private func showConfirmVC() {
         confirmVC.modalPresentationStyle = .fullScreen
+        
+        
+        confirmVC.configure(puppy: .babyBichon)
+        
         present(confirmVC,animated: false)
     }
+    
     
 }
 

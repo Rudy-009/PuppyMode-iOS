@@ -17,22 +17,19 @@ class PuppySelectionView: UIView {
         $0.numberOfLines = 0
     }
     
-    public lazy var pomeranianButton = UIButton().then {
-        $0.setTitle("포메라리안", for: .normal)
+    public lazy var cardButton01 = UIButton().then {
         $0.titleLabel?.font = UIFont(name: "NotoSansKR-Bold", size: 20)
         $0.setTitleColor(.black, for: .normal)
         $0.backgroundColor = .caution
     }
     
-    public lazy var welshCorgiButton = UIButton().then {
-        $0.setTitle("웰시코기", for: .normal)
+    public lazy var cardButton02 = UIButton().then {
         $0.setTitleColor(.black, for: .normal)
         $0.titleLabel?.font = UIFont(name: "NotoSansKR-Bold", size: 20)
         $0.backgroundColor = .kakaoLogin
     }
     
-    public lazy var bichonButton = UIButton().then {
-        $0.setTitle("비숑", for: .normal)
+    public lazy var cardButton03 = UIButton().then {
         $0.setTitleColor(.black, for: .normal)
         $0.titleLabel?.font = UIFont(name: "NotoSansKR-Bold", size: 20)
         $0.backgroundColor = .main
@@ -45,31 +42,34 @@ class PuppySelectionView: UIView {
     
     private func addComponents() {
         self.addSubview(mainTitleLabel)
-        self.addSubview(pomeranianButton)
-        self.addSubview(welshCorgiButton)
-        self.addSubview(bichonButton)
+        self.addSubview(cardButton01)
+        self.addSubview(cardButton02)
+        self.addSubview(cardButton03)
         
         mainTitleLabel.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(27)
             make.top.equalTo(safeAreaLayoutGuide.snp.top).offset(183)
         }
         
-        pomeranianButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.top.equalTo(mainTitleLabel.snp.bottom).offset(30)
+        cardButton01.snp.makeConstraints { make in
+            make.top.equalTo(mainTitleLabel.snp.bottom).offset(20)
+            make.leading.equalToSuperview().offset(20)
+            make.height.equalTo(300)
+            make.width.equalTo(100)
         }
         
-        welshCorgiButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.top.equalTo(pomeranianButton.snp.bottom).offset(30)
+        cardButton02.snp.makeConstraints { make in
+            make.top.equalTo(mainTitleLabel.snp.bottom).offset(20)
+            make.leading.equalTo(cardButton01.snp.trailing).offset(20)
+            make.height.equalTo(300)
+            make.width.equalTo(100)
         }
         
-        bichonButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.top.equalTo(welshCorgiButton.snp.bottom).offset(30)
+        cardButton03.snp.makeConstraints { make in
+            make.top.equalTo(mainTitleLabel.snp.bottom).offset(20)
+            make.leading.equalTo(cardButton02.snp.trailing).offset(20)
+            make.height.equalTo(300)
+            make.width.equalTo(100)
         }
         
     }

@@ -41,14 +41,11 @@ class LoginViewController: UIViewController {
 extension LoginViewController {
     @objc
     private func showKakaoLoginView() {
-        Task {
-            await KakaoLoginService.kakaoLoginWithAccount()
-        }
+        KakaoLoginService.kakaoLoginWithAccount()
     }
 }
 
 //MARK: Apple Social Login
-
 extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
     
     @objc
