@@ -101,5 +101,5 @@ class PuppySelectionConfirmView: UIView {
 }
 
 #Preview{
-    PuppySelectionConfirmViewController()
+    ConfirmPuppySelectionViewController()
 }
