@@ -36,6 +36,12 @@ class HomeView: UIView {
         button.layer.cornerRadius = topButtonsCornerRadius
     }
     
+    lazy public var countdownLabel = UILabel().then { label in
+        label.textAlignment = .center
+        label.font = UIFont(name: "NotoSansKR-Bold", size: 14)!
+        label.textColor = UIColor(hex: "#3C3C3C")
+    }
+    
     lazy public var collectionButton = UIButton().then { button in
         button.setImage(UIImage(named: "CollectionButtonImage"), for: .normal)
         button.layer.cornerRadius = topButtonsCornerRadius
@@ -141,7 +147,7 @@ extension HomeView {
         
         topButtonStack.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(topButtonSuperViewSpacing)
-            make.top.equalTo(self.safeAreaLayoutGuide).offset(18)
+            make.top.equalTo(self.safeAreaLayoutGuide).offset(52)
             make.height.equalTo(topRectangleHeight)
         }
         
@@ -157,6 +163,12 @@ extension HomeView {
             make.trailing.equalTo(collectionButton.snp.leading).offset(-topButtonSpacing)
             make.height.equalTo(topRectangleHeight)
             make.width.equalTo(topRectangleWidth)
+        }
+        
+        rompingButton.addSubview(countdownLabel)
+        countdownLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview()
         }
         
         collectionButton.snp.makeConstraints { make in

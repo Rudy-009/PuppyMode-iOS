@@ -39,6 +39,11 @@ extension UIViewController {
     }
     
     @objc func customBackButtonTapped() {
-        navigationController?.popViewController(animated: true)
+        // 네비게이션 스택인지, 모달인지 확인
+        if let navigationController = self.navigationController, navigationController.viewControllers.count > 1 {
+            navigationController.popViewController(animated: true)
+        } else if self.presentingViewController != nil {
+            self.dismiss(animated: true, completion: nil)
+        }
     }
 }
