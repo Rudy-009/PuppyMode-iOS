@@ -35,7 +35,7 @@ class KakaoLoginService {
                 print(error)
             } else {
                 guard let kakaoUserId = user?.id else { return }
-                if KeychainService.add(key: K.String.kakaoUserID, value: "\(kakaoUserId)") {
+                if KeychainService.add(key: KakaoAPIKey.kakaoUserID.rawValue, value: "\(kakaoUserId)") {
                     print("kakaoUserId \(kakaoUserId)")
                 }
             }
@@ -56,7 +56,7 @@ class KakaoLoginService {
                         print("JWT: \(jwt)")
                     }
                 }
-                RootViewControllerService.toBaseViewController()
+                RootViewControllerService.toPuppySelectionViewController()
             case .failure(let error):
                 print("Error LoginResponse \(K.String.puppymodeLink)/auth/kakao/login: \(error)")
             }

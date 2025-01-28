@@ -42,8 +42,8 @@ extension RevokeViewController {
     private func revokeButtonPressed() {
         print("Revoke Button Pressed")
         
-        if let _ = KeychainService.get(key: K.String.kakaoUserID) {
-            if KeychainService.delete(key: K.String.kakaoUserID) {
+        if let _ = KeychainService.get(key: KakaoAPIKey.kakaoUserID.rawValue) {
+            if KeychainService.delete(key: KakaoAPIKey.kakaoUserID.rawValue) {
                 self.kakaoRevoke()
             }
         }

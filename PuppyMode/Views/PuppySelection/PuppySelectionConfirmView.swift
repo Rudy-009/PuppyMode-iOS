@@ -33,12 +33,12 @@ class PuppySelectionConfirmView: UIView {
         $0.setTitleColor(UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1), for: .normal)
         $0.titleLabel?.font = UIFont(name: "NotoSansKR-Medium", size: 20)
         $0.backgroundColor = .main
-        
         $0.layer.cornerRadius = 10
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.backgroundColor = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
         self.addComponents()
     }
     
@@ -77,17 +77,17 @@ class PuppySelectionConfirmView: UIView {
         
     }
     
-    func configure( puppy: BabyPuppyTypeEnum) {
+    func configure( puppy: PuppyEnum, imageURL: URL) {
         switch puppy {
-        case .babyBichon:
+        case .bichon:
             mainTitleLabel.text = "비숑 프리제"
             subTitleLabel.text = "Bichon Frisé"
             puppyImageView.image = .babyBichon
-        case .babyWelshCorgi:
+        case .welshCorgi:
             mainTitleLabel.text = "웰시코기"
             subTitleLabel.text = "Welsh corgi"
             puppyImageView.image = .babyWelshCorgi
-        case .babyPomeranian:
+        case .pomeranian:
             mainTitleLabel.text = "포메라니안"
             subTitleLabel.text = "Pomeranian"
             puppyImageView.image = .babyPomeranian
