@@ -43,9 +43,12 @@ class KakaoLoginService {
     }
     
     static func fetchKakaoUserInfo(with accessToken: String) {
+        let fcm = KeychainService.get(key: FCMTokenKey.fcm.rawValue) ?? "none"
+        
         AF.request(K.String.puppymodeLink + "/auth/kakao/login",
                    method: .get,
-                   parameters: ["accessToken": accessToken],
+                   parameters: ["accessToken": accessToken,
+                                "FCMToken": fcm],
                    headers: ["accept": "*/*"])
         .responseDecodable(of: LoginResponse.self) { response in
             switch response.result {
@@ -54,6 +57,7 @@ class KakaoLoginService {
                     print("UserInfo save succeed")
                     if let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue ) {
                         print("JWT: \(jwt)")
+                        // print("isNew: \(loginResponse.result.userInfo.isNewUser)")
                     }
                 }
                 RootViewControllerService.toPuppySelectionViewController()
