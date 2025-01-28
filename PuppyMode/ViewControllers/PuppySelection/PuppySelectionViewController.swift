@@ -9,9 +9,9 @@ import UIKit
 import Alamofire
 
 class PuppySelectionViewController: UIViewController {
-
+    
     private let puppySelectionView = PuppySelectionView()
-    private let confirmVC = PuppySelectionConfirmViewController()
+    private let confirmVC = ConfirmPuppySelectionViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,8 +23,32 @@ class PuppySelectionViewController: UIViewController {
     private func connectButtonActions() {
         puppySelectionView.cardButton03.addTarget(self, action: #selector(showConfirmVC), for: .touchUpInside)
         puppySelectionView.cardButton02.addTarget(self, action: #selector(showConfirmVC), for: .touchUpInside)
-        puppySelectionView.cardButton01.addTarget(self, action: #selector(showConfirmVC), for: .touchUpInside)
+        puppySelectionView.cardButton01.addTarget(self, action: #selector(deletePuppy), for: .touchUpInside)
     }
+    
+    @objc
+    private func deletePuppy() {
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+        ]
+        
+        AF.request(K.String.puppymodeLink + "/puppies",
+                   method: .delete,
+                   headers: headers)
+            .responseDecodable(of: PuppyDeletionResponse.self)  { [weak self] response in
+                
+                guard let _ = self else { return }
+                
+                switch response.result {
+                case .success(let response) :
+                    print(response.result)
+                case .failure(let error) :
+                    print("Network Error: \(error.localizedDescription)")
+                }
+            }
+    }
+
     
     @objc
     private func showConfirmVC() {
