@@ -19,3 +19,7 @@ enum KakaoAPIKey: String {
 enum AppleAPIKey: String {
     case appleUserID = "AppleUserID"
 }
+
+enum FCMTokenKey : String {
+    case fcm = "FCMToken"
+}

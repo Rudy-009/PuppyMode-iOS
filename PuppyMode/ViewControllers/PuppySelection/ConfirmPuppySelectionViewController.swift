@@ -8,7 +8,7 @@
 import UIKit
 import Alamofire
 
-class PuppySelectionConfirmViewController: UIViewController {
+class ConfirmPuppySelectionViewController: UIViewController {
     
     private let puppySelectionConfirmView = PuppySelectionConfirmView()
     
