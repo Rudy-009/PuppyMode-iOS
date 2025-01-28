@@ -46,7 +46,7 @@ class IntakeView: UIView {
         return label
     }()
     
-    private let slider = DialSlider().then {
+    let slider = DialSlider().then {
         $0.minimumValue = 0.0
         $0.maximumValue = 10.0 // Default for glass mode (10 steps for glasses)
         $0.value = 1.0
@@ -73,7 +73,7 @@ class IntakeView: UIView {
     }
     
     // State to track whether it's in bottle mode or glass mode
-    private var isBottleMode: Bool = false { // Default to glass mode
+    var isBottleMode: Bool = false { // Default to glass mode
         didSet {
             updateSliderMode()
             updateButtonText()
@@ -170,35 +170,39 @@ class IntakeView: UIView {
         
     }
     
+    func configure(with image: UIImage?) {
+        bottleImageView.image = image // Set the passed image to the bottleImageView
+    }
+    
     // MARK: - Slider Action (슬라이더 값 변경 시 호출되는 함수)
     @objc private func sliderValueChanged(_ sender: UISlider) {
-       updateValueLabel()
-   }
-
-   @objc private func toggleMode() {
-       isBottleMode.toggle() // Toggle between bottle and glass modes
-   }
-
-   private func updateSliderMode() {
-       if isBottleMode {
-           slider.maximumValue = 4.0 // Bottle mode has a max of 4 (4 bottles max)
-           slider.value = min(slider.value, slider.maximumValue) // Ensure value is within range
-       } else {
-           slider.maximumValue = 10.0 // Glass mode has a max of 10 (10 glasses max)
-           slider.value = min(slider.value, slider.maximumValue)
-       }
-   }
-
-   private func updateButtonText() {
-       let buttonText = isBottleMode ? "잔으로 입력하기" : "병으로 입력하기"
-       modeSwitchButton.setTitle(buttonText, for: .normal)
-   }
-
-   private func updateValueLabel() {
-       if isBottleMode {
-           valueLabel.text = "\(Int(slider.value)) 병"
-       } else {
-           valueLabel.text = "\(Int(slider.value)) 잔"
-       }
-   }
+        updateValueLabel()
+    }
+    
+    @objc private func toggleMode() {
+        isBottleMode.toggle() // Toggle between bottle and glass modes
+    }
+    
+    private func updateSliderMode() {
+        if isBottleMode {
+            slider.maximumValue = 4.0 // Bottle mode has a max of 4 (4 bottles max)
+            slider.value = min(slider.value, slider.maximumValue) // Ensure value is within range
+        } else {
+            slider.maximumValue = 10.0 // Glass mode has a max of 10 (10 glasses max)
+            slider.value = min(slider.value, slider.maximumValue)
+        }
+    }
+    
+    private func updateButtonText() {
+        let buttonText = isBottleMode ? "잔으로 입력하기" : "병으로 입력하기"
+        modeSwitchButton.setTitle(buttonText, for: .normal)
+    }
+    
+    private func updateValueLabel() {
+        if isBottleMode {
+            valueLabel.text = "\(Int(slider.value)) 병"
+        } else {
+            valueLabel.text = "\(Int(slider.value)) 잔"
+        }
+    }
 }

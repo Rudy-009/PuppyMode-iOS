@@ -9,10 +9,28 @@ import UIKit
 
 class IntakeViewController: UIViewController {
     private let intakeView = IntakeView()
-
+    var onItemAdded: ((DrankAlcoholModel) -> Void)?
+    
+    private let alcoholName: String
+    private let alcoholImage: UIImage?
+    
+    // Custom initializer
+    init(alcoholName: String, alcoholImage: UIImage?) {
+        self.alcoholName = alcoholName
+        self.alcoholImage = alcoholImage
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    // Required initializer for UIViewController subclasses
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view = intakeView
+        
+        intakeView.configure(with: alcoholImage)
         
         setAction()
     }
@@ -29,12 +47,16 @@ class IntakeViewController: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     
-    @objc
-    private func addButtonTapped() {
-        print("Add button tapped with value: \(intakeView.currentValue)")
-
-        let completionVC = RecordCompleteViewController()
-        navigationController?.pushViewController(completionVC, animated: true)
+    @objc private func addButtonTapped() {
+        let sliderValue = Int(intakeView.slider.value)
+        let isBottleMode = intakeView.isBottleMode
+        
+        let newItem = DrankAlcoholModel(name: alcoholName, sliderValue: sliderValue, isBottleMode: isBottleMode)
+        
+        onItemAdded?(newItem) // Pass new item back
+        
+        self.navigationController?.popViewController(animated: true)
+        self.navigationController?.popViewController(animated: true) 
     }
 }
 
