@@ -24,7 +24,3 @@ class UserInfoService {
     }
     
 }
-
-enum UserInfoKey: String {
-    case jwt, userId, username, email
-}

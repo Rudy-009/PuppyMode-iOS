@@ -31,6 +31,7 @@ class BaseViewController: UITabBarController {
         socialVC.tabBarItem = UITabBarItem(title: "소셜", image: UIImage(systemName: "person.2.fill"), tag: 1)
         calendarVC.tabBarItem = UITabBarItem(title: "캘린더", image: UIImage(systemName: "calendar"), tag: 2)
         settingVC.tabBarItem = UITabBarItem(title: "설정", image: UIImage(systemName: "gearshape.fill"), tag: 3)
+        settingVC.setToggle()
         
         self.viewControllers = [homeVC, socialVC, calendarVC, settingVC]
     }

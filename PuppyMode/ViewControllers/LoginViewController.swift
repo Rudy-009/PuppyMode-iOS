@@ -77,7 +77,7 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
             // printAppleIDCredential(appleIDCredential: appleIDCredential) // appleIDCredential의 내용을 출력해보기
             
             // UserID를 KeyChain에 저장
-            if KeychainService.add(key: K.String.appleUserID, value: appleIDCredential.user) {}
+            if KeychainService.add(key: AppleAPIKey.appleUserID.rawValue, value: appleIDCredential.user) {}
             
             // User의 정보를 서버에 전송
             

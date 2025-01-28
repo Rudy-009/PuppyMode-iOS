@@ -22,7 +22,7 @@ class SettingView: UIView {
     }
     
     //Notification
-    private lazy var alarmSettingView = AlarmSettingView()
+    public lazy var alarmSettingView = AlarmSettingView()
     
     //Terms of Service
     public lazy var termsOfServiceButton = ArrowSettingButton()

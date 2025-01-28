@@ -6,9 +6,8 @@
 //
 
 import UIKit
-
-import UIKit
 import KakaoSDKUser
+import Alamofire
 
 class SettingViewController: UIViewController {
     
@@ -26,9 +25,59 @@ extension SettingViewController {
     
     private func defineButtonActions() {
         self.settingView.termsOfServiceButton.addTarget(self, action: #selector(termsOfServiceButtonPressed), for: .touchUpInside)
+        self.settingView.alarmSettingView.toggleView.addTarget(self, action: #selector(toggleNotification), for: .valueChanged)
         self.settingView.PrivacyPolicyButton.addTarget(self, action: #selector(privacyPolicyButtonPressed), for: .touchUpInside)
         self.settingView.revokeButton.addTarget(self, action: #selector(revokeButtonPressed), for: .touchUpInside)
         self.settingView.logoutButton.addTarget(self, action: #selector(logoutButtonPressed), for: .touchUpInside)
+    }
+    
+    func setToggle() {
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+        ]
+        
+        AF.request(K.String.puppymodeLink + "/users/notifications",
+                   method: .get,
+                   headers: headers)
+            .responseDecodable(of: NotificationsResponse.self) { [weak self] response in
+                guard let self = self else { return }
+                
+                switch response.result {
+                case .success(let response) :
+                    self.settingView.alarmSettingView.toggleView.setOn(response.result.receiveNotifications, animated: false)
+                case .failure(let error) :
+                    print("Network Error: \(error.localizedDescription)")
+                }
+            }
+    }
+    
+    @objc
+    private func toggleNotification() {
+        let isOn = self.settingView.alarmSettingView.toggleView.isOn
+        let parameters: Parameters = [
+            "receiveNotifications": isOn
+        ]
+        
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)",
+            "Content-Type": "application/json"
+        ]
+        
+        AF.request(K.String.puppymodeLink + "/users/notifications",
+                   method: .patch,
+                   parameters: parameters,
+                   encoding: JSONEncoding.default,
+                   headers: headers)
+        .responseDecodable(of: NotificationsResponse.self) { response in
+                switch response.result {
+                case .success:
+                    print("Notification Changed is Success to \(isOn)")
+                case .failure(let error):
+                    print("Error: \(error)")
+                }
+            }
     }
     
     @objc
