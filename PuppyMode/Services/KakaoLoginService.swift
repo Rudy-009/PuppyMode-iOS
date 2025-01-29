@@ -54,13 +54,16 @@ class KakaoLoginService {
             switch response.result {
             case .success(let loginResponse):
                 if UserInfoService.addUserInfo(userInfo: loginResponse.result) {
-                    print("UserInfo save succeed")
                     if let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue ) {
                         print("JWT: \(jwt)")
-                        // print("isNew: \(loginResponse.result.userInfo.isNewUser)")
+                        print("Access Token: \(accessToken)")
+                    }
+                    if loginResponse.result.userInfo.isNewUser {
+                        RootViewControllerService.toPuppySelectionViewController()
+                    } else {
+                        RootViewControllerService.toBaseViewController()
                     }
                 }
-                RootViewControllerService.toPuppySelectionViewController()
             case .failure(let error):
                 print("Error LoginResponse \(K.String.puppymodeLink)/auth/kakao/login: \(error)")
             }
