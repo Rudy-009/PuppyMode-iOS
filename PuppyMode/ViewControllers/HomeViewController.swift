@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class HomeViewController: UIViewController {
     
@@ -18,11 +19,34 @@ class HomeViewController: UIViewController {
         self.navigationController?.isNavigationBarHidden = true
         self.defineButtonActions()
     }
-
+    
 }
 
-//MARK: Configure Puppy Character
+//MARK: GET Puppy Character Info
 extension HomeViewController {
+    
+    func getPupptInfo() {
+        guard let fcm = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+            return
+        }
+        
+        AF.request( K.String.puppymodeLink + "/puppies",
+                    headers: [
+                        "accept": "*/*",
+                        "Authorization": "Bearer " + fcm
+                    ])
+        .responseDecodable(of: PuppyInfoResponse.self) { response in
+            switch response.result {
+            case .success(let response):
+                let puppyInfo = response.result
+                //
+                self.homeView.configurePuppyInfo(to: puppyInfo)
+            case .failure(let error):
+                // 강아지 정보 불러오기에 실패했습니다. 라는 알림 띄우기? (다시시도)
+                print("/puppies error", error)
+            }
+        }
+    }
     
 }
 
