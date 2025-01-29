@@ -18,9 +18,9 @@ class CustomTabBar: UITabBar {
 
 class BaseViewController: UITabBarController {
     private let homeVC = UINavigationController(rootViewController: HomeViewController())
-    private let socialVC = SocialViewController()
-    private let calendarVC = CalendarViewController()
-    private let settingVC = SettingViewController()
+    private let socialVC = UINavigationController(rootViewController: SocialViewController()) 
+        private let calendarVC = UINavigationController(rootViewController: CalendarViewController())
+        private let settingVC = UINavigationController(rootViewController: SettingViewController())
 
     override func viewDidLoad() {
         super.viewDidLoad()
