@@ -105,7 +105,7 @@ class HomeView: UIView {
         label.textColor = UIColor(red: 0.624, green: 0.584, blue: 0.584, alpha: 1)
     }
     
-    lazy public var progressBar = UIProgressView().then{pro in
+    lazy public var progressBar = UIProgressView().then{ pro in
         pro.setProgress(0.55, animated: false)
         pro.tintColor = .main
         pro.largeContentImage = UIImage(named: "ProgressBarBackground")

@@ -13,6 +13,7 @@ extension UIViewController {
     func setupNavigationBar(title: String, action: Selector) {
         self.navigationItem.hidesBackButton = true
         
+        
         let backImage = UIImage(named: "backButtonImage")
         let resizedBackImage = UIGraphicsImageRenderer(size: CGSize(width: 9, height: 16)).image { _ in
             backImage?.draw(in: CGRect(origin: .zero, size: CGSize(width: 9, height: 16)))
@@ -34,6 +35,8 @@ extension UIViewController {
         ]
         
         self.navigationController?.navigationBar.titleTextAttributes = attributes
+        self.navigationController?.navigationBar.barTintColor = .white
+        self.navigationController?.navigationBar.shadowImage = UIImage()  // 스크롤시 네비게이션 바에 그림자가 자동으로 생기기 때문에 그림자도 제거해야함
         
 
     }
