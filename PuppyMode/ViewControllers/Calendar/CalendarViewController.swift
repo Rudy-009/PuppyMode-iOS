@@ -68,4 +68,8 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, fillSelectionColorFor date: Date) -> UIColor? {
         return .black
     }
+    
+    func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
+        calendarView.updateMonthLabel(for: calendar.currentPage)
+    }
 }

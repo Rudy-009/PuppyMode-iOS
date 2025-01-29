@@ -107,7 +107,7 @@ class CalendarView: UIView {
     }
     
     // MARK: - function
-    private func updateMonthLabel(for date: Date) {
+    public func updateMonthLabel(for date: Date) {
         let yearFormatter = DateFormatter()
         yearFormatter.dateFormat = "yyyy"
         yearLabel.text = yearFormatter.string(from: date)
