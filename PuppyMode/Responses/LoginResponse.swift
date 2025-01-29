@@ -23,4 +23,5 @@ struct UserInfo: Codable {
     let userId: Int
     let username: String
     let email: String
+    let isNewUser: Bool
 }

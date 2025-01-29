@@ -21,6 +21,11 @@ class HomeViewController: UIViewController {
 
 }
 
+//MARK: Configure Puppy Character
+extension HomeViewController {
+    
+}
+
 //MARK: Add Button Actions
 extension HomeViewController {
     private func defineButtonActions() {

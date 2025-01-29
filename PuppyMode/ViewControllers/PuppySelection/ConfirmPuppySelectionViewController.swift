@@ -8,7 +8,7 @@
 import UIKit
 import Alamofire
 
-class PuppySelectionConfirmViewController: UIViewController {
+class ConfirmPuppySelectionViewController: UIViewController {
     
     private let puppySelectionConfirmView = PuppySelectionConfirmView()
     
@@ -16,6 +16,7 @@ class PuppySelectionConfirmViewController: UIViewController {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
         self.view = puppySelectionConfirmView
+        self.connectButtonActions()
     }
     
     private func connectButtonActions() {
@@ -24,10 +25,10 @@ class PuppySelectionConfirmViewController: UIViewController {
     
     @objc
     private func startButtonPressed() {
-        
+        RootViewControllerService.toBaseViewController()
     }
     
-    public func configure(puppy: BabyPuppyTypeEnum) {
-        puppySelectionConfirmView.configure(puppy: puppy)
+    public func configure(puppy: PuppyEnum, imageURL: URL) {
+        puppySelectionConfirmView.configure(puppy: puppy, imageURL: imageURL)
     }
 }
