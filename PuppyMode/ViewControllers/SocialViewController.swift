@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import KakaoSDKTalk
 
 class SocialViewController: UIViewController {
     
@@ -19,6 +20,17 @@ class SocialViewController: UIViewController {
         socialView.rankingTableView.delegate = self
         socialView.rankingTableView.dataSource = self
         setupAction()
+        callFreiends()
+    }
+    
+    private func callFreiends() {
+        TalkApi.shared.friends { (friends, error) in
+            if let error = error {
+                print(error)
+            } else {
+                
+            }
+        }
     }
     
     private func setupAction() {
@@ -28,11 +40,9 @@ class SocialViewController: UIViewController {
     @objc
     private func segmentedControlValueChanged(segment: UISegmentedControl) {
         if segment.selectedSegmentIndex == 0 {
-            print("segment index is ",segment.selectedSegmentIndex)
             currentData = DummyRankModel.allData
             socialView.addMyRankView()
         } else {
-            print("segment index is ",segment.selectedSegmentIndex)
             currentData = DummyRankModel.friendData
             socialView.removeMyRankView()
         }

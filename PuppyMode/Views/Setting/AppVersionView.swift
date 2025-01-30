@@ -49,8 +49,4 @@ class AppVersionView: UIView {
             make.trailing.equalToSuperview().offset(-36)
         }
     }
-    
-    public func setAppVersionLabel(version: String) {
-        appVersionLabel.text = version
-    }
 }

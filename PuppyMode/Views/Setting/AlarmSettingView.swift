@@ -8,6 +8,7 @@
 import UIKit
 
 class AlarmSettingView: UIView {
+    
     private lazy var notificationTitleLabel = UILabel().then { label in
         label.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)
         label.font = UIFont(name: "Pretendard-Regular", size: 18)

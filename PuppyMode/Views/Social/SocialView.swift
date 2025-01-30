@@ -31,12 +31,9 @@ class SocialView: UIView {
     
     public lazy var rankingTableView = UITableView().then {
         $0.rowHeight = UITableView.automaticDimension
-        // $0.estimatedRowHeight = 60
         $0.separatorStyle = .none
-        $0.sectionHeaderTopPadding = 10
         $0.backgroundColor = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
         $0.rowHeight = 65
-        $0.separatorInset = UIEdgeInsets(top: 5, left: 0, bottom: 5, right: 0)
         $0.allowsSelection = false
         $0.register( RankingTableViewCell.self, forCellReuseIdentifier: RankingTableViewCell.identifier)
     }
@@ -99,7 +96,6 @@ class SocialView: UIView {
             make.top.equalTo(myRankView.snp.bottom)
             make.leading.trailing.bottom.equalToSuperview()
         }
-        
     }
     
     public func removeMyRankView() {

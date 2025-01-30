@@ -2,6 +2,7 @@ import UIKit
 import AuthenticationServices
 import KakaoSDKAuth
 import KakaoSDKUser
+import KakaoSDKCommon
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -13,43 +14,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         window?.rootViewController = BaseViewController()
         window?.makeKeyAndVisible()
-        
-        let appleIDProvider = ASAuthorizationAppleIDProvider()
-        
-        if let appleUserID = KeychainService.get(key: K.String.appleUserID) {
-            appleIDProvider.getCredentialState(forUserID: appleUserID) { (credentialState, error) in
-                switch credentialState {
-                case .authorized:
-                    DispatchQueue.main.async {
-                        self.window?.rootViewController = BaseViewController()
-                    }
-                case .revoked:
-                    print("revoked")
-                    DispatchQueue.main.async {
-                        self.window?.rootViewController = LoginViewController()
-                    }
-                case .notFound:
-                    print("notFound")
-                    DispatchQueue.main.async {
-                        self.window?.rootViewController = LoginViewController()
-                    }
-                case .transferred:
-                    print("transferred")
-                default:
-                    DispatchQueue.main.async {
-                        self.window?.rootViewController = LoginViewController()
-                    }
-                }
-            }
-            return
-        }
-        
-        if let kakaoUserID = KeychainService.get(key: K.String.kakaoUserID) { // Automatic Login
-            
-        }
-        
-        // New User
-        self.window?.rootViewController = LoginViewController()
         return
     }
     
@@ -96,10 +60,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.rootViewController = viewController
         
         if animated {
-            UIView.transition(with: window, duration: 0.5, options: .transitionFlipFromRight,
+            UIView.transition(with: window,
+                             duration: 0.5,
+                             options: .transitionFlipFromRight,
                              animations: nil,
                              completion: nil)
         }
     }
 
 }
+

@@ -113,10 +113,6 @@ class RevokeView: UIView {
         }
         
     }
-    
-    public func configure(characterName: String) {
-        self.characterName = characterName
-    }
 }
 
 #Preview{

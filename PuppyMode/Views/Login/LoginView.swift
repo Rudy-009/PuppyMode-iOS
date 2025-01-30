@@ -9,7 +9,7 @@ import UIKit
 
 class LoginView: UIView {
     
-    private lazy var slogunLabel = UILabel().then { label in
+    lazy private var slogunLabel = UILabel().then { label in
         label.text = "어차피 못지킬 약속,\n강아지 모드가 도와드립니다."
         label.numberOfLines = 0
         label.font = UIFont(name: "NotoSansKR-Bold", size: 28)
@@ -17,28 +17,32 @@ class LoginView: UIView {
         label.backgroundColor = .clear
     }
     
-    private lazy var underline = UIView().then { view in
+    lazy private var underline = UIView().then { view in
         view.backgroundColor = .main
     }
+
     
-    private lazy var subLabel = UILabel().then { label in
+    lazy private var subLabel = UILabel().then { label in
         label.text = "올바른 음주 습관을 가질 수 있도록 도와드릴게요"
         label.numberOfLines = 0
         label.font = UIFont(name: "NotoSansKR-Medium", size: 17)
         label.textColor = UIColor(red: 0.541, green: 0.541, blue: 0.557, alpha: 1)
         var paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineHeightMultiple = 0.97
+        // Line height: 24 pt
+        // (identical to box height)
         label.textAlignment = .center
         label.attributedText = NSMutableAttributedString(string: "올바른 음주 습관을 가질 수 있도록 도와드릴게요", attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
+
     }
     
-    private lazy var characterImage = UIImageView().then { image in
+    lazy private var characterImage = UIImageView().then { image in
         image.image = UIImage(named: "HomeCharacterDefaultImage")
     }
     
-    public lazy var appleLoginButton = SocialLoginButton()
+    lazy public var appleLoginButton = SocialLoginButton()
     
-    public lazy var kakaoLoginButton = SocialLoginButton()
+    lazy public var kakaoLoginButton = SocialLoginButton()
     
     
     override init(frame: CGRect) {
@@ -81,22 +85,22 @@ class LoginView: UIView {
             make.top.equalTo(subLabel.snp.bottom).offset(30)
         }
         
-        kakaoLoginButton.configure(name: "카카오로 로그인", logo: .kakaoLogin , backgroundColor: .kakaoLogin)
+        kakaoLoginButton.configure(name: "카카오로 로그인", logo: UIImage(named: "KakaoLogin")!, backgroundColor: .kakaoLogin)
         
         kakaoLoginButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.top.equalTo(characterImage.snp.bottom).offset(60)
         }
         
-        appleLoginButton.configure(name: "Apple로 로그인", logo: .appleLogin , backgroundColor: .white)
-        appleLoginButton.addBorderline()
+        appleLoginButton.configure(name: "Apple로 로그인", logo: UIImage(named: "AppleLogin")!, backgroundColor: .white)
+        appleLoginButton.addFrame()
         
         appleLoginButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.top.equalTo(kakaoLoginButton.snp.bottom).offset(30)
         }
+
     }
-    
 }
 
 import SwiftUI
