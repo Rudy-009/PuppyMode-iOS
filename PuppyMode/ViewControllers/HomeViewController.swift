@@ -114,7 +114,6 @@ extension HomeViewController {
     @objc
     private func puppyImagePressed() {
         print("Puppy Image Button Pressed")
-        NotificationService.sendNotification(body: NotificationContent(title: "Hello", body: "From App", image: nil))
     }
     
     // 주량 확인 페이지 이동 함수
