@@ -5,7 +5,7 @@
 //  Created by 이승준 on 1/27/25.
 //
 
-import Foundation
+import Alamofire
 
 class UserInfoService {
     
@@ -23,4 +23,18 @@ class UserInfoService {
         KeychainService.delete(key: UserInfoKey.email.rawValue)
     }
     
+    static func getUserInfo() async throws -> UserInfoResponse? {
+        guard let fcm = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+            return nil
+        }
+        
+        return try await AF.request(K.String.puppymodeLink + "/users",
+                                  headers: [
+                                      "accept": "*/*",
+                                      "Authorization": "Bearer " + fcm
+                                  ])
+        .serializingDecodable(UserInfoResponse.self)
+        .value
+    }
+
 }
