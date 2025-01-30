@@ -22,13 +22,13 @@ class BaseViewController: UITabBarController {
         homeViewController.getPupptInfo()
         return UINavigationController(rootViewController: homeViewController)
     }()
-    private lazy var socialVC: UINavigationController = {
-        let socialViewController = SocialViewController()
-        socialViewController.setToggle()
-        return UINavigationController(rootViewController: socialViewController) 
-    }
+    private lazy var socialVC = UINavigationController(rootViewController: SocialViewController())
     private let calendarVC = UINavigationController(rootViewController: CalendarViewController())
-    private let settingVC = UINavigationController(rootViewController: SettingViewController())
+    private lazy var settingVC: UINavigationController = {
+        let settingViewController = SettingViewController()
+        settingViewController.setToggle()
+        return UINavigationController(rootViewController: settingViewController)
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
