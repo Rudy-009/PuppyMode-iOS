@@ -22,7 +22,7 @@ class BaseViewController: UITabBarController {
         homeViewController.getPupptInfo()
         return UINavigationController(rootViewController: homeViewController)
     }()
-    private lazy var socialVC = SocialViewController()
+    private lazy var socialVC = UINavigationController(rootViewController: SocialViewController())
     private let calendarVC = UINavigationController(rootViewController: CalendarViewController())
     private lazy var settingVC: UINavigationController = {
         let settingViewController = SettingViewController()
