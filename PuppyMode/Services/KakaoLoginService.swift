@@ -53,7 +53,7 @@ class KakaoLoginService {
         .responseDecodable(of: LoginResponse.self) { response in
             switch response.result {
             case .success(let loginResponse):
-                if UserInfoService.addUserInfo(userInfo: loginResponse.result) {
+                if UserInfoService.addUserInfoToKeychainService(userInfo: loginResponse.result) {
                     if let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue ) {
                         print("JWT: \(jwt)")
                         print("Access Token: \(accessToken)")
