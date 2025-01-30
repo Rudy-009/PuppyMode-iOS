@@ -17,14 +17,12 @@ class UserInfoService {
         KeychainService.add(key: UserInfoKey.email.rawValue, value: userInfo.userInfo.email)
     }
     
-
     static func deleteAllUserInfoFromKeychainService() -> Bool {
         return KeychainService.delete(key: UserInfoKey.jwt.rawValue) &&
         KeychainService.delete(key: UserInfoKey.userId.rawValue) &&
         KeychainService.delete(key: UserInfoKey.username.rawValue) &&
         KeychainService.delete(key: UserInfoKey.email.rawValue)
     }
-    
 
     @MainActor
     static func getUserInfo() async throws -> UserInfoResponse? {
@@ -40,4 +38,5 @@ class UserInfoService {
         .serializingDecodable(UserInfoResponse.self)
         .value
     }
+
 }
