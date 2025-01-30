@@ -131,6 +131,22 @@ class HomeView: UIView {
     
 }
 
+extension HomeView {
+    
+    public func configurePuppyInfo(to puppyInfo: PuppyInfoResult?) {
+        puppyNameLabel.text = puppyInfo?.puppyName ?? "이름을 지어주세요."
+        dogInfoLabel.text = "Level" + String(puppyInfo!.level!) + " " + puppyInfo!.levelName!
+        let total = Float(puppyInfo!.levelMaxExp! - puppyInfo!.levelMinExp!)
+        let progress = Float(puppyInfo!.puppyExp! - puppyInfo!.levelMinExp!)
+        
+        let percentageInt = Int((progress / total) * 100)
+        let percentageDouble = progress / total
+        
+        progressLabel.text = String(percentageInt) + "%"
+        progressBar.setProgress(percentageDouble, animated: false)
+    }
+}
+
 //MARK: Add Compoments
 extension HomeView {
     

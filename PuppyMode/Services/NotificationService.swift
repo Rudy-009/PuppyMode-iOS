@@ -41,7 +41,7 @@ class NotificationService {
                     headers: headers)
             .responseDecodable(of: NotificationPostResponse.self) { response in
                 switch response.result {
-                case .success(_):
+                case .success(let response):
                     print()
                 case .failure(let error):
                     print("Error: \(error)")
