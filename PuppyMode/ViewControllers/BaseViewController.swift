@@ -22,9 +22,13 @@ class BaseViewController: UITabBarController {
         homeViewController.getPupptInfo()
         return UINavigationController(rootViewController: homeViewController)
     }()
-    private let socialVC = SocialViewController()
-    private let calendarVC = CalendarViewController()
-    private let settingVC = SettingViewController()
+    private lazy var socialVC = UINavigationController(rootViewController: SocialViewController())
+    private let calendarVC = UINavigationController(rootViewController: CalendarViewController())
+    private lazy var settingVC: UINavigationController = {
+        let settingViewController = SettingViewController()
+        settingViewController.setToggle()
+        return UINavigationController(rootViewController: settingViewController)
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +39,6 @@ class BaseViewController: UITabBarController {
         socialVC.tabBarItem = UITabBarItem(title: "소셜", image: UIImage(systemName: "person.2.fill"), tag: 1)
         calendarVC.tabBarItem = UITabBarItem(title: "캘린더", image: UIImage(systemName: "calendar"), tag: 2)
         settingVC.tabBarItem = UITabBarItem(title: "설정", image: UIImage(systemName: "gearshape.fill"), tag: 3)
-        settingVC.setToggle()
         
         self.viewControllers = [homeVC, socialVC, calendarVC, settingVC]
     }

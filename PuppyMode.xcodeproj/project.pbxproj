@@ -30,7 +30,6 @@
 		23A04E2E2D2C0987008473B1 /* Exceptions for "PuppyMode" folder in "PuppyMode" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				API_Keys.xcconfig,
 				Info.plist,
 			);
 			target = 23A04E1B2D2C0972008473B1 /* PuppyMode */;
