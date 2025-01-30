@@ -78,7 +78,7 @@ extension AppDelegate: MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         
         if let fcm = KeychainService.get(key: FCMTokenKey.fcm.rawValue) {
-            print("Token already saved \(fcm)")
+            // print("Token already saved \(fcm)")
             return
         }
         
@@ -90,7 +90,7 @@ extension AppDelegate: MessagingDelegate {
         )
         
         if KeychainService.add(key: FCMTokenKey.fcm.rawValue, value: String(describing: fcmToken!) ) {
-            print("FCM token added: \(String(describing: fcmToken!))")
+            // print("FCM token added: \(String(describing: fcmToken!))")
         }
         
         // TODO: If necessary send token to application server.
