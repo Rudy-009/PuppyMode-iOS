@@ -10,6 +10,7 @@ import Alamofire
 class UserInfoService {
     
     static func addUserInfoToKeychainService(userInfo: LoginResult) -> Bool {
+
         return KeychainService.add(key: UserInfoKey.jwt.rawValue, value: userInfo.jwt) &&
         KeychainService.add(key: UserInfoKey.userId.rawValue, value: String(userInfo.userInfo.userId)) &&
         KeychainService.add(key: UserInfoKey.username.rawValue, value: userInfo.userInfo.username) &&
@@ -22,7 +23,8 @@ class UserInfoService {
         KeychainService.delete(key: UserInfoKey.username.rawValue) &&
         KeychainService.delete(key: UserInfoKey.email.rawValue)
     }
-    
+
+    @MainActor
     static func getUserInfo() async throws -> UserInfoResponse? {
         guard let fcm = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
             return nil
