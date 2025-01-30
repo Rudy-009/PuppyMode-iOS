@@ -53,7 +53,6 @@ extension RevokeViewController {
             _ = UserInfoService.deleteAllUserInfoFromKeychainService()
             self.appleRevoke()
         }
-        
     }
     
     private func kakaoRevoke() {
@@ -61,6 +60,7 @@ extension RevokeViewController {
             if let error = error {
                 print(error)
             } else {
+                self.changeRootToLoginViewController()
                 print("unlink() success.")
             }
         }
@@ -69,7 +69,7 @@ extension RevokeViewController {
     private func appleRevoke() {
         // Apple 서버에서 탈퇴하기
     }
-    
+
     private func changeRootToLoginViewController() {
         let baseViewController = LoginViewController()
         let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate

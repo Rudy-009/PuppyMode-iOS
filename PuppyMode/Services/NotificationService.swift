@@ -28,6 +28,7 @@ class NotificationService {
             image: nil
         )
         
+
         let headers: HTTPHeaders = [
             "accept": "*/*",
             "Authorization": "Bearer \(jwt)",
