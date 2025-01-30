@@ -9,6 +9,7 @@ import UIKit
 import FSCalendar
 import Then
 import SnapKit
+import ToosieSlide
 
 class CalendarView: UIView {
     // MARK: - view
@@ -87,6 +88,17 @@ class CalendarView: UIView {
         $0.appearance.eventSelectionColor = .main
     }
     
+    // 캐러셀
+    public let carouselSlide = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewCarouselLayout().then {
+            $0.itemSize = CGSize(width: 218, height: 274)
+            $0.minimumLineSpacing = 10
+    }).then {
+        $0.isHidden = true
+        $0.showsHorizontalScrollIndicator = false
+        $0.backgroundColor = .clear
+        $0.register(CalendarCollectionViewCell.self, forCellWithReuseIdentifier: CalendarCollectionViewCell.identifier)
+    }
+    
     // 블러 배경
     public let blurBackgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .light)).then {
         $0.isHidden = true
@@ -141,6 +153,7 @@ class CalendarView: UIView {
             changeButton,
             monthLabel,
             calendar,
+            carouselSlide,
             blurBackgroundView
         ].forEach {
             addSubview($0)
@@ -176,6 +189,12 @@ class CalendarView: UIView {
             $0.top.equalTo(safeAreaLayoutGuide).offset(210)
             $0.horizontalEdges.equalToSuperview().inset(15)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-150)
+        }
+        
+        carouselSlide.snp.makeConstraints {
+            $0.top.equalTo(calendar.snp.bottom).offset(15)
+            $0.horizontalEdges.equalToSuperview()
+            $0.height.equalTo(274)
         }
         
         blurBackgroundView.snp.makeConstraints {

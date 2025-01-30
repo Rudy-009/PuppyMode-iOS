@@ -22,6 +22,7 @@ class CalendarViewController: UIViewController {
     // MARK: - function
     private func setDelegate() {
         calendarView.calendar.delegate = self
+        calendarView.carouselSlide.dataSource = self
     }
     
     // MARK: - action
@@ -40,6 +41,7 @@ class CalendarViewController: UIViewController {
 
 }
 
+// MARK: - extension
 extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearance {
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
 //        let dateFormatter = DateFormatter()
@@ -61,7 +63,10 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
             self.calendarView.afterMonthLabel.isHidden = false
             self.calendarView.afterChangeButton.isHidden = false
             
+            self.calendarView.carouselSlide.isHidden = false
+            
             self.calendarView.calendar.transform = CGAffineTransform(translationX: 0, y: -170)
+            self.calendarView.carouselSlide.transform = CGAffineTransform(translationX: 0, y: -170)
         })
     }
     
@@ -71,5 +76,21 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
     
     func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
         calendarView.updateMonthLabel(for: calendar.currentPage)
+    }
+}
+
+extension CalendarViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 8
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CalendarCollectionViewCell.identifier, for: indexPath) as? CalendarCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        
+        let list = [ "1", "2", "3", "4", "5", "6", "7", "8" ]
+        cell.testLabel.text = list[indexPath.row]
+        return cell
     }
 }
