@@ -45,8 +45,29 @@ class CalendarViewController: UIViewController {
     
     // MARK: - action
     private func setAction() {
+        calendarView.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
         calendarView.changeButton.addTarget(self, action: #selector(changeButtonTapped), for: .touchUpInside)
         calendarView.afterChangeButton.addTarget(self, action: #selector(changeButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc
+    private func backButtonTapped() {
+        self.calendarView.yearLabel.isHidden = false
+        self.calendarView.monthLabel.isHidden = false
+        self.calendarView.changeButton.isHidden = false
+        
+        self.calendarView.afterYearLabel.isHidden = true
+        self.calendarView.afterMonthLabel.isHidden = true
+        self.calendarView.afterChangeButton.isHidden = true
+        
+        self.calendarView.carouselBackground.isHidden = true
+        self.calendarView.carouselSlide.isHidden = true
+        
+        UIView.animate(withDuration: 0.3, animations: {
+            self.calendarView.calendar.transform = .identity
+            self.calendarView.carouselBackground.transform = .identity
+            self.calendarView.carouselSlide.transform = .identity
+        })
     }
     
     @objc

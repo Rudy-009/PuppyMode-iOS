@@ -13,6 +13,11 @@ import ToosieSlide
 
 class CalendarView: UIView {
     // MARK: - view
+    // 뒤로가기 버튼
+    public let backButton = UIButton().then {
+        $0.setImage(.iconBack, for: .normal)
+    }
+    
     // 년도
     public let yearLabel = UILabel().then {
         $0.font = UIFont(name: "Roboto-Medium", size: 20)
@@ -155,6 +160,7 @@ class CalendarView: UIView {
         setStackView()
         
         [
+            backButton,
             dateTitleStackView, afterChangeButton,
             yearLabel,
             changeButton,
@@ -164,6 +170,13 @@ class CalendarView: UIView {
             blurBackgroundView
         ].forEach {
             addSubview($0)
+        }
+        
+        backButton.snp.makeConstraints {
+            $0.centerY.equalTo(dateTitleStackView)
+            $0.left.equalToSuperview().offset(30)
+            $0.width.equalTo(13)
+            $0.height.equalTo(20)
         }
         
         dateTitleStackView.snp.makeConstraints {
