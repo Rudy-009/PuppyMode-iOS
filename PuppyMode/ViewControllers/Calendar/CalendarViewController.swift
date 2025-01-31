@@ -10,6 +10,14 @@ import FSCalendar
 
 class CalendarViewController: UIViewController {
     private let calendarView = CalendarView()
+    
+    private var selectedDate: Date? {
+        didSet {
+            updateDates()
+        }
+    }
+    private var dates: [Date] = []
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,6 +31,16 @@ class CalendarViewController: UIViewController {
     private func setDelegate() {
         calendarView.calendar.delegate = self
         calendarView.carouselSlide.dataSource = self
+    }
+    
+    private func updateDates() {
+        guard let selectedDate = selectedDate else { return }
+        
+        dates = (0..<8).map { offset in
+            Calendar.current.date(byAdding: .day, value: offset - 4, to: selectedDate)!
+        }
+        
+        calendarView.carouselSlide.reloadData()
     }
     
     // MARK: - action
@@ -44,6 +62,8 @@ class CalendarViewController: UIViewController {
 // MARK: - extension
 extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearance {
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+        selectedDate = date
+        
 //        let dateFormatter = DateFormatter()
 //        dateFormatter.dateFormat = "yyyy.MM.dd"
 //        dateFormatter.locale = Locale(identifier: "ko_KR")
@@ -63,11 +83,15 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
             self.calendarView.afterMonthLabel.isHidden = false
             self.calendarView.afterChangeButton.isHidden = false
             
+            self.calendarView.carouselBackground.isHidden = false
             self.calendarView.carouselSlide.isHidden = false
             
             self.calendarView.calendar.transform = CGAffineTransform(translationX: 0, y: -170)
+            self.calendarView.carouselBackground.transform = CGAffineTransform(translationX: 0, y: -170)
             self.calendarView.carouselSlide.transform = CGAffineTransform(translationX: 0, y: -170)
         })
+        
+        calendarView.carouselSlide.reloadData()
     }
     
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, fillSelectionColorFor date: Date) -> UIColor? {
@@ -89,8 +113,13 @@ extension CalendarViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        let list = [ "1", "2", "3", "4", "5", "6", "7", "8" ]
-        cell.testLabel.text = list[indexPath.row]
+        if let selectedDate = selectedDate {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy.MM.dd"
+            dateFormatter.locale = Locale(identifier: "ko_KR")
+            cell.dateLabel.text = dateFormatter.string(from: selectedDate)
+        }
+        
         return cell
     }
 }

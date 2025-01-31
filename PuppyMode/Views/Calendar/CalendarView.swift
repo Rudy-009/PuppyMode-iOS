@@ -88,10 +88,17 @@ class CalendarView: UIView {
         $0.appearance.eventSelectionColor = .main
     }
     
+    // 캐러셀 배경
+    public let carouselBackground = UIView().then {
+        $0.isHidden = true
+        $0.backgroundColor = UIColor(red: 0.93, green: 0.93, blue: 0.93, alpha: 1)
+    }
+    
     // 캐러셀
     public let carouselSlide = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewCarouselLayout().then {
-            $0.itemSize = CGSize(width: 218, height: 274)
-            $0.minimumLineSpacing = 10
+        $0.itemSize = CGSize(width: 218, height: 278)
+        $0.minimumLineSpacing = 10
+        $0.nonFocusedItemsAlphaValue = 1
     }).then {
         $0.isHidden = true
         $0.showsHorizontalScrollIndicator = false
@@ -153,7 +160,7 @@ class CalendarView: UIView {
             changeButton,
             monthLabel,
             calendar,
-            carouselSlide,
+            carouselBackground, carouselSlide,
             blurBackgroundView
         ].forEach {
             addSubview($0)
@@ -189,6 +196,12 @@ class CalendarView: UIView {
             $0.top.equalTo(safeAreaLayoutGuide).offset(210)
             $0.horizontalEdges.equalToSuperview().inset(15)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(-150)
+        }
+        
+        carouselBackground.snp.makeConstraints {
+            $0.horizontalEdges.equalToSuperview()
+            $0.centerY.equalTo(carouselSlide)
+            $0.height.equalTo(120)
         }
         
         carouselSlide.snp.makeConstraints {
