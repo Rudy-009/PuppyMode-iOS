@@ -42,10 +42,16 @@ extension RevokeViewController {
     private func revokeButtonPressed() {
         print("Revoke Button Pressed")
         
-        if let _ = KeychainService.get(key: K.String.kakaoUserID) {
-            if KeychainService.delete(key: K.String.kakaoUserID) {
-                self.kakaoRevoke()
-            }
+        if let _ = KeychainService.get(key: KakaoAPIKey.kakaoUserID.rawValue) {
+            _ = KeychainService.delete(key: KakaoAPIKey.kakaoUserID.rawValue)
+            _ = UserInfoService.deleteAllUserInfoFromKeychainService()
+            self.kakaoRevoke()
+        }
+        
+        if let _ = KeychainService.get(key: AppleAPIKey.appleUserID.rawValue) {
+            _ = KeychainService.delete(key: AppleAPIKey.appleUserID.rawValue)
+            _ = UserInfoService.deleteAllUserInfoFromKeychainService()
+            self.appleRevoke()
         }
     }
     
@@ -53,14 +59,17 @@ extension RevokeViewController {
         UserApi.shared.unlink {(error) in
             if let error = error {
                 print(error)
-            }
-            else {
+            } else {
                 self.changeRootToLoginViewController()
                 print("unlink() success.")
             }
         }
     }
     
+    private func appleRevoke() {
+        // Apple 서버에서 탈퇴하기
+    }
+
     private func changeRootToLoginViewController() {
         let baseViewController = LoginViewController()
         let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate

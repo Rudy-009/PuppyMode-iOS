@@ -89,15 +89,13 @@ class DecoViewController: UIViewController {
         case 0:
             items = DecoItemModel.hatData
         case 1:
-            items = DecoItemModel.faceData
+            items = DecoItemModel.clothesData
         case 2:
-            items = DecoItemModel.clothData
+            items = DecoItemModel.floorData
         case 3:
-            items = DecoItemModel.faceData
+            items = DecoItemModel.houseData
         case 4:
-            print("바닥")
-        case 5:
-            print("장난감")
+            items = DecoItemModel.toyData
         default:
             items = []
         }

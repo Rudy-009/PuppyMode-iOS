@@ -17,10 +17,18 @@ class CustomTabBar: UITabBar {
 }
 
 class BaseViewController: UITabBarController {
-    private let homeVC = UINavigationController(rootViewController: HomeViewController())
-    private let socialVC = SocialViewController()
+    private lazy var homeVC: UINavigationController = {
+        let homeViewController = HomeViewController()
+        homeViewController.getPupptInfo()
+        return UINavigationController(rootViewController: homeViewController)
+    }()
+    private lazy var socialVC = UINavigationController(rootViewController: SocialViewController())
     private let calendarVC = UINavigationController(rootViewController: CalendarViewController())
-    private let settingVC = SettingViewController()
+    private lazy var settingVC: UINavigationController = {
+        let settingViewController = SettingViewController()
+        settingViewController.setToggle()
+        return UINavigationController(rootViewController: settingViewController)
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()

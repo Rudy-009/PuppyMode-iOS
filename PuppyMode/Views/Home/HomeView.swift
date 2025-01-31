@@ -36,6 +36,12 @@ class HomeView: UIView {
         button.layer.cornerRadius = topButtonsCornerRadius
     }
     
+    lazy public var countdownLabel = UILabel().then { label in
+        label.textAlignment = .center
+        label.font = UIFont(name: "NotoSansKR-Bold", size: 14)!
+        label.textColor = UIColor(hex: "#3C3C3C")
+    }
+    
     lazy public var collectionButton = UIButton().then { button in
         button.setImage(UIImage(named: "CollectionButtonImage"), for: .normal)
         button.layer.cornerRadius = topButtonsCornerRadius
@@ -99,7 +105,7 @@ class HomeView: UIView {
         label.textColor = UIColor(red: 0.624, green: 0.584, blue: 0.584, alpha: 1)
     }
     
-    lazy public var progressBar = UIProgressView().then{pro in
+    lazy public var progressBar = UIProgressView().then{ pro in
         pro.setProgress(0.55, animated: false)
         pro.tintColor = .main
         pro.largeContentImage = UIImage(named: "ProgressBarBackground")
@@ -125,6 +131,22 @@ class HomeView: UIView {
     
 }
 
+extension HomeView {
+    
+    public func configurePuppyInfo(to puppyInfo: PuppyInfoResult?) {
+        puppyNameLabel.text = puppyInfo?.puppyName ?? "이름을 지어주세요."
+        dogInfoLabel.text = "Level" + String(puppyInfo!.level!) + " " + puppyInfo!.levelName!
+        let total = Float(puppyInfo!.levelMaxExp! - puppyInfo!.levelMinExp!)
+        let progress = Float(puppyInfo!.puppyExp! - puppyInfo!.levelMinExp!)
+        
+        let percentageInt = Int((progress / total) * 100)
+        let percentageDouble = progress / total
+        
+        progressLabel.text = String(percentageInt) + "%"
+        progressBar.setProgress(percentageDouble, animated: false)
+    }
+}
+
 //MARK: Add Compoments
 extension HomeView {
     
@@ -141,7 +163,7 @@ extension HomeView {
         
         topButtonStack.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(topButtonSuperViewSpacing)
-            make.top.equalTo(self.safeAreaLayoutGuide).offset(18)
+            make.top.equalTo(self.safeAreaLayoutGuide).offset(52)
             make.height.equalTo(topRectangleHeight)
         }
         
@@ -157,6 +179,12 @@ extension HomeView {
             make.trailing.equalTo(collectionButton.snp.leading).offset(-topButtonSpacing)
             make.height.equalTo(topRectangleHeight)
             make.width.equalTo(topRectangleWidth)
+        }
+        
+        rompingButton.addSubview(countdownLabel)
+        countdownLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview()
         }
         
         collectionButton.snp.makeConstraints { make in

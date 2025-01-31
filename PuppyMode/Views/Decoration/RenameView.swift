@@ -32,7 +32,8 @@ class RenameView: UIView {
     }
     
     public lazy var renameSaveButton = UIButton().then { button in
-        button.setTitle("저장", for: .normal)
+        button.setTitle("확인", for: .normal)
+        button.titleLabel?.textColor = .white
         button.titleLabel?.font = UIFont(name: "NotoSansKR-Regular", size: 20)
         button.backgroundColor = .main
         button.layer.cornerRadius = 10
