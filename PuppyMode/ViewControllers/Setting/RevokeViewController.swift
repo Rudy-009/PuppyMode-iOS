@@ -7,6 +7,7 @@
 
 import UIKit
 import KakaoSDKUser
+import Alamofire
 
 class RevokeViewController: UIViewController {
     
@@ -42,6 +43,7 @@ extension RevokeViewController {
     private func revokeButtonPressed() {
         print("Revoke Button Pressed")
         
+
         if let _ = KeychainService.get(key: KakaoAPIKey.kakaoUserID.rawValue) {
             _ = KeychainService.delete(key: KakaoAPIKey.kakaoUserID.rawValue)
             _ = UserInfoService.deleteAllUserInfoFromKeychainService()
@@ -52,7 +54,32 @@ extension RevokeViewController {
             _ = KeychainService.delete(key: AppleAPIKey.appleUserID.rawValue)
             _ = UserInfoService.deleteAllUserInfoFromKeychainService()
             self.appleRevoke()
+
+        let kakaoAccessToken = KeychainService.get(key:  KakaoAPIKey.kakaoAccessToken.rawValue ) ?? "none"
+        let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue)
+        
+        print("kakaoAccessToken \(kakaoAccessToken)")
+        
+        AF.request(K.String.puppymodeLink + "/withdraw",
+                   method: .delete,
+                   parameters: ["accessToken": kakaoAccessToken],
+                   headers: ["accept": "*/*",
+                             "Authorization": "Bearer \(jwt!)"]).responseDecodable(of: RevokeResponse.self) { response in
+            switch response.result {
+            case .success(let response):
+                print("success: \(response)")
+            case .failure(let error):
+                print(error)
+            }
+
         }
+        
+        _ = KeychainService.delete(key: KakaoAPIKey.kakaoUserID.rawValue)
+        _ = KeychainService.delete(key: AppleAPIKey.appleUserID.rawValue)
+        _ = UserInfoService.deleteAllUserInfoFromKeychainService()
+        _ = KakaoLoginService.deleteAllKakaoToken()
+        self.kakaoRevoke()
+        RootViewControllerService.toLoginViewController()
     }
     
     private func kakaoRevoke() {
@@ -69,7 +96,6 @@ extension RevokeViewController {
     private func appleRevoke() {
         // Apple 서버에서 탈퇴하기
     }
-
     private func changeRootToLoginViewController() {
         let baseViewController = LoginViewController()
         let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate

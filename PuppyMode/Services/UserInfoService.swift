@@ -23,7 +23,6 @@ class UserInfoService {
         KeychainService.delete(key: UserInfoKey.username.rawValue) &&
         KeychainService.delete(key: UserInfoKey.email.rawValue)
     }
-
     @MainActor
     static func getUserInfo() async throws -> UserInfoResponse? {
         guard let fcm = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
