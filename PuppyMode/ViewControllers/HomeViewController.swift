@@ -120,6 +120,8 @@ extension HomeViewController {
     @objc
     private func rompingButtonPressed() {
         print("Romping Button Pressed")
+        // 서버 연동
+        rompingToServer()
         
         // 강아지 애니메이션 효과
         showDogAnimation()
@@ -130,7 +132,6 @@ extension HomeViewController {
         // 버튼 비활성화 & 타이머 시작
         startCooldown()
         
-        // 강아지 단계 퍼센트 5% 상승
     }
     
     @objc
@@ -145,7 +146,6 @@ extension HomeViewController {
             navController.modalPresentationStyle = .fullScreen
             self.present(navController, animated: true, completion: nil)
         }
-        
     }
     
     @objc
@@ -204,6 +204,34 @@ extension HomeViewController {
 
 // 놀아주기 버튼에 대한 함수
 extension HomeViewController {
+    
+    // 서버 연동
+    private func rompingToServer() {
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+        ]
+        
+        AF.request(K.String.puppymodeLink + "/puppies/play",
+                   method: .post,
+                   headers: headers)
+            .responseDecodable(of: PuppyPlayResponse.self) { [weak self] response in
+                
+                guard let self = self else { return }
+                
+                switch response.result {
+                case .success(let puppyResponse) :
+                    if puppyResponse.isSuccess {
+                        print("성공")
+                    } else {
+                        print("Puppy Play API Error: \(puppyResponse.message)")
+                    }
+                case .failure(let error) :
+                    print("Network Error: \(error.localizedDescription)")
+                }
+            }
+    }
+
 
     private func showDogAnimation() {
         

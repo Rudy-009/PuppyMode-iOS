@@ -41,7 +41,7 @@ class DecoViewController: UIViewController {
         // 초기 데이터 설정
         items = DecoItemModel.hatData
         
-        setupNavigationBar(title: "꾸미기", action: #selector(customBackButtonTapped))
+        setupNavigationBar(title: "꾸미기")
         setupCollectionView()
         
     }

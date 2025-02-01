@@ -24,3 +24,16 @@ struct PuppyInfoResult: Codable {
     let levelMaxExp: Int
     let puppyExp: Int
 }
+
+
+struct PuppyNamePatchResponse: Codable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: PuppyNamePatchResult?
+}
+
+struct PuppyNamePatchResult: Codable {
+    let puppyId: Int
+    let name: String
+}
