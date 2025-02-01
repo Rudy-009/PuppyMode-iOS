@@ -57,6 +57,7 @@ class KakaoLoginService {
                 if UserInfoService.addUserInfoToKeychainService(userInfo: loginResponse.result) {
                     if let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue ) {
                         print("JWT: \(jwt)")
+                        print("FCM: \(fcm)")
                         // print("Kakao Access Token: \(kakaoAccessToken)")
                     }
                     if loginResponse.result.userInfo.isNewUser {
