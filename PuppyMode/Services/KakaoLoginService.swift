@@ -57,13 +57,13 @@ class KakaoLoginService {
                 if UserInfoService.addUserInfoToKeychainService(userInfo: loginResponse.result) {
                     if let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue ) {
                         print("JWT: \(jwt)")
-                        print("Kakao Access Token: \(kakaoAccessToken)")
+                        // print("Kakao Access Token: \(kakaoAccessToken)")
                     }
                     if loginResponse.result.userInfo.isNewUser {
-                        print("새로운 회원")
+                        // print("새로운 회원")
                         RootViewControllerService.toPuppySelectionViewController()
                     } else {
-                        print("기존 회원")
+                        // print("기존 회원")
                         RootViewControllerService.toBaseViewController()
                     }
                 }
