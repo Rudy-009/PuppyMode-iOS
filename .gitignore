@@ -114,3 +114,4 @@ Puppymode Firebase Service Info.plist
 *.p8
 
 # End of https://www.toptal.com/developers/gitignore/api/xcode,swiftpackagemanager,swiftAPI_Keys.xcconfig
+.DS_Store

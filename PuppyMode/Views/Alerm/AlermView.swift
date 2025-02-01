@@ -15,7 +15,7 @@ class AlermView: UIButton {
     }
     
     private lazy var coinImageView = UIImageView().then { imageView in
-        imageView.image = UIImage(named: "coin")
+        imageView.image = UIImage(named: "Coin")
         imageView.contentMode = .scaleAspectFit
     }
     
