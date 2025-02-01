@@ -25,3 +25,10 @@ struct UserInfo: Codable {
     let email: String
     let isNewUser: Bool
 }
+
+struct RevokeResponse: Codable {
+    let isSuccess: Bool
+    let code: String?
+    let message: String?
+    let result: String?
+}
