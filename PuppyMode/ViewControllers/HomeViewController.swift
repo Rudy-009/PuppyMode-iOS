@@ -223,6 +223,7 @@ extension HomeViewController {
                 case .success(let puppyResponse) :
                     if puppyResponse.isSuccess {
                         print("성공")
+                        getPupptInfo()
                     } else {
                         print("Puppy Play API Error: \(puppyResponse.message)")
                     }
