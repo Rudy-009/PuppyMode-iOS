@@ -68,9 +68,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
 extension HomeViewController {
     
     func getPupptInfo() {
-        guard let fcm = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
-            return
-        }
+        guard let fcm = KeychainService.get(key: UserInfoKey.jwt.rawValue) else { return }
         
         AF.request( K.String.puppymodeLink + "/puppies",
                     headers: [
@@ -81,6 +79,7 @@ extension HomeViewController {
             switch response.result {
             case .success(let response):
                 let puppyInfo = response.result
+                print(puppyInfo)
                 //
                 self.homeView.configurePuppyInfo(to: puppyInfo)
             case .failure(let error):
