@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class AppointmentModalViewController: UIViewController {
+class AppointmentModalViewController: UIViewController, AddressSearchDelegate {
     
     // UI Elements
     private let blurBackgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .dark)).then {
@@ -90,6 +90,20 @@ class AppointmentModalViewController: UIViewController {
         $0.leftView = paddingView
         $0.leftViewMode = .always // Ensure the padding view is always visible
     }
+    
+    private let detailAddressTextField = UITextField().then {
+        $0.placeholder = "상세 주소를 입력하세요"
+        $0.textColor = UIColor(hex: "#AFAFAF")
+        $0.borderStyle = .none // Remove default border
+        $0.backgroundColor = UIColor(hex: "#FFFFFF") // Set background color to white
+        $0.font = UIFont.systemFont(ofSize: 14)
+        $0.textAlignment = .left // Align text to the left
+
+        // Add left padding
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0)) // Width = 10 for padding
+        $0.leftView = paddingView
+        $0.leftViewMode = .always // Ensure the padding view is always visible
+    }
 
     // Add a bottom border to the text field
     private func addBottomBorder(to textField: UITextField) {
@@ -151,12 +165,14 @@ class AppointmentModalViewController: UIViewController {
         containerView.addSubview(timeButton)
         containerView.addSubview(placePickerLabel)
         containerView.addSubview(locationTextField)
+        containerView.addSubview(detailAddressTextField)
         
         containerView.addSubview(cancelButton)
         containerView.addSubview(confirmButton)
         
         addBottomBorder(to: timeButton)
         addBottomBorder(to: locationTextField)
+        addBottomBorder(to: detailAddressTextField)
     }
     
     private func setupLayout() {
@@ -167,7 +183,7 @@ class AppointmentModalViewController: UIViewController {
         
         containerView.snp.makeConstraints { make in
             make.center.equalToSuperview() // 화면 중앙에 위치
-            make.height.equalTo(416) // 고정 높이 설정
+            make.height.equalTo(450) // 고정 높이 설정
             make.width.equalToSuperview().multipliedBy(0.9)
         }
         
@@ -207,15 +223,21 @@ class AppointmentModalViewController: UIViewController {
             make.height.equalTo(45)
         }
         
+        detailAddressTextField.snp.makeConstraints { make in
+            make.top.equalTo(locationTextField.snp.bottom).offset(10) // locationTextField 아래에 배치
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(45)
+        }
+        
         cancelButton.snp.makeConstraints { make in
-            make.top.equalTo(locationTextField.snp.bottom).offset(50)
+            make.top.equalTo(detailAddressTextField.snp.bottom).offset(30)
             make.leading.equalToSuperview().offset(20)
             make.width.equalTo(150)
             make.height.equalTo(46)
         }
         
         confirmButton.snp.makeConstraints { make in
-            make.top.equalTo(locationTextField.snp.bottom).offset(50)
+            make.top.equalTo(detailAddressTextField.snp.bottom).offset(30)
             make.left.equalTo(cancelButton.snp.right).offset(11)
             make.width.equalTo(150)
             make.height.equalTo(46)
@@ -231,9 +253,11 @@ class AppointmentModalViewController: UIViewController {
     @objc private func didTapConfirmButton() {
         let selectedTime = timeButton.title(for: .normal) ?? "시간을 선택해주세요"
         let location = locationTextField.text ?? "장소를 선택해주세요"
+        let locationDetail = detailAddressTextField.text ?? "장소를 선택해주세요"
         
         print("선택된 시간:", selectedTime) // 선택된 시간 출력
         print("입력된 장소:", location)   // 입력된 장소 출력
+        print("입력된 세부 장소:", locationDetail)   // 입력된 장소 출력
         
         dismiss(animated: true, completion: nil) // 모달 닫기
     }
@@ -318,7 +342,7 @@ class AppointmentModalViewController: UIViewController {
                 pickerContainerView.removeFromSuperview() // Remove from superview after animation completes
            }
     }
-
+    
     @objc private func didTapConfirmPicker() {
         guard let pickerContainerView = view.subviews.last as? UIView,
               let datePicker = pickerContainerView.subviews.compactMap({ $0 as? UIDatePicker }).first else { return }
@@ -338,11 +362,16 @@ class AppointmentModalViewController: UIViewController {
         pickerContainerView.removeFromSuperview()
     }
     
+    func didSelectAddress(_ roadAddress: String) {
+        locationTextField.text = roadAddress // 선택된 도로명 주소를 텍스트 필드에 표시
+    }
+    
     @objc private func didTapLocationTextField() {
         let addressSearchVC = AddressSearchModalViewController()
-        addressSearchVC.modalPresentationStyle = .overFullScreen // 화면 전체 덮기 스타일로 설정
-        addressSearchVC.modalTransitionStyle = .crossDissolve   // 부드러운 전환 효과 추가
+        addressSearchVC.delegate = self // Delegate 설정
+        addressSearchVC.modalPresentationStyle = .overFullScreen
+        addressSearchVC.modalTransitionStyle = .crossDissolve
         
-        present(addressSearchVC, animated: true, completion: nil) // 모달 표시
+        present(addressSearchVC, animated: true, completion: nil)
     }
 }
