@@ -34,7 +34,7 @@ extension SettingViewController {
     func setToggle() {
         let headers: HTTPHeaders = [
             "accept": "*/*",
-            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue))"
         ]
         
         AF.request(K.String.puppymodeLink + "/users/notifications",

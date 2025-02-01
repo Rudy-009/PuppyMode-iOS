@@ -28,7 +28,7 @@ class CollectionView: UIView {
         
         collectionTableView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(21)
-            make.top.equalTo(self.safeAreaLayoutGuide)
+            make.top.equalToSuperview().offset(133)
             make.bottom.equalToSuperview()
         }
     }
