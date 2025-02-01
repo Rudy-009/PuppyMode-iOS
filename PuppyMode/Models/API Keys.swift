@@ -12,6 +12,8 @@ enum UserInfoKey: String {
 }
 
 enum KakaoAPIKey: String {
+    case kakaoAccessToken
+    case kakaoRefreshToken
     case kakaoUserID = "KakaoUserID"
     case kakaoAppKey = "KAKAO_APP_KEY"
 }
