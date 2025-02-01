@@ -43,18 +43,6 @@ extension RevokeViewController {
     private func revokeButtonPressed() {
         print("Revoke Button Pressed")
         
-
-        if let _ = KeychainService.get(key: KakaoAPIKey.kakaoUserID.rawValue) {
-            _ = KeychainService.delete(key: KakaoAPIKey.kakaoUserID.rawValue)
-            _ = UserInfoService.deleteAllUserInfoFromKeychainService()
-            self.kakaoRevoke()
-        }
-        
-        if let _ = KeychainService.get(key: AppleAPIKey.appleUserID.rawValue) {
-            _ = KeychainService.delete(key: AppleAPIKey.appleUserID.rawValue)
-            _ = UserInfoService.deleteAllUserInfoFromKeychainService()
-            self.appleRevoke()
-
         let kakaoAccessToken = KeychainService.get(key:  KakaoAPIKey.kakaoAccessToken.rawValue ) ?? "none"
         let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue)
         
@@ -71,7 +59,7 @@ extension RevokeViewController {
             case .failure(let error):
                 print(error)
             }
-
+            
         }
         
         _ = KeychainService.delete(key: KakaoAPIKey.kakaoUserID.rawValue)
@@ -81,7 +69,7 @@ extension RevokeViewController {
         self.kakaoRevoke()
         RootViewControllerService.toLoginViewController()
     }
-    
+        
     private func kakaoRevoke() {
         UserApi.shared.unlink {(error) in
             if let error = error {
