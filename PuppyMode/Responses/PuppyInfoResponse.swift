@@ -15,12 +15,25 @@ struct PuppyInfoResponse: Codable {
 }
 
 struct PuppyInfoResult: Codable {
-    let puppyId: Int?
-    let puppyName: String?
-    let level: Int?
-    let levelName: String?
+    let puppyId: Int
+    let puppyName: String
+    let level: Int
+    let levelName: String
     let imageUrl: String?
-    let levelMinExp: Int?
-    let levelMaxExp: Int?
-    let puppyExp: Int?
+    let levelMinExp: Int
+    let levelMaxExp: Int
+    let puppyExp: Int
+}
+
+
+struct PuppyNamePatchResponse: Codable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: PuppyNamePatchResult?
+}
+
+struct PuppyNamePatchResult: Codable {
+    let puppyId: Int
+    let name: String
 }

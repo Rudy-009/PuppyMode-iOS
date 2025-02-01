@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class CollectionViewController: UIViewController {
         
@@ -22,10 +23,32 @@ class CollectionViewController: UIViewController {
         super.viewDidLoad()
         self.view = collectionView
         
-        setupNavigationBar(title: "컬렉션", action: #selector(customBackButtonTapped))
-        
+        setupNavigationBar(title: "컬렉션")
+        getCollectionfromServer()
+    
     }
     
+    private func getCollectionfromServer() {
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+        ]
+        
+        AF.request(K.String.puppymodeLink + "/collections",
+                   method: .get,
+                   headers: headers)
+            .responseDecodable(of: CollectionResponse.self)  { [weak self] response in
+                
+                guard let _ = self else { return }
+                
+                switch response.result {
+                case .success(let response) :
+                    print(response.result)
+                case .failure(let error) :
+                    print("Network Error: \(error.localizedDescription)")
+                }
+            }
+    }
 }
 
 extension CollectionViewController: UITableViewDelegate, UITableViewDataSource{

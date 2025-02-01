@@ -25,7 +25,7 @@ class KeychainService {
                 return update(key: key, value: value)
             }
             
-            print("KeychainService AddItem Error : \(status.description))")
+            print("KeychainService AddItem (k: \(key), v: \(value)) Error : \(status.description))")
             return false
         }()
         
@@ -48,7 +48,7 @@ class KeychainService {
             }
         }
         
-        print("KeychainService GetItem Error : \(result.description)")
+        print("KeychainService GetItem (k: \(key)) Error : \(result.description)")
         return nil
     }
     
@@ -61,7 +61,7 @@ class KeychainService {
             let status = SecItemUpdate(prevQuery as CFDictionary, updateQuery as CFDictionary)
             if status == errSecSuccess { return true }
             
-            print("KeychainService UpdateItem Error : \(status.description)")
+            print("KeychainService UpdateItem (k: \(key), v: \(value)) Error : \(status.description)")
             return false
         }()
         
@@ -74,7 +74,7 @@ class KeychainService {
         let status = SecItemDelete(deleteQuery as CFDictionary)
         if status == errSecSuccess { return true }
         
-        print("KeychainService DeleteItem Error : \(status.description)")
+        print("KeychainService DeleteItem (k: \(key)) Error : \(status.description)")
         return false
     }
     

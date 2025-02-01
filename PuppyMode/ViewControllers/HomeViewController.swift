@@ -6,13 +6,18 @@
 //
 
 import UIKit
+import CoreLocation // 현재 위치 확인
 import Alamofire
 
-class HomeViewController: UIViewController {
+class HomeViewController: UIViewController, CLLocationManagerDelegate {
     
     private var timer: Timer?
     private var remainingTime: Int = 1800 // 30분 (초 단위)
     public var coinAlermButton = AlermView()
+    
+    private let locationManager = CLLocationManager()
+    private var currentLatitude: Double?    // 위도 정보
+    private var currentLongitude: Double?   // 경도 정보
     
     let homeView = HomeView()
     
@@ -21,18 +26,49 @@ class HomeViewController: UIViewController {
         self.view.backgroundColor = UIColor(red: 251/255, green: 251/255, blue: 251/255, alpha: 1)
         self.view = homeView
         self.navigationController?.isNavigationBarHidden = true
+        
+        setupLocationManager()
         self.defineButtonActions()
+        
+        checkAppointmentStatus()
     }
     
+    // 위치 매니저 설정
+    private func setupLocationManager() {
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization() // 권한 요청
+        
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.startUpdatingLocation() // 위치 업데이트 시작
+        } else {
+            print("위치 서비스가 비활성화되어 있습니다.")
+        }
+    }
+    
+    // CLLocationManagerDelegate - 위치 업데이트 시 호출
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.last else { return }
+        
+        currentLatitude = location.coordinate.latitude
+        currentLongitude = location.coordinate.longitude
+        
+        print("현재 위치 - 위도: \(currentLatitude ?? 0), 경도: \(currentLongitude ?? 0)")
+        
+        // 위치 업데이트 중지 (필요 시 한 번만 가져오기)
+        locationManager.stopUpdatingLocation()
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("위치 정보를 가져오지 못했습니다: \(error.localizedDescription)")
+    }
 }
 
 //MARK: GET Puppy Character Info
 extension HomeViewController {
     
     func getPupptInfo() {
-        guard let fcm = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
-            return
-        }
+        guard let fcm = KeychainService.get(key: UserInfoKey.jwt.rawValue) else { return }
         
         AF.request( K.String.puppymodeLink + "/puppies",
                     headers: [
@@ -43,6 +79,7 @@ extension HomeViewController {
             switch response.result {
             case .success(let response):
                 let puppyInfo = response.result
+                print(puppyInfo)
                 //
                 self.homeView.configurePuppyInfo(to: puppyInfo)
             case .failure(let error):
@@ -83,6 +120,8 @@ extension HomeViewController {
     @objc
     private func rompingButtonPressed() {
         print("Romping Button Pressed")
+        // 서버 연동
+        rompingToServer()
         
         // 강아지 애니메이션 효과
         showDogAnimation()
@@ -93,7 +132,6 @@ extension HomeViewController {
         // 버튼 비활성화 & 타이머 시작
         startCooldown()
         
-        // 강아지 단계 퍼센트 5% 상승
     }
     
     @objc
@@ -108,7 +146,6 @@ extension HomeViewController {
             navController.modalPresentationStyle = .fullScreen
             self.present(navController, animated: true, completion: nil)
         }
-        
     }
     
     @objc
@@ -137,28 +174,65 @@ extension HomeViewController {
     @objc
     private func addDrinkingHistoryButtonPressed() {
         print("Add Drinking History Button Pressed")
-
-        let hangoverVC = HangoverViewController()
-        self.navigationController?.isNavigationBarHidden = true
-        hangoverVC.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(hangoverVC, animated: true)
-
-        /* 음주 중 화면으로 이동 분기
-        let drinkingVC = DrinkingViewController()
         
-        if let navigationController = self.navigationController {
-            navigationController.pushViewController(drinkingVC, animated: true)
+        // 버튼의 title을 확인
+        let buttonTitle = homeView.addDrinkingHistoryButton.title(for: .normal)
+        
+        if buttonTitle == "음주 기록" {
+            // 음주 기록 화면으로 이동
+            let hangoverVC = HangoverViewController()
+            self.navigationController?.isNavigationBarHidden = true
+            hangoverVC.hidesBottomBarWhenPushed = true
+            self.navigationController?.pushViewController(hangoverVC, animated: true)
+            
+        } else if buttonTitle == "술 마시는 중..." {
+            // 음주 중 화면으로 이동
+            let drinkingVC = DrinkingViewController()
+            
+            if let navigationController = self.navigationController {
+                navigationController.pushViewController(drinkingVC, animated: true)
+            } else {
+                let navController = UINavigationController(rootViewController: drinkingVC)
+                navController.modalPresentationStyle = .fullScreen
+                self.present(navController, animated: true, completion: nil)
+            }
         } else {
-            let navController = UINavigationController(rootViewController: drinkingVC)
-            navController.modalPresentationStyle = .fullScreen
-            self.present(navController, animated: true, completion: nil)
+            print("알 수 없는 버튼 상태입니다.")
         }
-        */
     }
 }
 
 // 놀아주기 버튼에 대한 함수
 extension HomeViewController {
+    
+    // 서버 연동
+    private func rompingToServer() {
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+        ]
+        
+        AF.request(K.String.puppymodeLink + "/puppies/play",
+                   method: .post,
+                   headers: headers)
+            .responseDecodable(of: PuppyPlayResponse.self) { [weak self] response in
+                
+                guard let self = self else { return }
+                
+                switch response.result {
+                case .success(let puppyResponse) :
+                    if puppyResponse.isSuccess {
+                        print("성공")
+                        getPupptInfo()
+                    } else {
+                        print("Puppy Play API Error: \(puppyResponse.message)")
+                    }
+                case .failure(let error) :
+                    print("Network Error: \(error.localizedDescription)")
+                }
+            }
+    }
+
 
     private func showDogAnimation() {
         
@@ -192,8 +266,7 @@ extension HomeViewController {
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
     }
     
-    @objc
-    private func updateTimer() {
+    @objc private func updateTimer() {
         if remainingTime > 0 {
             remainingTime -= 1
             let minutes = remainingTime / 60
@@ -213,6 +286,56 @@ extension HomeViewController {
         homeView.rompingButton.isEnabled = true
         homeView.rompingButton.alpha = 1
         
+    }
+    
+    // 술 약속 시작하기 API
+    private func checkAppointmentStatus() {
+        guard let latitude = currentLatitude, let longitude = currentLongitude else {
+            print("위치 정보를 가져올 수 없습니다.")
+            return
+        }
+        
+        // API 요청 보내기
+        let fcmToken = KeychainService.get(key: UserInfoKey.jwt.rawValue) ?? ""
+        
+        let headers: HTTPHeaders = [
+            "Content-Type": "application/json",
+            "Authorization": "Bearer \(fcmToken)"
+        ]
+        
+        let parameters: [String: Any] = [
+            "latitude": latitude,
+            "longitude": longitude
+        ]
+        
+        AF.request(K.String.puppymodeLink + "/appointments/start",
+                   method: .post,
+                   parameters: parameters,
+                   encoding: JSONEncoding.default,
+                   headers: headers)
+        .responseDecodable(of: StartAppointmentResponse.self) { response in
+            switch response.result {
+            case .success(let data):
+                if data.code == "SUCCESS_START_APPOINTMENT" {
+                    print("술 약속 시작 성공!")
+                    
+                    DispatchQueue.main.async {
+                        self.homeView.addDrinkingHistoryButton.setTitleLabel(to: "술 마시는 중...")
+                        self.homeView.addDrinkingHistoryButton.setSubTitleLabel(to: "")
+                    }
+                    
+                } else {
+                    print("응답 코드가 SUCCESS_START_APPOINTMENT가 아닙니다.")
+                    
+                    DispatchQueue.main.async {
+                        self.homeView.addDrinkingHistoryButton.setTitleLabel(to: "음주 기록")
+                        self.homeView.addDrinkingHistoryButton.setTitleLabel(to: "술 마셨어요")
+                    }
+                }
+            case .failure(let error):
+                print("API 요청 실패:", error.localizedDescription)
+            }
+        }
     }
 }
 

@@ -10,43 +10,58 @@ import UIKit
 
 extension UIViewController {
     
-    func setupNavigationBar(title: String, action: Selector) {
-        self.navigationItem.hidesBackButton = true
+    func setupNavigationBar(title: String) {
+        // Create a custom navigation bar container
+        let navigationBar = UIView()
+        navigationBar.backgroundColor = UIColor(hex: "#FBFBFB")
+        view.addSubview(navigationBar)
         
-        
-        let backImage = UIImage(named: "backButtonImage")
-        let resizedBackImage = UIGraphicsImageRenderer(size: CGSize(width: 9, height: 16)).image { _ in
-            backImage?.draw(in: CGRect(origin: .zero, size: CGSize(width: 9, height: 16)))
+        // Add constraints for the navigation bar using SnapKit
+        navigationBar.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top) // safeAreaLayoutGuide 기준으로 설정
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(56) // Adjust height as needed
         }
         
-        let customBackButton = UIBarButtonItem(image: resizedBackImage, style: .plain, target: self, action: action)
+        // Create a title label for the navigation bar
+        let titleLabel = UILabel()
+        titleLabel.text = title
+        titleLabel.textColor = UIColor(hex: "#3C3C3C")
+        titleLabel.font = UIFont(name: "NotoSansKR-Regular", size: 20) ?? UIFont.systemFont(ofSize: 20, weight: .medium)
+        titleLabel.textAlignment = .center
+        navigationBar.addSubview(titleLabel)
+        
+        // Add constraints for the title label using SnapKit
+        titleLabel.snp.makeConstraints { make in
+            make.center.equalTo(navigationBar) // 네비게이션 바의 중앙에 위치
+        }
+        
+        // Create a close button (back button) for the left side of the navigation bar
+        let closeButton = UIButton(type: .custom)
+        closeButton.setImage(UIImage(named: "left_arrow"), for: .normal) // Replace with your back arrow image name
+        closeButton.contentMode = .scaleAspectFit
+        closeButton.addTarget(self, action: #selector(customBackButtonTapped), for: .touchUpInside)
+        navigationBar.addSubview(closeButton)
+        
+        // Add constraints for the close button using SnapKit
+        closeButton.snp.makeConstraints { make in
+            make.leading.equalTo(navigationBar.snp.leading).offset(16) // safeAreaLayoutGuide와 동일한 위치로 설정
+            make.centerY.equalTo(navigationBar) // 네비게이션 바의 수직 중앙에 위치
+            make.width.equalTo(13)
+            make.height.equalTo(20)
+        }
 
-        customBackButton.tintColor = UIColor.black
-        customBackButton.imageInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 10)
-
-        
-        self.navigationItem.leftBarButtonItem = customBackButton
-        self.navigationItem.title = title
-        
-        let font = UIFont(name: "NotoSansKR-Regular", size: 20)
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: font,
-            .foregroundColor: UIColor.black
-        ]
-        
-        self.navigationController?.navigationBar.titleTextAttributes = attributes
-        self.navigationController?.navigationBar.barTintColor = .white
-        self.navigationController?.navigationBar.shadowImage = UIImage()  // 스크롤시 네비게이션 바에 그림자가 자동으로 생기기 때문에 그림자도 제거해야함
         
 
     }
     
     @objc func customBackButtonTapped() {
-        // 네비게이션 스택인지, 모달인지 확인
-        if let navigationController = self.navigationController, navigationController.viewControllers.count > 1 {
+        if let navigationController = self.navigationController {
+            // 네비게이션 스택에서 이전 화면으로 이동
             navigationController.popViewController(animated: true)
-        } else if self.presentingViewController != nil {
-            self.dismiss(animated: true, completion: nil)
+        } else {
+            // 네비게이션 컨트롤러가 없으면 모달 닫기
+            dismiss(animated: true, completion: nil)
         }
     }
 }
