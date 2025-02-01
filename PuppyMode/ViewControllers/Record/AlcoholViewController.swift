@@ -10,6 +10,8 @@ import UIKit
 class AlcoholViewController: UIViewController {
     private let alcoholView = AlcoholView()
     private var selectedIndexPath: IndexPath?
+    
+    var onAlcoholSelected: ((AlcoholDetailModel) -> Void)?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,15 +39,13 @@ class AlcoholViewController: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     
-    @objc
-    private func nextButtonTapped() {
+    @objc private func nextButtonTapped() {
         if let indexPath = selectedIndexPath {
             let selectedItem = AlcoholDetailModel.dummy()[indexPath.row]
-            print("선택된 셀 정보: \(selectedItem.name) \(selectedItem.volume)ml, \(selectedItem.degree)도")
+            print("선택된 셀 정보:", selectedItem.name, selectedItem.volume, selectedItem.degree)
             
-            let intakeVC = IntakeViewController()
-            self.navigationController?.isNavigationBarHidden = true
-            self.navigationController?.pushViewController(intakeVC, animated: true)
+            // Pass the selected item back using the closure
+            onAlcoholSelected?(selectedItem)
         } else {
             print("선택된 셀이 없습니다.")
         }
