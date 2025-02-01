@@ -16,10 +16,10 @@ struct PuppyInfoResponse: Codable {
 
 struct PuppyInfoResult: Codable {
     let puppyId: Int
-    let puppyName: String?
+    let puppyName: String
     let level: Int
     let levelName: String
-    let imageUrl: String?
+    let imageUrl: String
     let levelMinExp: Int
     let levelMaxExp: Int
     let puppyExp: Int
