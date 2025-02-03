@@ -6,9 +6,11 @@
 //
 
 import UIKit
+import Alamofire
 
 class HangoverViewController: UIViewController {
     private let hangoverView = HangoverView()
+    private var hangoverList: [HangoverModel] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -16,6 +18,7 @@ class HangoverViewController: UIViewController {
         
         setDelegate()
         setAction()
+        setAPI()
     }
     
     // MARK: - function
@@ -27,6 +30,30 @@ class HangoverViewController: UIViewController {
         hangoverView.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
         hangoverView.skipButton.addTarget(self, action: #selector(skipButtonTapped), for: .touchUpInside)
         hangoverView.nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
+    }
+    
+    private func setAPI() {
+        let url = "https://puppy-mode.site/drinks/hangover"
+        
+        guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+            print("JWT Token not found")
+            return
+        }
+        
+        let headers: HTTPHeaders = [
+            "Authorization": "Bearer \(jwt)",
+            "Accept": "application/json"
+        ]
+        
+        AF.request(url, method: .get, headers: headers).responseDecodable(of: HangoverResponse.self) { response in
+            switch response.result {
+            case .success(let data):
+                self.hangoverList = data.result.map { HangoverModel(hangoverId: $0.hangoverId, hangoverName: $0.hangoverName, imageUrl: $0.imageUrl) }
+                self.hangoverView.hangoverCollectionView.reloadData()
+            case .failure(let error):
+                print("Error fetching hangover data: \(error)")
+            }
+        }
     }
     
     // MARK: - action
@@ -55,7 +82,7 @@ class HangoverViewController: UIViewController {
 // MARK: - extension
 extension HangoverViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 6
+        return hangoverList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -63,8 +90,9 @@ extension HangoverViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        let list = HangoverModel.dummy()
-        cell.hangoverLabel.text = list[indexPath.row].label
+        let hangover = hangoverList[indexPath.row]
+        cell.hangoverLabel.text = hangover.hangoverName
+        
         return cell
     }
 }

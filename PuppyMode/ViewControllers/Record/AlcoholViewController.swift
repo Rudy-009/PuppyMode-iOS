@@ -6,10 +6,12 @@
 //
 
 import UIKit
+import Alamofire
 
 class AlcoholViewController: UIViewController {
     private let alcoholView = AlcoholView()
     private var selectedIndexPath: IndexPath?
+    private var categories: [AlcoholCategory] = []
     
     var onAlcoholSelected: ((AlcoholDetailModel) -> Void)?
 
@@ -19,6 +21,7 @@ class AlcoholViewController: UIViewController {
         
         setDelegate()
         setAction()
+        setAPI()
     }
     
     // MARK: - function
@@ -31,6 +34,30 @@ class AlcoholViewController: UIViewController {
     private func setAction() {
         alcoholView.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
         alcoholView.nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
+    }
+    
+    private func setAPI() {
+        let url = "https://puppy-mode.site/drinks/categories"
+        
+        guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+            print("JWT Token not found")
+            return
+        }
+        
+        let headers: HTTPHeaders = [
+            "Authorization": "Bearer \(jwt)",
+            "Accept": "*/*"
+        ]
+        
+        AF.request(url, method: .get, headers: headers).responseDecodable(of: AlcoholKindResponse.self) { response in
+            switch response.result {
+            case .success(let data):
+                self.categories = data.result
+                self.alcoholView.alcoholCollectionView.reloadData()
+                case .failure(let error):
+                print("\(error.localizedDescription)")
+            }
+        }
     }
 
     // MARK: - action
@@ -55,7 +82,7 @@ class AlcoholViewController: UIViewController {
 // MARK: - extension
 extension AlcoholViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return categories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -63,8 +90,9 @@ extension AlcoholViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        let list = ["소주", "맥주", "와인", "위스키", "기타"]
-        cell.titleLabel.text = list[indexPath.row]
+        let category = categories[indexPath.row]
+        cell.titleLabel.text = category.categoryName
+        
         return cell
     }
 }
