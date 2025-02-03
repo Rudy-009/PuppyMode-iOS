@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct AlcoholKindResponse: Codable {
+struct AlcoholCategoryResponse: Codable {
     let isSuccess: Bool
     let code: String
     let message: String

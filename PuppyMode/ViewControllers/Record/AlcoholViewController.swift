@@ -12,6 +12,7 @@ class AlcoholViewController: UIViewController {
     private let alcoholView = AlcoholView()
     private var selectedIndexPath: IndexPath?
     private var categories: [AlcoholCategory] = []
+    private var alcoholItems: [AlcoholListItem] = []
     
     var onAlcoholSelected: ((AlcoholDetailModel) -> Void)?
 
@@ -21,12 +22,13 @@ class AlcoholViewController: UIViewController {
         
         setDelegate()
         setAction()
-        setAPI()
+        setCategoryAPI()
     }
     
     // MARK: - function
     private func setDelegate() {
         alcoholView.alcoholCollectionView.dataSource = self
+        alcoholView.alcoholCollectionView.delegate = self
         alcoholView.alcoholTableView.dataSource = self
         alcoholView.alcoholTableView.delegate = self
     }
@@ -36,7 +38,7 @@ class AlcoholViewController: UIViewController {
         alcoholView.nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
     }
     
-    private func setAPI() {
+    private func setCategoryAPI() {
         let url = "https://puppy-mode.site/drinks/categories"
         
         guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
@@ -49,7 +51,7 @@ class AlcoholViewController: UIViewController {
             "Accept": "*/*"
         ]
         
-        AF.request(url, method: .get, headers: headers).responseDecodable(of: AlcoholKindResponse.self) { response in
+        AF.request(url, method: .get, headers: headers).responseDecodable(of: AlcoholCategoryResponse.self) { response in
             switch response.result {
             case .success(let data):
                 self.categories = data.result
@@ -58,6 +60,30 @@ class AlcoholViewController: UIViewController {
                 print("\(error.localizedDescription)")
             }
         }
+    }
+    
+    private func setAlcoholListAPI(categoryId: Int) {
+        let url = "https://puppy-mode.site/drinks/categories/\(categoryId)"
+        
+        guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+            print("JWT Token not found")
+            return
+        }
+        
+        let headers: HTTPHeaders = [
+            "Authorization": "Bearer \(jwt)",
+            "Accept": "*/*"
+        ]
+        
+        AF.request(url, method: .get, headers: headers).responseDecodable(of: AlcoholListResponse.self) { response in
+              switch response.result {
+              case .success(let data):
+                  self.alcoholItems = data.result.items
+                  self.alcoholView.alcoholTableView.reloadData()
+              case .failure(let error):
+                  print("\(error.localizedDescription)")
+              }
+          }
     }
 
     // MARK: - action
@@ -80,7 +106,7 @@ class AlcoholViewController: UIViewController {
 }
 
 // MARK: - extension
-extension AlcoholViewController: UICollectionViewDataSource {
+extension AlcoholViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return categories.count
     }
@@ -95,11 +121,17 @@ extension AlcoholViewController: UICollectionViewDataSource {
         
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedCategory = categories[indexPath.row]
+        
+        setAlcoholListAPI(categoryId: selectedCategory.categoryId)
+    }
 }
 
 extension AlcoholViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        AlcoholDetailModel.dummy().count
+        return alcoholItems.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -107,9 +139,10 @@ extension AlcoholViewController: UITableViewDataSource, UITableViewDelegate {
             return UITableViewCell()
         }
         
-        let item = AlcoholDetailModel.dummy()[indexPath.row]
-        cell.titleLabel.text = "\(item.name) \(item.volume)ml"
-        cell.degreeLabel.text = "\(item.degree)도"
+        let item = alcoholItems[indexPath.row]
+        cell.titleLabel.text = "\(item.itemName) \(item.volumeMl ?? 0)ml"
+        cell.degreeLabel.text = "\(item.alcoholPercentage)도"
+        
         return cell
     }
     
