@@ -13,12 +13,13 @@ class DecoItemViewCell: UICollectionViewCell {
     static let identifier = "DecoItemViewCell"
     
     public lazy var decoItemImageView = UIImageView().then { imageView in
+        imageView.backgroundColor = .clear
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
     }
     
     public lazy var decoItemLabel = UILabel().then { label in
-        label.font = UIFont(name: "NotoSansKR-Regular", size: 15)
+        label.font = UIFont(name: "NotoSansKR-Regular", size: 14)
     }
     
     override init(frame: CGRect) {
@@ -41,7 +42,7 @@ class DecoItemViewCell: UICollectionViewCell {
         
         self.addSubview(decoItemLabel)
         decoItemLabel.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().inset(6)
+            make.bottom.equalToSuperview().inset(3)
             make.centerX.equalToSuperview()
         }
     }

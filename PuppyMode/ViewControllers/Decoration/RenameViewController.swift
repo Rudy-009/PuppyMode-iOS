@@ -40,8 +40,6 @@ class RenameViewController: UIViewController {
     private func saveButtonTapped() {
         // 이름 값 확인
         guard let newName = renameView.renameTextField.text, !newName.isEmpty else { return }
-
-        
         // 서버로 바뀐 이름 전송
         self.name = newName
         

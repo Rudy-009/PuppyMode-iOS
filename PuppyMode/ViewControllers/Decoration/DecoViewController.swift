@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class DecoViewController: UIViewController {
     private var selectedButton: UIButton?   // 이전에 눌린 버튼을 저장
@@ -18,7 +19,7 @@ class DecoViewController: UIViewController {
         
         view.renamebutton.addTarget(self, action: #selector(renameButtonTapped), for: .touchUpInside)
         view.forEachButton { button in
-            button.addTarget(self, action: #selector(itemButtonTapped), for: .touchUpInside)
+            button.addTarget(self, action: #selector(categoryButtonTapped), for: .touchUpInside)
         }
         
 
@@ -46,6 +47,10 @@ class DecoViewController: UIViewController {
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        fetchCategoriesFromServer()
+    }
+    
     private func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: 109, height: 109)
@@ -60,7 +65,7 @@ class DecoViewController: UIViewController {
            
         decoView.backgroundView.addSubview(collectionView)
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(decoView.itemButtonsScrollView.snp.bottom).offset(18)
+            make.top.equalTo(decoView.categoryButtonsScrollView.snp.bottom).offset(18)
             make.leading.trailing.equalToSuperview().inset(21)
             make.bottom.equalToSuperview()
         }
@@ -72,7 +77,7 @@ class DecoViewController: UIViewController {
         navigationController?.pushViewController(renameVC, animated: true)
     }
     
-    @objc func itemButtonTapped(_ sender: UIButton) {
+    @objc func categoryButtonTapped(_ sender: UIButton) {
         if let previousButton = selectedButton {
             previousButton.backgroundColor = .clear
             previousButton.titleLabel?.font = .systemFont(ofSize: 15)
@@ -82,27 +87,108 @@ class DecoViewController: UIViewController {
         sender.backgroundColor = .darkGray
         sender.tintColor = .white
         sender.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .bold)
-        
+        sender.titleLabel?.adjustsFontSizeToFitWidth = true
+        sender.titleLabel?.lineBreakMode = .byTruncatingTail
+
+
         selectedButton = sender
 
-        switch sender.tag {
-        case 0:
+        guard let categoryName = sender.titleLabel?.text else { return }
+        
+        // 카테고리 이름에 따라 ID를 전달하여 아이템 불러오기
+        switch categoryName {
+        case "모자":
             items = DecoItemModel.hatData
-        case 1:
+            fetchItemsFromServer(categoryId: 1)
+        case "옷":
             items = DecoItemModel.clothesData
-        case 2:
-            items = DecoItemModel.floorData
-        case 3:
+            fetchItemsFromServer(categoryId: 2)
+        case "집":
             items = DecoItemModel.houseData
-        case 4:
+            fetchItemsFromServer(categoryId: 3)
+        case "바닥":
+            items = DecoItemModel.floorData
+            fetchItemsFromServer(categoryId: 4)
+        case "장난감":
             items = DecoItemModel.toyData
+            fetchItemsFromServer(categoryId: 5)
         default:
-            items = []
+            break
         }
         
         collectionView.reloadData() // 데이터 변경 후 컬렉션 뷰 다시 로드
         
     }
+    
+    // 서버로부터 카테고리 조회
+    private func fetchCategoriesFromServer() {
+        print("dd")
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+        ]
+        
+        
+        AF.request(K.String.puppymodeLink + "/puppies/categories",
+                   method: .get,
+                   headers: headers)
+        .responseDecodable(of: PuppyCategoryResponse.self)  { [weak self] response in
+                
+            guard let _ = self else { return }
+                
+            switch response.result {
+            case .success(let response):
+                print("카테고리 불러오기 성공")
+                print(response.result)
+                let categories = response.result.categories.map {
+                    Category(categoryId: $0.categoryId, name: $0.name, itemCount: $0.itemCount)
+                }
+//                self?.updateCategory(categories: categories)
+                
+            case .failure(let error):
+                print("Network Error: \(error.localizedDescription)")
+            }
+
+        }
+    }
+    
+    private func updateCategory(categories: [Category]) {
+        // 서버에서 받은 카테고리 데이터를 기반으로 버튼 태그 설정
+        for (index, category) in categories.enumerated() {
+            if let button = view.viewWithTag(index) as? UIButton {
+                button.setTitle(category.name, for: .normal)
+            }
+        }
+    }
+    
+    // 서버로부터 카테고리별 아이템 조회
+    private func fetchItemsFromServer(categoryId: Int) {
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+        ]
+        
+        // 카테고리 ID를 URL에 동적으로 삽입
+        let urlString = K.String.puppymodeLink + "/puppies/\(categoryId)/items"
+        
+        AF.request(urlString,
+                   method: .get,
+                   headers: headers)
+            .responseDecodable(of: PuppyItemResponse.self) { [weak self] response in
+                    
+                guard let _ = self else { return }
+                    
+                switch response.result {
+                case .success(let response):
+                    print("아이템 불러오기 성공")
+                    print(response.result)
+                    
+                case .failure(let error):
+                    print("Network Error: \(error.localizedDescription)")
+                }
+            }
+    }
+
 
 }
 
@@ -116,7 +202,7 @@ extension DecoViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DecoItemViewCell.identifier, for: indexPath) as! DecoItemViewCell
         let item = items[indexPath.item]
         cell.decoItemImageView.image = item.image
-        cell.decoItemLabel.text = item.title
+        cell.decoItemLabel.text = item.price
         return cell
     }
 }
