@@ -24,31 +24,19 @@ class KakaoLoginService {
                 self.saveKakaoUserID()
                 if let kakaoAccessToekn = oauthToken?.accessToken, let kakaoRefreshToken = oauthToken?.refreshToken {
                     _ = saveKakaoToken(accessToken: kakaoAccessToekn, refreshToken: kakaoRefreshToken)
-                    self.fetchKakaoUserInfo(with: kakaoAccessToekn)
+                    self.fetchKakaoUserInfo(with: kakaoAccessToekn, and: kakaoRefreshToken)
                 }
             }
         }
     }
     
-    static func saveKakaoUserID() {
-        UserApi.shared.me {(user, error) in
-            if let error = error {
-                print(error)
-            } else {
-                guard let kakaoUserId = user?.id else { return }
-                if KeychainService.add(key: KakaoAPIKey.kakaoUserID.rawValue, value: "\(kakaoUserId)") {
-                    print("kakaoUserId \(kakaoUserId)")
-                }
-            }
-        }
-    }
-    
-    static func fetchKakaoUserInfo(with kakaoAccessToken: String) {
+    static func fetchKakaoUserInfo(with kakaoAccessToken: String, and kakaoRefreshToken: String) {
         let fcm = KeychainService.get(key: FCMTokenKey.fcm.rawValue) ?? "none"
         
         AF.request(K.String.puppymodeLink + "/auth/kakao/login",
                    method: .get,
                    parameters: ["accessToken": kakaoAccessToken,
+                                "refreshToken": kakaoRefreshToken,
                                 "FCMToken": fcm],
                    headers: ["accept": "*/*"])
         .responseDecodable(of: LoginResponse.self) { response in
@@ -82,6 +70,19 @@ class KakaoLoginService {
     static func deleteAllKakaoToken() -> Bool {
         return  KeychainService.delete(key: KakaoAPIKey.kakaoAccessToken.rawValue) &&
                 KeychainService.delete(key: KakaoAPIKey.kakaoRefreshToken.rawValue)
+    }
+    
+    static func saveKakaoUserID() {
+        UserApi.shared.me {(user, error) in
+            if let error = error {
+                print(error)
+            } else {
+                guard let kakaoUserId = user?.id else { return }
+                if KeychainService.add(key: KakaoAPIKey.kakaoUserID.rawValue, value: "\(kakaoUserId)") {
+                    print("kakaoUserId \(kakaoUserId)")
+                }
+            }
+        }
     }
     
 }
