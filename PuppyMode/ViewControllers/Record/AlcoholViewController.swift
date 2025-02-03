@@ -11,6 +11,7 @@ import Alamofire
 class AlcoholViewController: UIViewController {
     private let alcoholView = AlcoholView()
     private var selectedIndexPath: IndexPath?
+    private var selectedCategoryIndex: IndexPath?
     private var categories: [AlcoholCategory] = []
     private var alcoholItems: [AlcoholListItem] = []
     
@@ -122,9 +123,25 @@ extension AlcoholViewController: UICollectionViewDataSource, UICollectionViewDel
         return cell
     }
     
+
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // 이전에 선택된 셀 초기화
+        if let previousIndex = selectedCategoryIndex,
+           let previousCell = collectionView.cellForItem(at: previousIndex) as? AlcoholKindCollectionViewCell {
+            previousCell.backView.backgroundColor = .clear
+            previousCell.backView.layer.borderColor = UIColor.clear.cgColor
+        }
+
+        // 현재 선택된 셀 변경
+        guard let cell = collectionView.cellForItem(at: indexPath) as? AlcoholKindCollectionViewCell else { return }
+        cell.backView.backgroundColor = .main
+        cell.backView.layer.borderColor = UIColor(red: 0.563, green: 0.563, blue: 0.563, alpha: 1).cgColor
+
+        // 현재 선택된 인덱스 저장
+        selectedCategoryIndex = indexPath
+
+        // API 호출
         let selectedCategory = categories[indexPath.row]
-        
         setAlcoholListAPI(categoryId: selectedCategory.categoryId)
     }
 }
