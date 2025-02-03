@@ -9,9 +9,10 @@ import UIKit
 import Alamofire
 
 class DecoViewController: UIViewController {
-    private var selectedButton: UIButton?   // 이전에 눌린 버튼을 저장
+    private var selectedButton: UIButton?           // 이전에 눌린 버튼을 저장
     private var collectionView: UICollectionView!
-    private var items: [DecoItemModel] = [] // 컬렉션 뷰에 표시할 데이터 배열
+    private var items: [DecoItemModel] = []         // 컬렉션 뷰에 표시할 데이터 배열
+    private var selectedLevel: Int = 1              // 초기 레벨 설정
     
     private lazy var decoView: DecoView = {
         let view = DecoView()
@@ -40,7 +41,7 @@ class DecoViewController: UIViewController {
         }
          
         // 초기 데이터 설정
-        items = DecoItemModel.hatData
+        items = DecoItemModel.hatData[0].items
         
         setupNavigationBar(title: "꾸미기")
         setupCollectionView()
@@ -98,19 +99,19 @@ class DecoViewController: UIViewController {
         // 카테고리 이름에 따라 ID를 전달하여 아이템 불러오기
         switch categoryName {
         case "모자":
-            items = DecoItemModel.hatData
+            items = DecoItemModel.hatData[0].items
             fetchItemsFromServer(categoryId: 1)
         case "옷":
-            items = DecoItemModel.clothesData
+            items = DecoItemModel.clothesData[0].items
             fetchItemsFromServer(categoryId: 2)
         case "집":
-            items = DecoItemModel.houseData
+            items = DecoItemModel.houseData[0].items
             fetchItemsFromServer(categoryId: 3)
         case "바닥":
-            items = DecoItemModel.floorData
+            items = DecoItemModel.floorData[0].items
             fetchItemsFromServer(categoryId: 4)
         case "장난감":
-            items = DecoItemModel.toyData
+            items = DecoItemModel.toyData[0].items
             fetchItemsFromServer(categoryId: 5)
         default:
             break
@@ -143,21 +144,11 @@ class DecoViewController: UIViewController {
                 let categories = response.result.categories.map {
                     Category(categoryId: $0.categoryId, name: $0.name, itemCount: $0.itemCount)
                 }
-//                self?.updateCategory(categories: categories)
                 
             case .failure(let error):
                 print("Network Error: \(error.localizedDescription)")
             }
 
-        }
-    }
-    
-    private func updateCategory(categories: [Category]) {
-        // 서버에서 받은 카테고리 데이터를 기반으로 버튼 태그 설정
-        for (index, category) in categories.enumerated() {
-            if let button = view.viewWithTag(index) as? UIButton {
-                button.setTitle(category.name, for: .normal)
-            }
         }
     }
     
@@ -181,7 +172,13 @@ class DecoViewController: UIViewController {
                 switch response.result {
                 case .success(let response):
                     print("아이템 불러오기 성공")
-                    print(response.result)
+                    
+                    // items 배열 업데이트
+                    self?.items = response.result.items.map { item in
+                        DecoItemModel(itemId: item.itemId, image: UIImage(named: item.image_url) ?? UIImage(),
+                                      price: "\(item.price)",
+                                      isPurchased: item.isPurchased)
+                    }
                     
                 case .failure(let error):
                     print("Network Error: \(error.localizedDescription)")
@@ -203,11 +200,71 @@ extension DecoViewController: UICollectionViewDataSource {
         let item = items[indexPath.item]
         cell.decoItemImageView.image = item.image
         cell.decoItemLabel.text = item.price
+        cell.lockImageView.isHidden = item.isPurchased
+
         return cell
     }
 }
 
 // MARK: - UICollectionViewDelegate
 extension DecoViewController: UICollectionViewDelegate {
-    // 셀 선택 등의 추가 기능이 필요하다면 여기에 구현
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedItem = items[indexPath.item]
+        
+        // 선택된 아이템이 속한 카테고리 찾기
+        var categoryId: Int?
+        for category in DecoItemModel.hatData {
+            // 아이템이 카테고리의 아이템 목록에 포함되어 있는지 확인
+            if category.items.contains(where: { $0.itemId == selectedItem.itemId }) {
+                categoryId = category.categoryId
+                break
+            }
+        }
+        
+        // 선택한 아이템의 카테고리 ID와 아이템 ID 출력
+        if let categoryId = categoryId {
+            print("선택한 카테고리 ID: \(categoryId) ,아이템 ID: \(selectedItem.itemId)")
+        }
+        
+        // 아이템 가격이 0인 경우 도전 과제 아이템 안내
+        if selectedItem.price == "" {
+            showAlert(title: "", message: "도전 과제로 얻는 아이템은 \n구매할 수 없습니다.")
+        } else {
+            // 아이템 구매 확인
+            let alert = UIAlertController(title: nil, message: "아이템을 구매하시겠습니까?", preferredStyle: .alert)
+            
+            let purchaseAction = UIAlertAction(title: "구매", style: .default) { _ in
+                self.purchaseItem(item: selectedItem)
+            }
+            let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+            
+            alert.addAction(purchaseAction)
+            alert.addAction(cancelAction)
+            
+            present(alert, animated: true, completion: nil)
+        }
+    }
+    
+    // 아이템 구매 처리 (구체적인 구매 로직은 추후 구현)
+    private func purchaseItem(item: DecoItemModel) {
+        // 구매 후 서버 연동
+        guard let index = items.firstIndex(where: { $0.itemId == item.itemId }) else { return }
+        let indexPath = IndexPath(item: index, section: 0)
+        
+        if let cell = collectionView.cellForItem(at: indexPath) as? DecoItemViewCell {
+            cell.overlayView.backgroundColor = UIColor.black.withAlphaComponent(0.0)
+            cell.lockImageView.isHidden = true
+            cell.decoItemLabel.isHidden = true
+        }
+    }
+    
+    // 알림창 표시 메서드
+    private func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "확인", style: .default)
+        alert.addAction(okAction)
+        present(alert, animated: true, completion: nil)
+    }
 }
+
