@@ -7,15 +7,21 @@
 
 import UIKit
 import FSCalendar
+import ToosieSlide
 
 class CalendarViewController: UIViewController {
     private let calendarView = CalendarView()
     
+    private var lastContentOffset: CGFloat = 0 // 스크롤 시작 위치 저장 변수
+    
     private var selectedDate: Date? {
         didSet {
-            updateDates()
+            guard let selectedDate = selectedDate else { return }
+            calendarView.calendar.select(selectedDate)
+            calendarView.updateMonthLabel(for: selectedDate)
         }
     }
+
     private var dates: [Date] = []
 
 
@@ -31,16 +37,7 @@ class CalendarViewController: UIViewController {
     private func setDelegate() {
         calendarView.calendar.delegate = self
         calendarView.carouselSlide.dataSource = self
-    }
-    
-    private func updateDates() {
-        guard let selectedDate = selectedDate else { return }
-        
-        dates = (0..<8).map { offset in
-            Calendar.current.date(byAdding: .day, value: offset - 4, to: selectedDate)!
-        }
-        
-        calendarView.carouselSlide.reloadData()
+        calendarView.carouselSlide.delegate = self
     }
     
     // MARK: - action
@@ -124,9 +121,9 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
     }
 }
 
-extension CalendarViewController: UICollectionViewDataSource {
+extension CalendarViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 8
+        return Int.max
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -142,5 +139,29 @@ extension CalendarViewController: UICollectionViewDataSource {
         }
         
         return cell
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        lastContentOffset = scrollView.contentOffset.x // 스크롤 시작할 때 위치 저장
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        guard let selectedDate = selectedDate else { return }
+
+        let currentOffset = scrollView.contentOffset.x
+
+        // 스크롤 방향 판별
+        let dateChange = currentOffset > lastContentOffset ? 1 : -1
+        
+        // 날짜 변경
+        let newDate = Calendar.current.date(byAdding: .day, value: dateChange, to: selectedDate) ?? selectedDate
+        self.selectedDate = newDate
+        
+        // 달력(FSCalendar)에 반영
+        calendarView.calendar.select(newDate)
+        calendarView.updateMonthLabel(for: newDate)
+        
+        // 캐러셀 갱신
+        calendarView.carouselSlide.reloadData()
     }
 }
