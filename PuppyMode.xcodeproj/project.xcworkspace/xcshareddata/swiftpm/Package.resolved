@@ -1,5 +1,5 @@
 {
-  "originHash" : "9aff46f74723d165520fe31497db5b7e58473393a41fbc6383d999690fdd93cc",
+  "originHash" : "65ef1c0db1ffca61e2231ca4143d8f1530bbec306216e553df9c98e10cd8966e",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -161,6 +161,15 @@
       "state" : {
         "revision" : "d41ef523faef0f911369f79c0b96815d9dbb6d7a",
         "version" : "3.0.0"
+      }
+    },
+    {
+      "identity" : "toosieslide",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/TheInkedEngineer/ToosieSlide.git",
+      "state" : {
+        "revision" : "d1413d25d0ebb315291ada18e17c088e156b30cf",
+        "version" : "1.1.1"
       }
     }
   ],

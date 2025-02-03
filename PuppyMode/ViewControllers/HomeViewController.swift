@@ -176,7 +176,8 @@ extension HomeViewController {
         print("Add Drinking History Button Pressed")
         
         // 버튼의 title을 확인
-        let buttonTitle = homeView.addDrinkingHistoryButton.title(for: .normal)
+        let buttonTitle = homeView.addDrinkingHistoryButton.getTitleLabel()
+        print(buttonTitle)
         
         if buttonTitle == "음주 기록" {
             // 음주 기록 화면으로 이동
