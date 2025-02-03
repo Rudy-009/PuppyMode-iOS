@@ -60,6 +60,10 @@ class HomeCustomButtonView: UIButton {
         buttonSubtitleLabel.text = title
     }
     
+    func getTitleLabel() -> String? {
+        return buttonTitleLabel.text
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
