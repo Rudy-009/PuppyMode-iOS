@@ -37,11 +37,6 @@ class DrinkingRecordView: UIView {
         $0.layer.borderWidth = 1
         $0.layer.borderColor = UIColor(red: 212/255, green: 212/255, blue: 212/255, alpha: 1).cgColor
         $0.layer.cornerRadius = 10
-        
-        $0.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
-        $0.layer.shadowOpacity = 1
-        $0.layer.shadowRadius = 2
-        $0.layer.shadowOffset = CGSize(width: 0, height: 4)
     }
     
     // 입력 완료 버튼
@@ -55,11 +50,6 @@ class DrinkingRecordView: UIView {
         $0.layer.borderWidth = 1
         $0.layer.borderColor = UIColor(red: 212/255, green: 212/255, blue: 212/255, alpha: 1).cgColor
         $0.layer.cornerRadius = 10
-        
-        $0.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
-        $0.layer.shadowOpacity = 1
-        $0.layer.shadowRadius = 2
-        $0.layer.shadowOffset = CGSize(width: 0, height: 4)
     }
     
     // 스택뷰 생성 (뒤로가기 버튼 + 입력 완료 버튼)
