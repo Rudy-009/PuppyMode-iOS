@@ -73,8 +73,9 @@ class DrinkingRecordView: UIView {
     }()
     
     public let tableView = UITableView().then {
+        $0.backgroundColor = .clear
         $0.register(UITableViewCell.self, forCellReuseIdentifier: "ItemCell")
-        $0.isScrollEnabled = false // Disable scrolling so height adjusts dynamically
+        $0.isScrollEnabled = false
         $0.separatorStyle = .none
     }
     

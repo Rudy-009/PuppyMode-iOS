@@ -74,6 +74,7 @@ class DrinkingRecordViewController: UIViewController {
     
     @objc private func deleteButtonTapped(_ sender: UIButton) {
         let rowIndex = sender.tag
+        print(rowIndex)
         
         // Remove item from data source
         addedItems.remove(at: rowIndex)
@@ -87,8 +88,8 @@ class DrinkingRecordViewController: UIViewController {
 
 }
 
-// MARK: - UITableViewDataSource
-extension DrinkingRecordViewController: UITableViewDataSource {
+// MARK: - extension
+extension DrinkingRecordViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return addedItems.count
     }
@@ -107,40 +108,14 @@ extension DrinkingRecordViewController: UITableViewDataSource {
         
         // Handle delete button action
         cell.deleteButton.tag = indexPath.row
-        cell.deleteButton.addTarget(self, action: #selector(deleteButtonTapped(_:)), for: .touchUpInside)
+        cell.deleteButton.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
+        
+        cell.selectionStyle = .none
         
         return cell
     }
     
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        // Add spacing by adjusting the cell's content inset
-        let marginSpace: CGFloat = 10
-        
-        cell.contentView.frame = cell.contentView.frame.inset(by: UIEdgeInsets(top: marginSpace / 2,
-                                                                               left: marginSpace,
-                                                                               bottom: marginSpace / 2,
-                                                                               right: marginSpace))
-        
-        // Optional shadow effect for floating appearance
-        cell.layer.shadowColor = UIColor.black.cgColor
-        cell.layer.shadowOpacity = 0.1
-        cell.layer.shadowRadius = 10
-        cell.layer.shadowOffset = CGSize(width: 2, height: 2)
-        cell.layer.masksToBounds = false // Ensure shadow is visible outside bounds
-        
-        // Ensure corner radius is applied properly
-        if let customCell = cell as? DrankAlcoholTableViewCell {
-            customCell.contentView.layer.cornerRadius = 10
-            customCell.contentView.layer.masksToBounds = true
-            customCell.layer.cornerRadius = 10
-            customCell.layer.masksToBounds = false // Allow shadow outside bounds
-        }
-    }
-}
-
-// MARK: - UITableViewDelegate (Optional)
-extension DrinkingRecordViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 95 // Adjust row height as needed
+        return 115 // Adjust row height as needed
     }
 }
