@@ -6,6 +6,7 @@
 //
 
 import Alamofire
+import Foundation
 
 class SocialService {
     
@@ -13,7 +14,7 @@ class SocialService {
     static var globalRankPage: Int = 0
     static let pageSize: Int = 10
     
-    static func fetchGlobalRankData() {
+    static func fetchGlobalRankData(completion: (() -> Void)? = nil) {
         guard !isFetchingGlobalRankData else { print("fetching data");  return}
         guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else { return }
         
@@ -41,6 +42,10 @@ class SocialService {
             globalRankPage += pageSize
             isFetchingGlobalRankData = false
         }
+        
+        DispatchQueue.main.async {
+                    completion?()
+                }
     }
     
     static func fetchFriendRankData() {

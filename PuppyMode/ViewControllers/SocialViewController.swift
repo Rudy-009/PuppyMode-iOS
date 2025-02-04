@@ -10,9 +10,19 @@ import KakaoSDKTalk
 
 class SocialViewController: UIViewController {
     
-    private lazy var socialView = SocialView()
+    private var socialView = SocialView()
     private var rankDataToShow: [UserRankInfo] = RankModel.globalRankData
+    private var throttleWorkItem: DispatchWorkItem?
 
+    override func viewWillAppear(_ animated: Bool) { // 뷰가 나타나기 전에 데이터 fetch와 UI 갱신 처리
+        super.viewWillAppear(animated)
+        SocialService.fetchGlobalRankData {
+            self.socialView.rankingTableView.reloadData()
+            self.socialView.myRankView.configure(rankCell: RankModel.myGlobalRank!)
+            self.socialView.myRankView.markMyRank()
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(red: 251/255, green: 251/255, blue: 251/255, alpha: 1)
@@ -20,10 +30,10 @@ class SocialViewController: UIViewController {
         socialView.rankingTableView.delegate = self
         socialView.rankingTableView.dataSource = self
         setupAction()
-        callFreiends()
+        requestToCallFriendsInfo()
     }
     
-    private func callFreiends() {
+    private func requestToCallFriendsInfo() {
         TalkApi.shared.friends { (friends, error) in
             if let error = error {
                 print(error)
@@ -53,10 +63,6 @@ class SocialViewController: UIViewController {
         socialView.rankingTableView.reloadData()
     }
     
-    public func configureMyRankCell() {
-        socialView.myRankView.configure(rankCell: RankModel.myGlobalRank!)
-    }
-
 }
 
 extension SocialViewController: UITableViewDelegate, UITableViewDataSource {
@@ -92,13 +98,21 @@ extension SocialViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetY = scrollView.contentOffset.y            // 현재 화면의 아래 y 좌표
-        let contentHeight = scrollView.contentSize.height   // 컨텐츠의 전체 길이
-        let height = scrollView.frame.size.height           // 
-        
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let height = scrollView.frame.size.height
+                
         if offsetY > contentHeight - height {
-            SocialService.fetchGlobalRankData()
-            socialView.rankingTableView.reloadData()
+            // 기존의 work item이 있다면 취소
+            throttleWorkItem?.cancel()
+            
+            // 새로운 work item 생성, 0.3초(조절 가능) 후 실행
+            throttleWorkItem = DispatchWorkItem { [weak self] in
+                SocialService.fetchGlobalRankData()
+                self?.socialView.rankingTableView.reloadData()
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: throttleWorkItem!)
         }
     }
     
