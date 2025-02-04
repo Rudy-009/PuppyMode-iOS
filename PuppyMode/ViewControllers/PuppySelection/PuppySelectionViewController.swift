@@ -21,9 +21,10 @@ class PuppySelectionViewController: UIViewController {
     }
     
     private func connectButtonActions() {
+        puppySelectionView.cardButton04.addTarget(self, action: #selector(showConfirmVC), for: .touchUpInside)
         puppySelectionView.cardButton03.addTarget(self, action: #selector(showConfirmVC), for: .touchUpInside)
         puppySelectionView.cardButton02.addTarget(self, action: #selector(showConfirmVC), for: .touchUpInside)
-        puppySelectionView.cardButton01.addTarget(self, action: #selector(deletePuppy), for: .touchUpInside)
+        puppySelectionView.cardButton01.addTarget(self, action: #selector(showConfirmVC), for: .touchUpInside)
     }
     
     @objc

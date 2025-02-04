@@ -51,21 +51,21 @@ class RankingTableViewCell: UITableViewCell {
         addComponents()
     }
     
-    public func configure(index: Int, rankCell: RankCell) {
-        rankLabel.text = String(index + 1)
-        userNameLabel.text = rankCell.name
-        characterInfoLabel.text = "\(rankCell.characterName), Level\(rankCell.characterLevel)"
+    public func configure(rankCell: UserRankInfo) {
+        rankLabel.text = String(rankCell.rank)
+        userNameLabel.text = rankCell.username
+        characterInfoLabel.text = "\(rankCell.puppyName ?? rankCell.levelName), Level\(rankCell.level) \(rankCell.levelName)"
         self.backgroundColor = .white
         
         trophyImageView.removeFromSuperview() // 기존 트로피 이미지 제거
         
-        if index < 3 {
-            addTrophyComponent(rank: Rank(rawValue: index + 1) ?? .first)
+        if rankCell.rank < 4 {
+            addTrophyComponent(rank: Rank(rawValue: rankCell.rank) ?? .first)
         }
-        
-        if rankCell.name == "Me" {
-            self.backgroundColor = UIColor(red: 0.451, green: 0.784, blue: 0.694, alpha: 1)
-        }
+    }
+    
+    public func markMyRank() {
+        self.backgroundColor = UIColor(red: 0.451, green: 0.784, blue: 0.694, alpha: 1)
     }
     
     private func addComponents() {

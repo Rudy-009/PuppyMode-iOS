@@ -17,23 +17,11 @@ class PuppySelectionView: UIView {
         $0.numberOfLines = 0
     }
     
-    public lazy var cardButton01 = UIButton().then {
-        $0.titleLabel?.font = UIFont(name: "NotoSansKR-Bold", size: 20)
-        $0.setTitleColor(.black, for: .normal)
-        $0.backgroundColor = .caution
-    }
-    
-    public lazy var cardButton02 = UIButton().then {
-        $0.setTitleColor(.black, for: .normal)
-        $0.titleLabel?.font = UIFont(name: "NotoSansKR-Bold", size: 20)
-        $0.backgroundColor = .kakaoLogin
-    }
-    
-    public lazy var cardButton03 = UIButton().then {
-        $0.setTitleColor(.black, for: .normal)
-        $0.titleLabel?.font = UIFont(name: "NotoSansKR-Bold", size: 20)
-        $0.backgroundColor = .main
-    }
+    private lazy var buttonsStackFrame = UIView()
+    public lazy var cardButton01 = PuppyCardButtonView()
+    public lazy var cardButton02 = PuppyCardButtonView()
+    public lazy var cardButton03 = PuppyCardButtonView()
+    public lazy var cardButton04 = PuppyCardButtonView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -42,35 +30,49 @@ class PuppySelectionView: UIView {
     
     private func addComponents() {
         self.addSubview(mainTitleLabel)
-        self.addSubview(cardButton01)
-        self.addSubview(cardButton02)
-        self.addSubview(cardButton03)
+        self.addSubview(buttonsStackFrame)
+        
+        buttonsStackFrame.snp.makeConstraints { make in
+            make.width.equalToSuperview().multipliedBy(0.7)
+            make.height.equalToSuperview().multipliedBy(0.55)
+            make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview().inset(80)
+        }
         
         mainTitleLabel.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(27)
-            make.top.equalTo(safeAreaLayoutGuide.snp.top).offset(183)
+            make.bottom.equalTo(buttonsStackFrame.snp.top).offset(-40)
         }
         
+        buttonsStackFrame.addSubview(cardButton01)
+        buttonsStackFrame.addSubview(cardButton02)
+        buttonsStackFrame.addSubview(cardButton03)
+        buttonsStackFrame.addSubview(cardButton04)
+        
         cardButton01.snp.makeConstraints { make in
-            make.top.equalTo(mainTitleLabel.snp.bottom).offset(20)
-            make.leading.equalToSuperview().offset(20)
-            make.height.equalTo(300)
-            make.width.equalTo(100)
+            make.leading.top.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.428)
+            make.height.equalToSuperview().multipliedBy(0.444)
         }
         
         cardButton02.snp.makeConstraints { make in
-            make.top.equalTo(mainTitleLabel.snp.bottom).offset(20)
-            make.leading.equalTo(cardButton01.snp.trailing).offset(20)
-            make.height.equalTo(300)
-            make.width.equalTo(100)
+            make.trailing.top.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.428)
+            make.height.equalToSuperview().multipliedBy(0.444)
         }
         
         cardButton03.snp.makeConstraints { make in
-            make.top.equalTo(mainTitleLabel.snp.bottom).offset(20)
-            make.leading.equalTo(cardButton02.snp.trailing).offset(20)
-            make.height.equalTo(300)
-            make.width.equalTo(100)
+            make.leading.bottom.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.428)
+            make.height.equalToSuperview().multipliedBy(0.444)
         }
+        
+        cardButton04.snp.makeConstraints { make in
+            make.trailing.bottom.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.428)
+            make.height.equalToSuperview().multipliedBy(0.444)
+        }
+        
         
     }
     

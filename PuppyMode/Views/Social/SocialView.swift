@@ -71,9 +71,6 @@ class SocialView: UIView {
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(42)
         }
-                
-        myRankView.configure(index: 18, rankCell: RankCell(name: "Me", characterName: "요크셔테리어", characterLevel: 3))
-
         
         myRankView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
@@ -107,8 +104,3 @@ class SocialView: UIView {
         }
     }
 }
-
-#Preview {
-    SocialViewController()
-}
-
