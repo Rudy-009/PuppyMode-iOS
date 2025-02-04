@@ -17,12 +17,19 @@ class CustomTabBar: UITabBar {
 }
 
 class BaseViewController: UITabBarController {
-    private lazy var homeVC: UINavigationController = {
+    
+    private var homeVC: UINavigationController = {
         let homeViewController = HomeViewController()
         homeViewController.getPupptInfo()
         return UINavigationController(rootViewController: homeViewController)
     }()
-    private lazy var socialVC = UINavigationController(rootViewController: SocialViewController())
+    
+    private let socialVC: UINavigationController = {
+        SocialService.fetchGlobalRankData()
+        let socialViewController = SocialViewController()
+        return UINavigationController(rootViewController: socialViewController)
+    }()
+
     private let calendarVC = UINavigationController(rootViewController: CalendarViewController())
     private lazy var settingVC: UINavigationController = {
         let settingViewController = SettingViewController()

@@ -19,7 +19,7 @@ class KakaoLoginService {
     static func kakaoLoginWithAccount() {
         UserApi.shared.loginWithKakaoAccount {(oauthToken, error) in
             if let error = error {
-                print(error)
+                print("UserApi.shared.loginWithKakaoAccount failed: ", error)
             } else {
                 self.saveKakaoUserID()
                 if let kakaoAccessToekn = oauthToken?.accessToken, let kakaoRefreshToken = oauthToken?.refreshToken {
