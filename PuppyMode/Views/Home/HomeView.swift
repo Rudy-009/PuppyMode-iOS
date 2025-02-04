@@ -82,11 +82,11 @@ class HomeView: UIView {
     
     lazy private var puppyNameLabel = UILabel().then { label in
         label.font = UIFont(name: "OTSBAggroM", size: 25)
-        label.text = "브로콜리"
+        label.text = " "
     }
     
     //MARK: Bottom Dog Info
-    lazy private var bottomStack = UIView().then { view in
+    private lazy var puppyDashboardFrame = UIView().then { view in
         view.layer.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1).cgColor
         view.layer.cornerRadius = 10
         view.layer.borderWidth = 1
@@ -94,14 +94,14 @@ class HomeView: UIView {
     }
     
     lazy public var dogInfoLabel = UILabel().then { label in
-        label.text = "Level 1 아기사자 포메라니안"
         label.font = UIFont(name: "OTSBAggroM", size: 14)
+        label.text = "dogInfoLabel"
         label.textColor = UIColor(red: 0.624, green: 0.584, blue: 0.584, alpha: 1)
     }
     
     lazy public var progressLabel = UILabel().then { label in
-        label.text = "55%"
         label.font = UIFont(name: "NotoSansKR-Bold", size: 14)
+        label.text = "55%"
         label.textColor = UIColor(red: 0.624, green: 0.584, blue: 0.584, alpha: 1)
     }
     
@@ -114,6 +114,8 @@ class HomeView: UIView {
     }
     
     //MARK: Drinking Capacity Button
+    private lazy var buttonStack = UIView()
+    
     lazy public var drinkingCapacityButton = HomeCustomButtonView()
     lazy public var addDrinkingHistoryButton = HomeCustomButtonView()
     
@@ -124,7 +126,7 @@ class HomeView: UIView {
         self.addPuppyImageAndName()
         self.addBottomComponents()
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -133,18 +135,18 @@ class HomeView: UIView {
 
 extension HomeView {
     
-    public func configurePuppyInfo(to puppyInfo: PuppyInfoResult?) {
-        puppyNameLabel.text = puppyInfo?.puppyName ?? "이름을 지어주세요."
-        dogInfoLabel.text = "Level" + String(puppyInfo!.level!) + " " + puppyInfo!.levelName!
-        let total = Float(puppyInfo!.levelMaxExp! - puppyInfo!.levelMinExp!)
-        let progress = Float(puppyInfo!.puppyExp! - puppyInfo!.levelMinExp!)
+    public func configurePuppyInfo(to puppyInfo: PuppyInfoResult) {
+        puppyNameLabel.text = puppyInfo.puppyName
+        dogInfoLabel.text = "Level" + String(puppyInfo.level) + " " + puppyInfo.levelName
+        let total = Double(puppyInfo.levelMaxExp - puppyInfo.levelMinExp)
+        let progress = Double(puppyInfo.puppyExp - puppyInfo.levelMinExp)
         
-        let percentageInt = Int((progress / total) * 100)
         let percentageDouble = progress / total
         
-        progressLabel.text = String(percentageInt) + "%"
-        progressBar.setProgress(percentageDouble, animated: false)
+        progressLabel.text = String(Int(percentageDouble * 100)) + "%"
+        progressBar.setProgress(Float(percentageDouble), animated: false)
     }
+    
 }
 
 //MARK: Add Compoments
@@ -230,27 +232,29 @@ extension HomeView {
     }
     
     private func addBottomComponents() {
-        self.addSubview(bottomStack)
         
-        bottomStack.addSubview(dogInfoLabel)
-        bottomStack.addSubview(progressLabel)
-        bottomStack.addSubview(progressBar)
+        self.addSubview(puppyDashboardFrame)
         
-        bottomStack.snp.makeConstraints { make in
+        puppyDashboardFrame.addSubview(dogInfoLabel)
+        puppyDashboardFrame.addSubview(progressLabel)
+        puppyDashboardFrame.addSubview(progressBar)
+        
+        puppyDashboardFrame.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.top.equalTo(puppyNameLabel.snp.bottom).offset(19)
             make.height.equalTo(274)
-            make.width.equalTo(361)
         }
         
         dogInfoLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(27)
             make.top.equalToSuperview().offset(31)
+            make.height.equalTo(24)
         }
         
         progressLabel.snp.makeConstraints{ make in
             make.trailing.equalToSuperview().offset(-37)
             make.top.equalToSuperview().offset(31)
+            make.height.equalTo(24)
         }
         
         progressBar.snp.makeConstraints{make in
@@ -260,30 +264,38 @@ extension HomeView {
             make.height.equalTo(21)
         }
         
-        bottomStack.addSubview(drinkingCapacityButton)
+        puppyDashboardFrame.addSubview(buttonStack)
+        
+        buttonStack.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(30)
+            make.top.equalTo(progressBar.snp.bottom).offset(35)
+            make.bottom.equalToSuperview().offset(-30)
+        }
+        
+        buttonStack.addSubview(drinkingCapacityButton)
         
         drinkingCapacityButton.setTitleLabel(to: "주량 확인")
         drinkingCapacityButton.setSubTitleLabel(to: "술 마실 거에요")
         
         drinkingCapacityButton.snp.makeConstraints { make in
-            make.width.equalTo(138)
-            make.height.equalTo(107)
-            make.top.equalTo(progressBar.snp.bottom).offset(35)
-            make.leading.equalToSuperview().offset(30)
+            make.leading.equalToSuperview()
+            make.top.bottom.equalToSuperview()
+            make.width.equalTo(buttonStack.snp.width).multipliedBy(0.47) // 버튼 너비를 상위 뷰의 48%로 설정
         }
+        
+        buttonStack.addSubview(addDrinkingHistoryButton)
         
         addDrinkingHistoryButton.setTitleLabel(to: "음주 기록")
         addDrinkingHistoryButton.setSubTitleLabel(to: "술 마셨어요")
         
-        bottomStack.addSubview(addDrinkingHistoryButton)
-        
         addDrinkingHistoryButton.snp.makeConstraints { make in
-            make.width.equalTo(138)
-            make.height.equalTo(107)
-            make.top.equalTo(progressBar.snp.bottom).offset(35)
-            make.trailing.equalToSuperview().offset(-30)
+            make.height.equalTo(drinkingCapacityButton.snp.height)
+            make.width.equalTo(drinkingCapacityButton.snp.width)
+            make.top.equalToSuperview()
+            make.trailing.equalToSuperview()
+            
         }
-                
+        
     }
 }
 

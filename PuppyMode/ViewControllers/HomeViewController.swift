@@ -68,9 +68,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
 extension HomeViewController {
     
     func getPupptInfo() {
-        guard let fcm = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
-            return
-        }
+        guard let fcm = KeychainService.get(key: UserInfoKey.jwt.rawValue) else { return }
         
         AF.request( K.String.puppymodeLink + "/puppies",
                     headers: [
@@ -81,6 +79,7 @@ extension HomeViewController {
             switch response.result {
             case .success(let response):
                 let puppyInfo = response.result
+                print(puppyInfo)
                 //
                 self.homeView.configurePuppyInfo(to: puppyInfo)
             case .failure(let error):
@@ -177,7 +176,8 @@ extension HomeViewController {
         print("Add Drinking History Button Pressed")
         
         // 버튼의 title을 확인
-        let buttonTitle = homeView.addDrinkingHistoryButton.title(for: .normal)
+        let buttonTitle = homeView.addDrinkingHistoryButton.getTitleLabel()
+        print(buttonTitle)
         
         if buttonTitle == "음주 기록" {
             // 음주 기록 화면으로 이동
@@ -224,6 +224,8 @@ extension HomeViewController {
                 case .success(let puppyResponse) :
                     if puppyResponse.isSuccess {
                         print("놀아주기 서버 연동 성공")
+                        print("성공")
+                        getPupptInfo()
                     } else {
                         print("Puppy Play API Error: \(puppyResponse.message)")
                     }
