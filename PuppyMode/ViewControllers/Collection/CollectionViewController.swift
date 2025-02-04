@@ -23,7 +23,7 @@ class CollectionViewController: UIViewController {
         super.viewDidLoad()
         self.view = collectionView
         
-        setupNavigationBar(title: "컬렉션")
+        setupNavigationBar(title: "컬렉션", rightText: "")
         getCollectionfromServer()
     
     }

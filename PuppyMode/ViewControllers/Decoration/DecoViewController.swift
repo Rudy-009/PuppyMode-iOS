@@ -13,6 +13,7 @@ class DecoViewController: UIViewController {
     private var collectionView: UICollectionView!
     private var items: [DecoItemModel] = []         // 컬렉션 뷰에 표시할 데이터 배열
     private var selectedLevel: Int = 1              // 초기 레벨 설정
+    private var purchasedItemIds: Set<Int> = []
     
     private lazy var decoView: DecoView = {
         let view = DecoView()
@@ -41,15 +42,21 @@ class DecoViewController: UIViewController {
         }
          
         // 초기 데이터 설정
-        items = DecoItemModel.hatData[0].items
+        items = DecoItemModel.hatData.flatMap { $0.items } +
+                DecoItemModel.clothesData.flatMap { $0.items } +
+                DecoItemModel.floorData.flatMap { $0.items } +
+                DecoItemModel.houseData.flatMap { $0.items } +
+                DecoItemModel.toyData.flatMap { $0.items }
         
-        setupNavigationBar(title: "꾸미기")
+        
         setupCollectionView()
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         fetchCategoriesFromServer()
+        fetchPointFromServer()
+        fetchOwnedItemsFromServer()
     }
     
     private func setupCollectionView() {
@@ -123,12 +130,10 @@ class DecoViewController: UIViewController {
     
     // 서버로부터 카테고리 조회
     private func fetchCategoriesFromServer() {
-        print("dd")
         let headers: HTTPHeaders = [
             "accept": "*/*",
             "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
         ]
-        
         
         AF.request(K.String.puppymodeLink + "/puppies/categories",
                    method: .get,
@@ -141,9 +146,6 @@ class DecoViewController: UIViewController {
             case .success(let response):
                 print("카테고리 불러오기 성공")
                 print(response.result)
-                let categories = response.result.categories.map {
-                    Category(categoryId: $0.categoryId, name: $0.name, itemCount: $0.itemCount)
-                }
                 
             case .failure(let error):
                 print("Network Error: \(error.localizedDescription)")
@@ -159,7 +161,7 @@ class DecoViewController: UIViewController {
             "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
         ]
         
-        // 카테고리 ID를 URL에 동적으로 삽입
+        // 카테고리 ID로 아이템 리스트 조회
         let urlString = K.String.puppymodeLink + "/puppies/\(categoryId)/items"
         
         AF.request(urlString,
@@ -173,21 +175,45 @@ class DecoViewController: UIViewController {
                 case .success(let response):
                     print("아이템 불러오기 성공")
                     
-                    // items 배열 업데이트
-                    self?.items = response.result.items.map { item in
-                        DecoItemModel(itemId: item.itemId, image: UIImage(named: item.image_url) ?? UIImage(),
-                                      price: "\(item.price)",
-                                      isPurchased: item.isPurchased)
-                    }
-                    
                 case .failure(let error):
                     print("Network Error: \(error.localizedDescription)")
                 }
             }
     }
+    
+    // 서버로부터 포인트 조회
+    private func fetchPointFromServer() {
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+        ]
+        AF.request(K.String.puppymodeLink + "/puppies/points",
+                   method: .get,
+                   headers: headers)
+        .responseDecodable(of: PuppyPointResponse.self)  { [weak self] response in
+                
+            guard let _ = self else { return }
+                
+            switch response.result {
+            case .success(let response):
+                print("포인트 조회 성공: \(response.result)")
+                
+                if let point = response.result {
+                    self?.setupNavigationBar(title: "꾸미기", rightText: "\(point)P")
+                }
+                
+            case .failure(let error):
+                print("Network Error: \(error.localizedDescription)")
+            }
+
+        }
+    }
 
 
 }
+
+// 구매한 아이템을 저장하는 Set
+var purchasedItemIds: Set<Int> = []
 
 // MARK: - UICollectionViewDataSource
 extension DecoViewController: UICollectionViewDataSource {
@@ -197,11 +223,15 @@ extension DecoViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DecoItemViewCell.identifier, for: indexPath) as! DecoItemViewCell
+        
         let item = items[indexPath.item]
+        let isPurchased = purchasedItemIds.contains(item.itemId)
+
         cell.decoItemImageView.image = item.image
         cell.decoItemLabel.text = item.price
-        cell.lockImageView.isHidden = item.isPurchased
 
+        updateCellUI(cell, isPurchased: isPurchased)
+        
         return cell
     }
 }
@@ -213,29 +243,39 @@ extension DecoViewController: UICollectionViewDelegate {
         let selectedItem = items[indexPath.item]
         
         // 선택된 아이템이 속한 카테고리 찾기
+        let allCategories = [DecoItemModel.hatData, DecoItemModel.clothesData, DecoItemModel.houseData, DecoItemModel.floorData, DecoItemModel.toyData]
+
         var categoryId: Int?
-        for category in DecoItemModel.hatData {
-            // 아이템이 카테고리의 아이템 목록에 포함되어 있는지 확인
-            if category.items.contains(where: { $0.itemId == selectedItem.itemId }) {
-                categoryId = category.categoryId
-                break
+
+        for categoryList in allCategories { // 여러 개의 카테고리 배열을 순회
+            for category in categoryList {
+                if category.items.contains(where: { $0.itemId == selectedItem.itemId }) {
+                    categoryId = category.categoryId
+                    break
+                }
             }
+            if categoryId != nil { break } // 찾았으면 더 이상 반복할 필요 없음
         }
         
         // 선택한 아이템의 카테고리 ID와 아이템 ID 출력
         if let categoryId = categoryId {
             print("선택한 카테고리 ID: \(categoryId) ,아이템 ID: \(selectedItem.itemId)")
         }
+
         
-        // 아이템 가격이 0인 경우 도전 과제 아이템 안내
-        if selectedItem.price == "" {
-            showAlert(title: "", message: "도전 과제로 얻는 아이템은 \n구매할 수 없습니다.")
-        } else {
+        // 아이템 소유가 안된 경우
+        if selectedItem.isPurchased == false {
+            // 도전 과제 아이템은 구매 불가
+            if selectedItem.mission_item {
+                showAlert(title: "", message: "도전 과제로 얻는 아이템은 \n구매할 수 없습니다.")
+                return
+            }
+            
             // 아이템 구매 확인
             let alert = UIAlertController(title: nil, message: "아이템을 구매하시겠습니까?", preferredStyle: .alert)
             
             let purchaseAction = UIAlertAction(title: "구매", style: .default) { _ in
-                self.purchaseItem(item: selectedItem)
+                self.postPurchaseItemToServer(categoryId: categoryId!, itemId: selectedItem.itemId)
             }
             let cancelAction = UIAlertAction(title: "취소", style: .cancel)
             
@@ -244,18 +284,69 @@ extension DecoViewController: UICollectionViewDelegate {
             
             present(alert, animated: true, completion: nil)
         }
+        
+        
+        // 아이템 소유가 된 경우
+        if selectedItem.isPurchased == true {
+            
+        }
+
+    }
+
+    
+    
+    private func postPurchaseItemToServer(categoryId: Int, itemId: Int) {
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+        ]
+        let urlString = K.String.puppymodeLink + "/puppies/\(categoryId)/items/\(itemId)"
+        
+        AF.request(urlString,
+                   method: .get,
+                   headers: headers)
+            .responseDecodable(of: PuppyPurchaseResponse.self) { [weak self] response in
+        
+                guard let _ = self else { return }
+                    
+                switch response.result {
+                case .success(let response):
+                    print("아이템 구매하기 서버 연동 성공")
+                    
+                    // 아이템 구매 성공 메시지 떠야지만 구매한 아이템 저장
+                    if let purchasedItem = self?.items.first(where: { $0.itemId == response.result?.itemId }) {
+                        self?.purchaseItem(item: purchasedItem)
+                    }
+                    
+                case .failure(let error):
+                    print("Network Error: \(error.localizedDescription)")
+                }
+            }
     }
     
-    // 아이템 구매 처리 (구체적인 구매 로직은 추후 구현)
+    
     private func purchaseItem(item: DecoItemModel) {
-        // 구매 후 서버 연동
+        purchasedItemIds.insert(item.itemId) // 구매한 아이템 저장
+         
         guard let index = items.firstIndex(where: { $0.itemId == item.itemId }) else { return }
         let indexPath = IndexPath(item: index, section: 0)
-        
+         
         if let cell = collectionView.cellForItem(at: indexPath) as? DecoItemViewCell {
+            updateCellUI(cell, isPurchased: true)
+        }
+         
+        collectionView.reloadItems(at: [indexPath]) // 변경된 아이템만 리로드
+     }
+     
+    private func updateCellUI(_ cell: DecoItemViewCell, isPurchased: Bool) {
+        if isPurchased {
             cell.overlayView.backgroundColor = UIColor.black.withAlphaComponent(0.0)
             cell.lockImageView.isHidden = true
             cell.decoItemLabel.isHidden = true
+        } else {
+            cell.overlayView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+            cell.lockImageView.isHidden = false
+            cell.decoItemLabel.isHidden = false
         }
     }
     
@@ -266,5 +357,64 @@ extension DecoViewController: UICollectionViewDelegate {
         alert.addAction(okAction)
         present(alert, animated: true, completion: nil)
     }
+    
+    
+    private func fetchOwnedItemsFromServer() {
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+        ]
+        let urlString = K.String.puppymodeLink + "/puppies/items"
+        
+        AF.request(urlString,
+                   method: .get,
+                   headers: headers)
+            .responseDecodable(of: PuppyOwnedItemResponse.self) { [weak self] response in
+        
+                guard let _ = self else { return }
+                    
+                switch response.result {
+                case .success(let response):
+                    print("소유한 아이템 조회 서버 연동 성공")
+                    
+                    guard let self = self else { return }
+
+                    // 서버에서 받은 소유한 아이템 ID를 저장
+                    self.purchasedItemIds = Set(response.result?.compactMap { $0.itemId } ?? [])
+                    print("서버에서 받은 아이템 ID들: \(self.purchasedItemIds)")
+
+                    
+                    // items 배열에서 해당 아이템들의 isPurchased 업데이트
+                    self.items = self.items.map { item in
+                        var newItem = item
+                        if self.purchasedItemIds.contains(newItem.itemId) {
+                            newItem.isPurchased = true
+                            print("✅ 구매한 아이템 업데이트: \(newItem.itemId)")
+                        }
+                        return newItem
+                    }
+
+
+                    // UI 업데이트
+                    self.updatePurchasedItemsUI()
+
+                    
+                case .failure(let error):
+                    print("Network Error: \(error.localizedDescription)")
+                }
+            }
+    }
+    
+    private func updatePurchasedItemsUI() {
+        for (index, item) in items.enumerated() {
+            let indexPath = IndexPath(item: index, section: 0)
+            if let cell = collectionView.cellForItem(at: indexPath) as? DecoItemViewCell {
+                updateCellUI(cell, isPurchased: item.isPurchased)
+            }
+        }
+        
+        collectionView.reloadData()
+    }
+
 }
 

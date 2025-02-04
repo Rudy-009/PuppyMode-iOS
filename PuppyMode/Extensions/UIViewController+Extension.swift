@@ -10,7 +10,7 @@ import UIKit
 
 extension UIViewController {
     
-    func setupNavigationBar(title: String) {
+    func setupNavigationBar(title: String, rightText: String) {
         // Create a custom navigation bar container
         let navigationBar = UIView()
         navigationBar.backgroundColor = UIColor(hex: "#FBFBFB")
@@ -49,6 +49,18 @@ extension UIViewController {
             make.centerY.equalTo(navigationBar) // 네비게이션 바의 수직 중앙에 위치
             make.width.equalTo(13)
             make.height.equalTo(20)
+        }
+        
+        let rightLabel = UILabel()
+        rightLabel.text = rightText
+        rightLabel.textColor = UIColor(hex: "#3C3C3C")
+        rightLabel.font = UIFont(name: "NotoSansKR-Regular", size: 20) ?? UIFont.systemFont(ofSize: 20, weight: .medium)
+        titleLabel.textAlignment = .right
+        navigationBar.addSubview(rightLabel)
+        
+        rightLabel.snp.makeConstraints { make in
+            make.trailing.equalTo(navigationBar.snp.trailing).inset(16)
+            make.centerY.equalTo(navigationBar)
         }
 
         

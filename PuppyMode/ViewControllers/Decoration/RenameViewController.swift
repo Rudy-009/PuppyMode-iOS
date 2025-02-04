@@ -25,7 +25,7 @@ class RenameViewController: UIViewController {
         super.viewDidLoad()
         self.view = renameView
         
-        setupNavigationBar(title: "이름 수정")
+        setupNavigationBar(title: "이름 수정", rightText: "")
 
     }
     
@@ -56,7 +56,7 @@ class RenameViewController: UIViewController {
                    method: .patch,
                    parameters: parameters,
                    headers: headers)
-        .responseDecodable(of: PuppyNamePatchResponse.self)  { [weak self] response in
+        .responseDecodable(of: PuppyNameResponse.self)  { [weak self] response in
                 
                 guard let _ = self else { return }
                 
