@@ -13,24 +13,44 @@ class SocialViewController: UIViewController {
     private var socialView = SocialView()
     private var rankDataToShow: [UserRankInfo] = RankModel.globalRankData
     private var throttleWorkItem: DispatchWorkItem?
-
-    override func viewWillAppear(_ animated: Bool) { // 뷰가 나타나기 전에 데이터 fetch와 UI 갱신 처리
-        super.viewWillAppear(animated)
-        SocialService.fetchGlobalRankData {
-            self.socialView.rankingTableView.reloadData()
-            self.socialView.myRankView.configure(rankCell: RankModel.myGlobalRank!)
-            self.socialView.myRankView.markMyRank()
-        }
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(red: 251/255, green: 251/255, blue: 251/255, alpha: 1)
         self.view = socialView
-        socialView.rankingTableView.delegate = self
-        socialView.rankingTableView.dataSource = self
+        setupTableView()
         setupAction()
         requestToCallFriendsInfo()
+        loadInitialData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        refreshData()
+    }
+    
+    private func setupTableView() {
+        socialView.rankingTableView.delegate = self
+        socialView.rankingTableView.dataSource = self
+    }
+    
+    private func loadInitialData() {
+        SocialService.fetchGlobalRankData { [weak self] in
+            DispatchQueue.main.async {
+                self?.refreshData()
+            }
+        }
+    }
+    
+    private func refreshData() {
+        rankDataToShow = RankModel.currentState == .global
+            ? RankModel.globalRankData
+            : RankModel.friendsRankData
+        if let myCell = RankModel.myGlobalRank {
+            socialView.myRankView.configure(rankCell: myCell)
+            socialView.myRankView.markMyRank()
+        }
+        socialView.rankingTableView.reloadData()
     }
     
     private func requestToCallFriendsInfo() {

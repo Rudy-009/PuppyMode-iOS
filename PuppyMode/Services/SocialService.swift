@@ -44,8 +44,8 @@ class SocialService {
         }
         
         DispatchQueue.main.async {
-                    completion?()
-                }
+            completion?()
+        }
     }
     
     static func fetchFriendRankData() {

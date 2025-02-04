@@ -104,8 +104,3 @@ class SocialView: UIView {
         }
     }
 }
-
-#Preview {
-    SocialViewController()
-}
-
