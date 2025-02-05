@@ -162,25 +162,28 @@ extension AlcoholViewController: UITableViewDataSource, UITableViewDelegate {
         
         return cell
     }
+
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath) else { return }
-        cell.layer.borderWidth = 1.5
-        cell.layer.borderColor = UIColor(red: 0.83, green: 0.83, blue: 0.83, alpha: 1).cgColor
-        
+        // 현재 선택된 셀 가져오기
+        guard let cell = tableView.cellForRow(at: indexPath) as? AlcoholDetailTableViewCell else { return }
+
         // 이전에 선택된 셀 초기화
         if let previousIndexPath = selectedIndexPath,
-           let previousCell = tableView.cellForRow(at: previousIndexPath) {
-            previousCell.layer.borderWidth = 1
-            previousCell.layer.borderColor = UIColor(red: 0.953, green: 0.957, blue: 0.965, alpha: 1).cgColor
+           let previousCell = tableView.cellForRow(at: previousIndexPath) as? AlcoholDetailTableViewCell {
+            previousCell.backView.layer.borderWidth = 1
+            previousCell.backView.layer.borderColor = UIColor(red: 0.953, green: 0.957, blue: 0.965, alpha: 1).cgColor
         }
 
-        // 현재 선택된 셀
-        guard let cell = tableView.cellForRow(at: indexPath) else { return }
-        cell.layer.borderWidth = 1.5
-        cell.layer.borderColor = UIColor(red: 0.83, green: 0.83, blue: 0.83, alpha: 1).cgColor
+        // 현재 선택된 셀 스타일 적용
+        cell.backView.layer.borderWidth = 1.5
+        cell.backView.layer.borderColor = UIColor(red: 0.83, green: 0.83, blue: 0.83, alpha: 1).cgColor
 
         // 현재 선택된 셀의 인덱스를 저장
         selectedIndexPath = indexPath
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 115
     }
 }
