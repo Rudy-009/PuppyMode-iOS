@@ -23,7 +23,7 @@ struct AlcoholCategoryDetail: Codable {
 struct AlcoholListItem: Codable {
     let itemId: Int
     let itemName: String
-    let alcoholPercentage: Int
+    let alcoholPercentage: Double
     let volumeMl: Int?
     let imageUrl: String?
 }
