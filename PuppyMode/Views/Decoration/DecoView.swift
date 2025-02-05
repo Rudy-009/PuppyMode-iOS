@@ -26,7 +26,7 @@ class DecoView: UIView {
         button.setImage(UIImage(named: "HomeCharacterDefaultImage"), for: .normal)
     }
     
-    lazy private var puppyNameLabel = UILabel().then { label in
+    lazy public var puppyNameLabel = UILabel().then { label in
         label.font = UIFont(name: "NotoSansKR-Regular", size: 20)
         label.text = "이름"
     }

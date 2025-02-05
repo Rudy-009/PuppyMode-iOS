@@ -18,7 +18,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
     private let locationManager = CLLocationManager()
     private var currentLatitude: Double?    // 위도 정보
     private var currentLongitude: Double?   // 경도 정보
-    
+
     let homeView = HomeView()
     
     override func viewDidLoad() {
@@ -69,9 +69,10 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
     }
 }
 
+
 //MARK: GET Puppy Character Info
 extension HomeViewController {
-    
+        
     func getPupptInfo() {
         guard let fcm = KeychainService.get(key: UserInfoKey.jwt.rawValue) else { return }
         
@@ -85,6 +86,7 @@ extension HomeViewController {
             case .success(let response):
                 let puppyInfo = response.result
                 print(puppyInfo)
+                
                 //
                 self.homeView.configurePuppyInfo(to: puppyInfo)
             case .failure(let error):

@@ -49,7 +49,7 @@ class RenameViewController: UIViewController {
         ]
         
         let parameters: [String: Any] = [
-            "name": self.name
+            "newPuppyName": self.name
           ]
         
         AF.request(K.String.puppymodeLink + "/puppies",
@@ -62,7 +62,7 @@ class RenameViewController: UIViewController {
                 
                 switch response.result {
                 case .success(let response) :
-                    print(response.result)
+                    print("바뀐 이름: \(response.result)")
                     self?.navigationController?.popViewController(animated: true)  // 성공하면 이전화면으로 돌아가기
                 case .failure(let error) :
                     print("Network Error: \(error.localizedDescription)")

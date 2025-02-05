@@ -110,7 +110,7 @@ extension DecoItemModel {
             UIImage(named: "level2_명품 강아지 옷"),
             UIImage(named: "level3_명품 강아지 옷")
         ]),
-        DecoItemModel(itemId: 10, image: UIImage(named: "하늘색 체크 옷"), price: "300P", isPurchased: false, mission_item: false, levelImages: [
+        DecoItemModel(itemId: 10, image: UIImage(named: "하늘색 체크 옷"), price: "500P", isPurchased: false, mission_item: false, levelImages: [
             UIImage(named: "level1_하늘색 체크 옷"),
             UIImage(named: "level2_하늘색 체크 옷"),
             UIImage(named: "level3_하늘색 체크 옷")
@@ -146,7 +146,7 @@ extension DecoItemModel {
             UIImage(named: "level2_텐트"),
             UIImage(named: "level3_텐트")
         ]),
-        DecoItemModel(itemId: 16, image: UIImage(named: "박스"), price: "", isPurchased: false, mission_item: true, levelImages: [
+        DecoItemModel(itemId: 16, image: UIImage(named: "박스"), price: "1500P", isPurchased: false, mission_item: false, levelImages: [
             UIImage(named: "level1_박스"),
             UIImage(named: "level2_박스"),
             UIImage(named: "level3_박스")
