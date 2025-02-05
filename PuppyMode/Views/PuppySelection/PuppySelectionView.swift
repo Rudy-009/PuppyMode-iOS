@@ -10,6 +10,8 @@ import Alamofire
 
 class PuppySelectionView: UIView {
     
+    private var puppy: PuppyEnum?
+    
     private lazy var mainTitleLabel = UILabel().then {
         $0.text = "같이 성장해나갈\n강아지를 선택해주세요"
         $0.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)
@@ -52,6 +54,33 @@ class PuppySelectionView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.addComponents()
+        self.addButtonComponents()
+        self.addComponentsToShowAfterFetch()
+        self.fetchPuppy()
+    }
+    
+    private func fetchPuppy() {
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+        ]
+        
+        AF.request(K.String.puppymodeLink + "/puppies",
+                   method: .post,
+                   headers: headers)
+        .responseDecodable(of: PuppySelectionResponse.self) { [weak self] response in
+            
+            guard let self = self else { return }
+            
+            switch response.result {
+            case .success(let puppyResponse) :
+                if puppyResponse.isSuccess {
+                    self.puppy = convertToPuppyType(str: puppyResponse.result.puppyType)
+                }
+            case .failure(let error) :
+                print("Network Error: \(error.localizedDescription)")
+            }
+        }
     }
     
     private func addComponents() {
@@ -74,7 +103,9 @@ class PuppySelectionView: UIView {
             make.leading.trailing.equalToSuperview().inset(27)
             make.bottom.equalTo(buttonsStackFrame.snp.top).offset(-40)
         }
-        
+    }
+    
+    private func addButtonComponents() {
         self.addSubview(cardButton01)
         self.addSubview(cardButton02)
         self.addSubview(cardButton03)
@@ -103,9 +134,10 @@ class PuppySelectionView: UIView {
             make.width.equalTo(buttonsStackFrame).multipliedBy(0.428)
             make.height.equalTo(buttonsStackFrame).multipliedBy(0.444)
         }
-        
-        //MARK: 애니메이션 전환 이후 나오는 요소들
-        
+
+    }
+    
+    private func addComponentsToShowAfterFetch() {
         self.addSubview(characterNameLabel)
         self.addSubview(subTitleLabel)
         self.addSubview(startButton)
@@ -132,12 +164,12 @@ class PuppySelectionView: UIView {
         
     }
     
-    func showDim(_ sender: PuppyCardButtonView) {
+    public  func showDimAndActiveAnimation(_ sender: PuppyCardButtonView) {
         // 화면 크기 계산
         let screenWidth = self.bounds.width
         let screenHeight = self.bounds.height
         
-        // 목표 크기 계산 (화면의 1/2)
+        // 목표 크기
         let targetWidth = (Double(screenWidth) * 1.8)/3.0
         let targetHeight = (Double)(targetWidth) * 1.8
         
@@ -157,11 +189,9 @@ class PuppySelectionView: UIView {
         let translateX = centerX - sender.center.x
         let translateY = centerY - sender.center.y
                 
-        self.bringSubviewToFront(sender)
         self.bringSubviewToFront(dimView)
-        
-        // 선택된 카드는 다시 맨 앞으로
         self.bringSubviewToFront(sender)
+        
         UIView.animate(withDuration: 0.3) {
             self.dimView.alpha = 0.6
             // 선택되지 않은 카드들은 흐리게 처리
@@ -180,73 +210,42 @@ class PuppySelectionView: UIView {
                     .translatedBy(x: translateX, y: translateY)
                     .scaledBy(x: scaleX, y: scaleY)
             } completion: { _ in
-                let headers: HTTPHeaders = [
-                    "accept": "*/*",
-                    "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
-                ]
-                
-                AF.request(K.String.puppymodeLink + "/puppies",
-                           method: .post,
-                           headers: headers)
-                .responseDecodable(of: PuppySelectionResponse.self) { [weak self] response in
+                if let puppy = self.puppy {
+                    switch puppy {
+                    case .bichon:
+                        self.characterNameLabel.text = "비숑 프리제"
+                        self.subTitleLabel.text = "Bichon Frisé"
+                        sender.puppyImage.image  = .babyBichon
+                    case .welshCorgi:
+                        self.characterNameLabel.text = "웰시코기"
+                        self.subTitleLabel.text = "Welsh corgi"
+                        sender.puppyImage.image = .babyWelshCorgi
+                    case .pomeranian:
+                        self.characterNameLabel.text = "포메라니안"
+                        self.subTitleLabel.text = "Pomeranian"
+                        sender.puppyImage.image = .babyPomeranian
+                    }
                     
-                    guard let self = self else { return }
-                    
-                    switch response.result {
-                    case .success(let puppyResponse) :
-                        if puppyResponse.isSuccess {
-                            guard let puppy = convertToPuppyType(str: puppyResponse.result.puppyType) else {
-                                // Wrong Puppy String => 강아지 정보 삭제, 다시 요청 or 다시 뽑게 만들기?
-                                return
-                            }
+                    UIView.transition(with: sender, duration: 0.5, options: .transitionFlipFromRight , animations: nil ) { _ in
+                        UIView.animate(withDuration: 0.8) {
+                            self.dimView.backgroundColor = .white
+                            self.dimView.alpha = 1
+                            sender.isEnabled = false
                             
-                            switch puppy {
-                            case .bichon:
-                                characterNameLabel.text = "비숑 프리제"
-                                subTitleLabel.text = "Bichon Frisé"
-                                sender.puppyImage.image  = .babyBichon
-                            case .welshCorgi:
-                                characterNameLabel.text = "웰시코기"
-                                subTitleLabel.text = "Welsh corgi"
-                                sender.puppyImage.image = .babyWelshCorgi
-                            case .pomeranian:
-                                characterNameLabel.text = "포메라니안"
-                                subTitleLabel.text = "Pomeranian"
-                                sender.puppyImage.image = .babyPomeranian
-                            }
-                            
-                            sender.puppyImage.image = .babyPomeranian
-                            UIView.transition(with: sender, duration: 0.5, options: .transitionFlipFromRight , animations: nil ) { _ in
-                                UIView.animate(withDuration: 0.8) {
-                                    self.dimView.backgroundColor = .white
-                                    self.dimView.alpha = 1
-                                    sender.isEnabled = false
-                                    
-                                    self.characterNameLabel.isHidden = false
-                                    self.subTitleLabel.isHidden = false
-                                    self.startButton.isHidden = false
-                                    self.bringSubviewToFront(self.characterNameLabel)
-                                    self.bringSubviewToFront(self.subTitleLabel)
-                                    self.bringSubviewToFront(self.startButton)
-                                }
-                            }
-                        } else {
-                            UIView.transition(with: sender, duration: 0.5, options: .transitionFlipFromRight , animations: nil ) { _ in
-                                print("Puppy Random Generate API Error: \(puppyResponse.message)")
-                            }
+                            self.characterNameLabel.isHidden = false
+                            self.subTitleLabel.isHidden = false
+                            self.startButton.isHidden = false
+                            self.bringSubviewToFront(self.characterNameLabel)
+                            self.bringSubviewToFront(self.subTitleLabel)
+                            self.bringSubviewToFront(self.startButton)
                         }
-                    case .failure(let error) :
-                        print("Network Error: \(error.localizedDescription)")
                     }
                 }
             }
         }
     }
     
-    func configure( puppy: PuppyEnum, imageURL: URL) {
-    }
-    
-    func convertToPuppyType(str: String) -> PuppyEnum? {
+    private func convertToPuppyType(str: String) -> PuppyEnum? {
         switch str {
         case "포메라니안":
             return .pomeranian
@@ -259,8 +258,30 @@ class PuppySelectionView: UIView {
             return nil
         }
     }
-
     
+//    private func deletePuppy() {
+//        let headers: HTTPHeaders = [
+//            "accept": "*/*",
+//            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+//        ]
+//        
+//        AF.request(K.String.puppymodeLink + "/puppies",
+//                   method: .delete,
+//                   headers: headers)
+//            .responseDecodable(of: PuppyDeletionResponse.self)  { [weak self] response in
+//                
+//                guard let _ = self else { return }
+//                
+//                switch response.result {
+//                case .success(let response) :
+//                    print(response.result)
+//                case .failure(let error) :
+//                    print("Network Error: \(error.localizedDescription)")
+//                }
+//            }
+//    }
+
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

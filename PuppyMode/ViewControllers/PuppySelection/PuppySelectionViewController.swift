@@ -29,33 +29,9 @@ class PuppySelectionViewController: UIViewController {
     
     @objc
     private func puppyChosed(_ sender: PuppyCardButtonView) {
-        puppySelectionView.showDim(sender)
+        puppySelectionView.showDimAndActiveAnimation(sender)
         print("btn pressed")
     }
-    
-    @objc
-    private func deletePuppy() {
-        let headers: HTTPHeaders = [
-            "accept": "*/*",
-            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
-        ]
-        
-        AF.request(K.String.puppymodeLink + "/puppies",
-                   method: .delete,
-                   headers: headers)
-            .responseDecodable(of: PuppyDeletionResponse.self)  { [weak self] response in
-                
-                guard let _ = self else { return }
-                
-                switch response.result {
-                case .success(let response) :
-                    print(response.result)
-                case .failure(let error) :
-                    print("Network Error: \(error.localizedDescription)")
-                }
-            }
-    }
-
     
     @objc
     private func showConfirmVC() {
