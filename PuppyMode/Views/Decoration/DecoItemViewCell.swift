@@ -15,18 +15,31 @@ class DecoItemViewCell: UICollectionViewCell {
     public lazy var decoItemImageView = UIImageView().then { imageView in
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 10
     }
     
     public lazy var decoItemLabel = UILabel().then { label in
-        label.font = UIFont(name: "NotoSansKR-Regular", size: 15)
+        label.font = UIFont(name: "NotoSansKR-Regular", size: 14)
+        label.isHidden = false
     }
     
+    public lazy var lockImageView = UIImageView().then { imageView in
+        imageView.image = UIImage(named: "lockImage")
+        imageView.contentMode = .scaleAspectFill
+        imageView.frame.size = CGSize(width: 26, height: 26)
+        imageView.clipsToBounds = true
+        imageView.isHidden = false
+    }
+        
+    let overlayView = UIView()
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.contentView.backgroundColor = .white
         self.contentView.layer.cornerRadius = 10
 
         self.addComponents()
+        addDarkOverlay()
     }
         
     required init?(coder: NSCoder) {
@@ -39,11 +52,29 @@ class DecoItemViewCell: UICollectionViewCell {
             make.top.leading.trailing.equalToSuperview()
         }
         
+        
         self.addSubview(decoItemLabel)
         decoItemLabel.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().inset(6)
+            make.bottom.equalToSuperview().inset(3)
             make.centerX.equalToSuperview()
         }
+        
+        self.addSubview(lockImageView)
+        lockImageView.snp.makeConstraints { make in
+            make.top.leading.equalToSuperview().offset(10)
+        }
+        self.bringSubviewToFront(lockImageView)
+
+
     }
+    
+    private func addDarkOverlay() {
+        overlayView.backgroundColor = UIColor.black.withAlphaComponent(0.4)
+        decoItemImageView.addSubview(overlayView)
+        overlayView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+
     
 }
