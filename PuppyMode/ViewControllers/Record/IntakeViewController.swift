@@ -55,8 +55,14 @@ class IntakeViewController: UIViewController {
         
         onItemAdded?(newItem) // Pass new item back
         
-        self.navigationController?.popViewController(animated: true)
-        self.navigationController?.popViewController(animated: true) 
+        if let navigationController = self.navigationController {
+            let viewControllers = navigationController.viewControllers
+            if viewControllers.count >= 3 {
+                navigationController.popToViewController(viewControllers[viewControllers.count - 3], animated: true)
+            } else {
+                navigationController.popToRootViewController(animated: true)
+            }
+        }
     }
 }
 
