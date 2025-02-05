@@ -21,10 +21,16 @@ class PuppySelectionViewController: UIViewController {
     }
     
     private func connectButtonActions() {
-        puppySelectionView.cardButton04.addTarget(self, action: #selector(showConfirmVC), for: .touchUpInside)
-        puppySelectionView.cardButton03.addTarget(self, action: #selector(showConfirmVC), for: .touchUpInside)
-        puppySelectionView.cardButton02.addTarget(self, action: #selector(showConfirmVC), for: .touchUpInside)
-        puppySelectionView.cardButton01.addTarget(self, action: #selector(showConfirmVC), for: .touchUpInside)
+        puppySelectionView.cardButton04.addTarget(self, action: #selector(puppyChosed(_:)), for: .touchUpInside)
+        puppySelectionView.cardButton03.addTarget(self, action: #selector(puppyChosed(_:)), for: .touchUpInside)
+        puppySelectionView.cardButton02.addTarget(self, action: #selector(puppyChosed(_:)), for: .touchUpInside)
+        puppySelectionView.cardButton01.addTarget(self, action: #selector(puppyChosed(_:)), for: .touchUpInside)
+    }
+    
+    @objc
+    private func puppyChosed(_ sender: PuppyCardButtonView) {
+        puppySelectionView.showDim(sender)
+        print("btn pressed")
     }
     
     @objc
@@ -72,7 +78,6 @@ class PuppySelectionViewController: UIViewController {
                             // Wrong Puppy String => 강아지 정보 삭제, 다시 요청 or 다시 뽑게 만들기?
                             return
                         }
-                        confirmVC.modalPresentationStyle = .fullScreen
                         confirmVC.configure(puppy: puppy, imageURL: puppyResponse.result.puppyImageUrl)
                         present(confirmVC,animated: false)
                     } else {
