@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class PuppySelectionView: UIView {
     
@@ -17,11 +18,36 @@ class PuppySelectionView: UIView {
         $0.numberOfLines = 0
     }
     
+    private let dimView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .gray
+        view.alpha = 0
+        return view
+    }()
+    
+    private lazy var characterNameLabel = UILabel().then {
+        $0.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)
+        $0.font = UIFont(name: "NotoSansKR-Bold", size: 30)
+    }
+    
+    private lazy var subTitleLabel = UILabel().then {
+        $0.textColor = UIColor(red: 0.541, green: 0.541, blue: 0.557, alpha: 1)
+        $0.font = UIFont(name: "Roboto-Regular", size: 18)
+    }
+    
     private lazy var buttonsStackFrame = UIView()
     public lazy var cardButton01 = PuppyCardButtonView()
     public lazy var cardButton02 = PuppyCardButtonView()
     public lazy var cardButton03 = PuppyCardButtonView()
     public lazy var cardButton04 = PuppyCardButtonView()
+    
+    public lazy var startButton = UIButton().then {
+        $0.setTitle("시작하기", for: .normal)
+        $0.setTitleColor(UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1), for: .normal)
+        $0.titleLabel?.font = UIFont(name: "NotoSansKR-Medium", size: 20)
+        $0.backgroundColor = .main
+        $0.layer.cornerRadius = 10
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -29,8 +55,13 @@ class PuppySelectionView: UIView {
     }
     
     private func addComponents() {
+        self.addSubview(dimView)
         self.addSubview(mainTitleLabel)
         self.addSubview(buttonsStackFrame)
+        
+        dimView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
         
         buttonsStackFrame.snp.makeConstraints { make in
             make.width.equalToSuperview().multipliedBy(0.7)
@@ -44,37 +75,191 @@ class PuppySelectionView: UIView {
             make.bottom.equalTo(buttonsStackFrame.snp.top).offset(-40)
         }
         
-        buttonsStackFrame.addSubview(cardButton01)
-        buttonsStackFrame.addSubview(cardButton02)
-        buttonsStackFrame.addSubview(cardButton03)
-        buttonsStackFrame.addSubview(cardButton04)
+        self.addSubview(cardButton01)
+        self.addSubview(cardButton02)
+        self.addSubview(cardButton03)
+        self.addSubview(cardButton04)
         
         cardButton01.snp.makeConstraints { make in
-            make.leading.top.equalToSuperview()
-            make.width.equalToSuperview().multipliedBy(0.428)
-            make.height.equalToSuperview().multipliedBy(0.444)
+            make.leading.top.equalTo(buttonsStackFrame)
+            make.width.equalTo(buttonsStackFrame).multipliedBy(0.428)
+            make.height.equalTo(buttonsStackFrame).multipliedBy(0.444)
         }
         
         cardButton02.snp.makeConstraints { make in
-            make.trailing.top.equalToSuperview()
-            make.width.equalToSuperview().multipliedBy(0.428)
-            make.height.equalToSuperview().multipliedBy(0.444)
+            make.trailing.top.equalTo(buttonsStackFrame)
+            make.width.equalTo(buttonsStackFrame).multipliedBy(0.428)
+            make.height.equalTo(buttonsStackFrame).multipliedBy(0.444)
         }
         
         cardButton03.snp.makeConstraints { make in
-            make.leading.bottom.equalToSuperview()
-            make.width.equalToSuperview().multipliedBy(0.428)
-            make.height.equalToSuperview().multipliedBy(0.444)
+            make.leading.bottom.equalTo(buttonsStackFrame)
+            make.width.equalTo(buttonsStackFrame).multipliedBy(0.428)
+            make.height.equalTo(buttonsStackFrame).multipliedBy(0.444)
         }
         
         cardButton04.snp.makeConstraints { make in
-            make.trailing.bottom.equalToSuperview()
-            make.width.equalToSuperview().multipliedBy(0.428)
-            make.height.equalToSuperview().multipliedBy(0.444)
+            make.trailing.bottom.equalTo(buttonsStackFrame)
+            make.width.equalTo(buttonsStackFrame).multipliedBy(0.428)
+            make.height.equalTo(buttonsStackFrame).multipliedBy(0.444)
         }
         
+        //MARK: 애니메이션 전환 이후 나오는 요소들
+        
+        self.addSubview(characterNameLabel)
+        self.addSubview(subTitleLabel)
+        self.addSubview(startButton)
+        
+        characterNameLabel.snp.makeConstraints { make in
+            make.top.equalTo(safeAreaLayoutGuide.snp.top).offset(60)
+            make.centerX.equalToSuperview()
+        }
+        
+        subTitleLabel.snp.makeConstraints { make in
+            make.top.equalTo(characterNameLabel.snp.bottom).offset(10)
+            make.centerX.equalToSuperview()
+        }
+        
+        startButton.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).inset(34)
+            make.height.equalTo(60)
+        }
+        
+        characterNameLabel.isHidden = true
+        subTitleLabel.isHidden = true
+        startButton.isHidden = true
         
     }
+    
+    func showDim(_ sender: PuppyCardButtonView) {
+        // 화면 크기 계산
+        let screenWidth = self.bounds.width
+        let screenHeight = self.bounds.height
+        
+        // 목표 크기 계산 (화면의 1/2)
+        let targetWidth = (Double(screenWidth) * 1.8)/3.0
+        let targetHeight = (Double)(targetWidth) * 1.8
+        
+        // 현재 카드의 크기
+        let currentWidth = sender.bounds.width
+        let currentHeight = sender.bounds.height
+        
+        // 스케일 계산
+        let scaleX = targetWidth / currentWidth
+        let scaleY = targetHeight / currentHeight
+        
+        // 화면 중앙 위치 계산
+        let centerX = screenWidth / 2
+        let centerY = screenHeight / 2
+        
+        // 선택된 카드 중앙으로 이동 및 크기 조정
+        let translateX = centerX - sender.center.x
+        let translateY = centerY - sender.center.y
+                
+        self.bringSubviewToFront(sender)
+        self.bringSubviewToFront(dimView)
+        
+        // 선택된 카드는 다시 맨 앞으로
+        self.bringSubviewToFront(sender)
+        UIView.animate(withDuration: 0.3) {
+            self.dimView.alpha = 0.6
+            // 선택되지 않은 카드들은 흐리게 처리
+            [self.cardButton01, self.cardButton02, self.cardButton03, self.cardButton04].forEach { button in
+                if button != sender{
+                    button.alpha = 0.5
+                }
+            }
+        } completion: { _ in
+            // dim 효과 완료 후 카드 확대 애니메이션
+            UIView.animate(withDuration: 1.0, // 애니메이션 시간을 1초로 증가
+                          delay: 0,
+                          usingSpringWithDamping: 0.7, // 스프링 효과를 더 부드럽게
+                          initialSpringVelocity: 0.3) { // 초기 속도를 낮춤
+                sender.transform = CGAffineTransform.identity
+                    .translatedBy(x: translateX, y: translateY)
+                    .scaledBy(x: scaleX, y: scaleY)
+            } completion: { _ in
+                let headers: HTTPHeaders = [
+                    "accept": "*/*",
+                    "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+                ]
+                
+                AF.request(K.String.puppymodeLink + "/puppies",
+                           method: .post,
+                           headers: headers)
+                .responseDecodable(of: PuppySelectionResponse.self) { [weak self] response in
+                    
+                    guard let self = self else { return }
+                    
+                    switch response.result {
+                    case .success(let puppyResponse) :
+                        if puppyResponse.isSuccess {
+                            guard let puppy = convertToPuppyType(str: puppyResponse.result.puppyType) else {
+                                // Wrong Puppy String => 강아지 정보 삭제, 다시 요청 or 다시 뽑게 만들기?
+                                return
+                            }
+                            
+                            switch puppy {
+                            case .bichon:
+                                characterNameLabel.text = "비숑 프리제"
+                                subTitleLabel.text = "Bichon Frisé"
+                                sender.puppyImage.image  = .babyBichon
+                            case .welshCorgi:
+                                characterNameLabel.text = "웰시코기"
+                                subTitleLabel.text = "Welsh corgi"
+                                sender.puppyImage.image = .babyWelshCorgi
+                            case .pomeranian:
+                                characterNameLabel.text = "포메라니안"
+                                subTitleLabel.text = "Pomeranian"
+                                sender.puppyImage.image = .babyPomeranian
+                            }
+                            
+                            sender.puppyImage.image = .babyPomeranian
+                            UIView.transition(with: sender, duration: 0.5, options: .transitionFlipFromRight , animations: nil ) { _ in
+                                UIView.animate(withDuration: 0.8) {
+                                    self.dimView.backgroundColor = .white
+                                    self.dimView.alpha = 1
+                                    sender.isEnabled = false
+                                    
+                                    self.characterNameLabel.isHidden = false
+                                    self.subTitleLabel.isHidden = false
+                                    self.startButton.isHidden = false
+                                    self.bringSubviewToFront(self.characterNameLabel)
+                                    self.bringSubviewToFront(self.subTitleLabel)
+                                    self.bringSubviewToFront(self.startButton)
+                                }
+                            }
+                        } else {
+                            UIView.transition(with: sender, duration: 0.5, options: .transitionFlipFromRight , animations: nil ) { _ in
+                                print("Puppy Random Generate API Error: \(puppyResponse.message)")
+                            }
+                        }
+                    case .failure(let error) :
+                        print("Network Error: \(error.localizedDescription)")
+                    }
+                }
+            }
+        }
+    }
+    
+    func configure( puppy: PuppyEnum, imageURL: URL) {
+    }
+    
+    func convertToPuppyType(str: String) -> PuppyEnum? {
+        switch str {
+        case "포메라니안":
+            return .pomeranian
+        case "웰시코기":
+            return .welshCorgi
+        case "비숑 프리제":
+            return .bichon
+        default:
+            print("No such Puppy \(str)")
+            return nil
+        }
+    }
+
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
