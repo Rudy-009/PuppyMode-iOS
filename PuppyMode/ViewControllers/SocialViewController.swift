@@ -108,7 +108,7 @@ extension SocialViewController: UITableViewDelegate, UITableViewDataSource {
         
         if RankModel.currentState == .global { // Change background to figure my rank
             if let rank = RankModel.myGlobalRank?.rank {
-                if rank == data.rank {
+                if rank == data.rank && RankModel.myGlobalRank?.username == data.username {
                     cell.markMyRank()
                 }
             }
