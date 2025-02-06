@@ -33,6 +33,11 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
         checkAppointmentStatus()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        getPupptInfo()
+    }
+    
     // 위치 매니저 설정
     private func setupLocationManager() {
         locationManager.delegate = self
