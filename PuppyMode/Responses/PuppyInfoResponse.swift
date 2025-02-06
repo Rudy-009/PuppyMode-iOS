@@ -26,14 +26,21 @@ struct PuppyInfoResult: Codable {
 }
 
 
-struct PuppyNamePatchResponse: Codable {
+struct PuppyNameResponse: Codable {
     let isSuccess: Bool
     let code: String
     let message: String
-    let result: PuppyNamePatchResult?
+    let result: PuppyNameResult?
 }
 
-struct PuppyNamePatchResult: Codable {
+struct PuppyNameResult: Codable {
     let puppyId: Int
     let name: String
+}
+
+struct PuppyPointResponse: Codable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: Int?
 }

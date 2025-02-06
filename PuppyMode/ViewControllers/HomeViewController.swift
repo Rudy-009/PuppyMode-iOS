@@ -223,6 +223,7 @@ extension HomeViewController {
                 switch response.result {
                 case .success(let puppyResponse) :
                     if puppyResponse.isSuccess {
+                        print("놀아주기 서버 연동 성공")
                         print("성공")
                         getPupptInfo()
                     } else {

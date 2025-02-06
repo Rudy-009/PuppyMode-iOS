@@ -60,3 +60,17 @@ struct RescheduleResult: Codable {
     let rescheduledTime: String
     let message: String
 }
+
+struct CreateAppointmentResponse: Codable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: CreateAppointmentResult?
+}
+
+struct CreateAppointmentResult: Codable {
+    let appointmentId: Int
+    let dateTime: String
+    let address: String
+    let status: String
+}
