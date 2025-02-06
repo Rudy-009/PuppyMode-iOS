@@ -10,6 +10,16 @@ import UIKit
 class DrinkingRecordViewController: UIViewController {
     private let drinkingView = DrinkingRecordView()
     private var addedItems: [DrankAlcoholModel] = []
+    private var hangoverOptions: [Int]
+    
+    init(hangoverOptions: [Int]) {
+        self.hangoverOptions = hangoverOptions
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,7 +29,7 @@ class DrinkingRecordViewController: UIViewController {
         drinkingView.tableView.dataSource = self
         drinkingView.tableView.delegate = self
         
-        drinkingView.tableView.separatorStyle = .none // Remove default separators
+        drinkingView.tableView.separatorStyle = .none
         
         setAction()
     }
@@ -68,6 +78,7 @@ class DrinkingRecordViewController: UIViewController {
     
     @objc
     private func completeButtonTapped() {
+        print(hangoverOptions)
         let recordCompleteVC = RecordCompleteViewController()
         navigationController?.pushViewController(recordCompleteVC, animated: true)
     }

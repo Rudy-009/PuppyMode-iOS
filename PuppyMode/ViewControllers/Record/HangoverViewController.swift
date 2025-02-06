@@ -90,13 +90,7 @@ class HangoverViewController: UIViewController {
     
     @objc
     private func skipButtonTapped() {
-        let selectedHangoverIds = hangoverList.enumerated()
-            .filter { selectedCells[$0.offset] }
-            .map { $0.element.hangoverId }
-        
-        print("선택된 숙취 ID: \(selectedHangoverIds)")
-        
-        let drinkingVC = DrinkingRecordViewController()
+        let drinkingVC = DrinkingRecordViewController(hangoverOptions: [])
         self.navigationController?.isNavigationBarHidden = true
         self.navigationController?.pushViewController(drinkingVC, animated: true)
     }
@@ -109,7 +103,7 @@ class HangoverViewController: UIViewController {
         
         print("선택된 숙취 ID: \(selectedHangoverIds)")
         
-        let drinkingVC = DrinkingRecordViewController()
+        let drinkingVC = DrinkingRecordViewController(hangoverOptions: selectedHangoverIds)
         self.navigationController?.isNavigationBarHidden = true
         self.navigationController?.pushViewController(drinkingVC, animated: true)
     }
