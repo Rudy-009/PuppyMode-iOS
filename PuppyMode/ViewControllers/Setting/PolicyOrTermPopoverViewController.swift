@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SettingPopoverViewController: UIViewController {
+class PolicyOrTermPopoverViewController: UIViewController {
     
     private lazy var popover = PolicyOrTermPopoverView()
     

@@ -285,8 +285,3 @@ class PuppySelectionView: UIView {
     }
     
 }
-
-import SwiftUI
-#Preview{
-    PuppySelectionViewController()
-}
