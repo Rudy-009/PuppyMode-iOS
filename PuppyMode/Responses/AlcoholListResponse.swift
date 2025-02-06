@@ -26,4 +26,5 @@ struct AlcoholListItem: Codable {
     let alcoholPercentage: Double
     let volumeMl: Int?
     let imageUrl: String?
+    var categoryId: Int?
 }

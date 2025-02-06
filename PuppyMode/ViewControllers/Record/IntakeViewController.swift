@@ -13,11 +13,14 @@ class IntakeViewController: UIViewController {
     
     private let alcoholName: String
     private let alcoholImage: UIImage?
+    private let drinkCategoryId: Int
+    private let drinkItemId: Int
     
-    // Custom initializer
-    init(alcoholName: String, alcoholImage: UIImage?) {
+    init(alcoholName: String, alcoholImage: UIImage?, drinkCategoryId: Int, drinkItemId: Int) {
         self.alcoholName = alcoholName
         self.alcoholImage = alcoholImage
+        self.drinkCategoryId = drinkCategoryId
+        self.drinkItemId = drinkItemId
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -50,13 +53,27 @@ class IntakeViewController: UIViewController {
     @objc private func addButtonTapped() {
         let sliderValue = Int(intakeView.slider.value)
         let isBottleMode = intakeView.isBottleMode
-        
-        let newItem = DrankAlcoholModel(name: alcoholName, sliderValue: sliderValue, isBottleMode: isBottleMode)
-        
-        onItemAdded?(newItem) // Pass new item back
-        
+        let unit = isBottleMode ? "병" : "잔"
+
+        let newItem = DrankAlcoholModel(
+            name: alcoholName,
+            sliderValue: sliderValue,
+            isBottleMode: isBottleMode,
+            drinkCategoryId: drinkCategoryId,
+            drinkItemId: drinkItemId,
+            unit: unit
+        )
+
+        print("새로운 아이템: \(newItem.name), \(newItem.sliderValue)\(newItem.unit)")
+
+        onItemAdded?(newItem) // DrinkingRecordViewController로 데이터 전달
+
         if let navigationController = self.navigationController {
             let viewControllers = navigationController.viewControllers
+            if let drinkingVC = viewControllers.first(where: { $0 is DrinkingRecordViewController }) as? DrinkingRecordViewController {
+                drinkingVC.addNewItem(newItem) // 직접 데이터 추가하는 메서드 호출
+            }
+
             if viewControllers.count >= 3 {
                 navigationController.popToViewController(viewControllers[viewControllers.count - 3], animated: true)
             } else {
@@ -64,6 +81,7 @@ class IntakeViewController: UIViewController {
             }
         }
     }
+
 }
 
 class DialSlider: UISlider {

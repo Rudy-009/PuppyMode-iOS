@@ -41,6 +41,17 @@ class DrinkingRecordViewController: UIViewController {
         drinkingView.completeButton.addTarget(self, action: #selector(completeButtonTapped), for: .touchUpInside)
     }
     
+    func addNewItem(_ item: DrankAlcoholModel) {
+        print("📌 새로운 아이템 추가: \(item.name), \(item.sliderValue) \(item.unit)")
+        addedItems.append(item)
+
+        DispatchQueue.main.async {
+            self.drinkingView.tableView.reloadData()
+            self.drinkingView.updateTableViewHeight()
+        }
+    }
+
+    
     // MARK: - action
     @objc
     private func backButtonTapped() {
@@ -57,7 +68,9 @@ class DrinkingRecordViewController: UIViewController {
             // Navigate to IntakeViewController with the selected alcohol information
             let intakeVC = IntakeViewController(
                 alcoholName: selectedItem.name,
-                alcoholImage: UIImage(named: selectedItem.image) // Use the image property from the model
+                alcoholImage: UIImage(named: selectedItem.image), // Use the image property from the model
+                drinkCategoryId: selectedItem.drinkCategoryId,
+                drinkItemId: selectedItem.drinkItemId
             )
             
             intakeVC.onItemAdded = { newItem in
@@ -74,11 +87,24 @@ class DrinkingRecordViewController: UIViewController {
         
         navigationController?.pushViewController(alcoholVC, animated: true)
     }
+
     
     
     @objc
     private func completeButtonTapped() {
         print(hangoverOptions)
+        
+        let alcoholTolerance = addedItems.map { item in
+            return [
+                "drinkCategoryId": item.drinkCategoryId,
+                "drinkItemId": item.drinkItemId,
+                "value": item.sliderValue,
+                "unit": item.unit
+            ]
+        }
+        
+        print(alcoholTolerance)
+        
         let recordCompleteVC = RecordCompleteViewController()
         navigationController?.pushViewController(recordCompleteVC, animated: true)
     }

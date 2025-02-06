@@ -77,14 +77,24 @@ class AlcoholViewController: UIViewController {
         ]
         
         AF.request(url, method: .get, headers: headers).responseDecodable(of: AlcoholListResponse.self) { response in
-              switch response.result {
-              case .success(let data):
-                  self.alcoholItems = data.result.items
-                  self.alcoholView.alcoholTableView.reloadData()
-              case .failure(let error):
-                  print("\(error.localizedDescription)")
-              }
-          }
+            switch response.result {
+            case .success(let data):
+                self.alcoholItems = data.result.items.map { item in
+                    AlcoholListItem(
+                        itemId: item.itemId,
+                        itemName: item.itemName,
+                        alcoholPercentage: item.alcoholPercentage,
+                        volumeMl: item.volumeMl,
+                        imageUrl: item.imageUrl,
+                        categoryId: data.result.categoryId
+                    )
+                }
+                self.alcoholView.alcoholTableView.reloadData()
+            case .failure(let error):
+                print("\(error.localizedDescription)")
+            }
+        }
+
     }
 
     // MARK: - action
@@ -97,21 +107,30 @@ class AlcoholViewController: UIViewController {
         if let indexPath = selectedIndexPath {
             let selectedItem = alcoholItems[indexPath.row]
 
-            print("선택된 셀 정보:", selectedItem.itemName, "\(selectedItem.volumeMl ?? 0)ml", "\(selectedItem.alcoholPercentage)도")
+            print("선택된 술:", selectedItem.itemName, "\(selectedItem.volumeMl ?? 0)ml", "\(selectedItem.alcoholPercentage)도")
 
             let alcoholDetail = AlcoholDetailModel(
-                image: selectedItem.imageUrl ?? "", name: selectedItem.itemName,
+                image: selectedItem.imageUrl ?? "",
+                name: selectedItem.itemName,
                 volume: "\(selectedItem.volumeMl ?? 0)ml",
-                degree: "\(selectedItem.alcoholPercentage)도",  // 이미지 URL 전달
-                kind: categories.first { $0.categoryId == selectedItem.itemId }?.categoryName ?? "알 수 없음"
+                degree: "\(selectedItem.alcoholPercentage)도",
+                drinkCategoryId: selectedItem.categoryId ?? 0,
+                drinkItemId: selectedItem.itemId
             )
 
-            onAlcoholSelected?(alcoholDetail) // 선택된 아이템 전달
+            let intakeVC = IntakeViewController(
+                alcoholName: selectedItem.itemName,
+                alcoholImage: nil, // 필요한 경우 이미지도 전달
+                drinkCategoryId: selectedItem.categoryId ?? 0,
+                drinkItemId: selectedItem.itemId
+            )
+            
+            navigationController?.pushViewController(intakeVC, animated: true)
+            
         } else {
-            print("선택된 셀이 없습니다.")
+            print("선택된 술이 없습니다.")
         }
     }
-
 }
 
 // MARK: - extension
