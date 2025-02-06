@@ -95,15 +95,23 @@ class AlcoholViewController: UIViewController {
     
     @objc private func nextButtonTapped() {
         if let indexPath = selectedIndexPath {
-            let selectedItem = AlcoholDetailModel.dummy()[indexPath.row]
-            print("선택된 셀 정보:", selectedItem.name, selectedItem.volume, selectedItem.degree)
-            
-            // Pass the selected item back using the closure
-            onAlcoholSelected?(selectedItem)
+            let selectedItem = alcoholItems[indexPath.row]
+
+            print("선택된 셀 정보:", selectedItem.itemName, "\(selectedItem.volumeMl ?? 0)ml", "\(selectedItem.alcoholPercentage)도")
+
+            let alcoholDetail = AlcoholDetailModel(
+                image: selectedItem.imageUrl ?? "", name: selectedItem.itemName,
+                volume: "\(selectedItem.volumeMl ?? 0)ml",
+                degree: "\(selectedItem.alcoholPercentage)도",  // 이미지 URL 전달
+                kind: categories.first { $0.categoryId == selectedItem.itemId }?.categoryName ?? "알 수 없음"
+            )
+
+            onAlcoholSelected?(alcoholDetail) // 선택된 아이템 전달
         } else {
             print("선택된 셀이 없습니다.")
         }
     }
+
 }
 
 // MARK: - extension
