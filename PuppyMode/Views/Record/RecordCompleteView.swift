@@ -188,4 +188,8 @@ class ProgressComponentView: UIView {
         progressBar.progress = value
         progressPercentageLabel.text = percentageText
     }
+    
+    func setLevelText(_ text: String) {
+        progressLabel.text = text
+    }
 }

@@ -52,7 +52,6 @@ class DrinkingRecordViewController: UIViewController {
         }
     }
 
-    
     // MARK: - action
     @objc
     private func backButtonTapped() {
@@ -62,24 +61,19 @@ class DrinkingRecordViewController: UIViewController {
     @objc private func plusButtonTapped() {
         let alcoholVC = AlcoholViewController()
         
-        // Pass a closure to handle the selected alcohol item
         alcoholVC.onAlcoholSelected = { [weak self] selectedItem in
             guard let self = self else { return }
             
-            // Navigate to IntakeViewController with the selected alcohol information
             let intakeVC = IntakeViewController(
                 alcoholName: selectedItem.name,
-                alcoholImage: UIImage(named: selectedItem.image), // Use the image property from the model
+                alcoholImage: UIImage(named: selectedItem.image),
                 drinkCategoryId: selectedItem.drinkCategoryId,
                 drinkItemId: selectedItem.drinkItemId
             )
             
             intakeVC.onItemAdded = { newItem in
-                // Add the new item to the list and reload the table view
                 self.addedItems.append(newItem)
                 self.drinkingView.tableView.reloadData()
-                
-                // Update the table view's height dynamically
                 self.drinkingView.updateTableViewHeight()
             }
             
@@ -89,12 +83,10 @@ class DrinkingRecordViewController: UIViewController {
         navigationController?.pushViewController(alcoholVC, animated: true)
     }
 
-    
-    
     @objc
     private func completeButtonTapped() {
         print("✅ 음주 기록 완료 버튼 클릭됨")
-        
+
         let alcoholTolerance = addedItems.map { item in
             return [
                 "drinkCategoryId": item.drinkCategoryId,
@@ -108,7 +100,7 @@ class DrinkingRecordViewController: UIViewController {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let drinkDate = dateFormatter.string(from: yesterday)
-        
+
         let parameters: [String: Any] = [
             "drinkDate": drinkDate,
             "hangoverOptions": hangoverOptions,
@@ -125,46 +117,47 @@ class DrinkingRecordViewController: UIViewController {
             "Authorization": "Bearer \(jwt)",
             "Content-Type": "application/json"
         ]
-        
+
         let url = "https://puppy-mode.site/drinks/record"
-        
+
         AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
-            .responseJSON { response in
+            .validate()
+            .responseData { response in
                 switch response.result {
                 case .success(let data):
-                    print("✅ 요청 성공: \(data)")
-                    
-                    // API 응답을 파싱하고 처리
-                    if let json = data as? [String: Any],
-                       let result = json["result"] as? [String: Any],
-                       let message = result["message"] as? String {
-                        print("✅ 서버 메시지: \(message)")
+                    if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                       let result = json["result"] as? [String: Any] {
+
+                        let resultMessage = result["message"] as? String ?? "주량을 잘 조절했어요!"
+                        let feedImageUrl = result["feedImageUrl"] as? String ?? ""
+                        let feedType = result["feedType"] as? String ?? ""
+                        let puppyLevel = result["puppyLevel"] as? Int ?? 1
+                        let puppyLevelName = result["puppyLevelName"] as? String ?? "포메라니안"
+                        let puppyPercent = result["puppyPercent"] as? Int ?? 0
+
+                        let recordCompleteVC = RecordCompleteViewController(
+                            resultMessage: resultMessage,
+                            feedImageUrl: feedImageUrl,
+                            feedType: feedType,
+                            puppyLevel: puppyLevel,
+                            puppyLevelName: puppyLevelName,
+                            puppyPercent: puppyPercent
+                        )
+
+                        self.navigationController?.pushViewController(recordCompleteVC, animated: true)
                     }
-                    
-                    // 성공 시 다음 화면으로 이동
-                    let recordCompleteVC = RecordCompleteViewController()
-                    self.navigationController?.pushViewController(recordCompleteVC, animated: true)
-                    
                 case .failure(let error):
-                    print("❌ 요청 실패: \(error.localizedDescription)")
+                    print("요청 실패: \(error.localizedDescription)")
                 }
             }
     }
     
     @objc private func deleteButtonTapped(_ sender: UIButton) {
         let rowIndex = sender.tag
-        print(rowIndex)
-        
-        // Remove item from data source
         addedItems.remove(at: rowIndex)
-        
-        // Update table view with animation
         drinkingView.tableView.deleteRows(at: [IndexPath(row: rowIndex, section: 0)], with: .automatic)
-        
-        // Update table view height dynamically if needed
         drinkingView.updateTableViewHeight()
     }
-
 }
 
 // MARK: - extension
@@ -179,22 +172,18 @@ extension DrinkingRecordViewController: UITableViewDataSource, UITableViewDelega
         }
         
         let item = addedItems[indexPath.row]
+        cell.alcoholImageView.image = UIImage(named: "soju_bottle")
+        cell.alcoholNameLabel.text = item.name
+        cell.sliderValueLabel.text = "\(item.sliderValue) \(item.isBottleMode ? "병" : "잔")"
         
-        // Configure the cell with data from DrankAlcoholModel
-        cell.alcoholImageView.image = UIImage(named: "soju_bottle") // Replace with actual image logic if needed
-        cell.alcoholNameLabel.text = item.name // Alcohol name from model
-        cell.sliderValueLabel.text = "\(item.sliderValue) \(item.isBottleMode ? "병" : "잔")" // Quantity and mode
-        
-        // Handle delete button action
         cell.deleteButton.tag = indexPath.row
         cell.deleteButton.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
-        
         cell.selectionStyle = .none
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 115 // Adjust row height as needed
+        return 115
     }
 }
