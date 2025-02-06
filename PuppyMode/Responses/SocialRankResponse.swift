@@ -7,20 +7,20 @@
 
 import Foundation
 
-struct GlobalRankResponse: Codable {
+struct SocialRankResponse: Codable {
     let isSuccess: Bool
     let code: String
     let message: String
-    let result: GlobalUserResponse
+    let result: SocialRankUserResponse
 }
 
-struct GlobalUserResponse: Codable {
-    let currentUserRank: UserRankInfo
-    let rankings: [UserRankInfo]
+struct SocialRankUserResponse: Codable {
+    let currentUserRank: RankUserInfo
+    let rankings: [RankUserInfo]
     let totalCount: Int
 }
 
-struct UserRankInfo: Codable {
+struct RankUserInfo: Codable {
     let rank : Int
     let username: String
     let puppyName: String?

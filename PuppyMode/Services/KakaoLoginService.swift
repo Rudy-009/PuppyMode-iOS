@@ -34,7 +34,7 @@ class KakaoLoginService {
     
     static func fetchKakaoUserInfo(with kakaoAccessToken: String, and kakaoRefreshToken: String) {
         let fcm = KeychainService.get(key: FCMTokenKey.fcm.rawValue) ?? "none"
-        print("FCM \(fcm)")
+        print("FCM: \(fcm)")
         
         AF.request(K.String.puppymodeLink + "/auth/kakao/login",
                    method: .get,

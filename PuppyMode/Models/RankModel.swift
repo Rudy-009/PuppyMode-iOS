@@ -10,11 +10,12 @@ import UIKit
 class RankModel {
     
     static var currentState: SocialState = .global
-    static var myGlobalRank: UserRankInfo?
+    static var myGlobalRank: RankUserInfo?
+    static var myRankInFriends: RankUserInfo?
     
-    static var globalRankData: [UserRankInfo] = []
+    static var globalRankData: [RankUserInfo] = []
     
-    static var friendsRankData: [UserRankInfo] = []
+    static var friendsRankData: [RankUserInfo] = []
     
     enum SocialState {
         case global, friends
