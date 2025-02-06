@@ -20,12 +20,10 @@ class PuppySelectionView: UIView {
         $0.numberOfLines = 0
     }
     
-    private let dimView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .gray
-        view.alpha = 0
-        return view
-    }()
+    private let dimView = UIView().then {
+        $0.backgroundColor = .gray
+        $0.alpha = 0
+    }
     
     private lazy var characterNameLabel = UILabel().then {
         $0.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)
