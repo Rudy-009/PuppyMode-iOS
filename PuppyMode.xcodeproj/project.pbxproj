@@ -10,7 +10,6 @@
 		2324D6C42D2F156800C38607 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 2324D6C32D2F156800C38607 /* FSCalendar */; };
 		23A04E452D2C3752008473B1 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 23A04E442D2C3752008473B1 /* SnapKit */; };
 		23A04E482D2C375D008473B1 /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = 23A04E472D2C375D008473B1 /* Then */; };
-		23A04E662D2D71DF008473B1 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		23AC786D2D4C4DB00021BB86 /* ToosieSlide in Frameworks */ = {isa = PBXBuildFile; productRef = 23AC786C2D4C4DB00021BB86 /* ToosieSlide */; };
 		638828A72D464CC2007288E4 /* KakaoSDKFriend in Frameworks */ = {isa = PBXBuildFile; productRef = 638828A62D464CC2007288E4 /* KakaoSDKFriend */; };
 		638828A92D464CC2007288E4 /* KakaoSDKFriendCore in Frameworks */ = {isa = PBXBuildFile; productRef = 638828A82D464CC2007288E4 /* KakaoSDKFriendCore */; };
@@ -58,7 +57,6 @@
 				639795792D4325EE00947ACA /* FirebaseMessaging in Frameworks */,
 				2324D6C42D2F156800C38607 /* FSCalendar in Frameworks */,
 				6397957E2D43260D00947ACA /* KakaoSDKCommon in Frameworks */,
-				23A04E662D2D71DF008473B1 /* (null) in Frameworks */,
 				638828A72D464CC2007288E4 /* KakaoSDKFriend in Frameworks */,
 				638828AB2D464CC2007288E4 /* KakaoSDKTalk in Frameworks */,
 				639795772D4325EE00947ACA /* FirebaseCore in Frameworks */,
