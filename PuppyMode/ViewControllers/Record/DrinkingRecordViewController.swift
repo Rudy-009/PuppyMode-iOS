@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class DrinkingRecordViewController: UIViewController {
     private let drinkingView = DrinkingRecordView()
@@ -92,7 +93,7 @@ class DrinkingRecordViewController: UIViewController {
     
     @objc
     private func completeButtonTapped() {
-        print(hangoverOptions)
+        print("✅ 음주 기록 완료 버튼 클릭됨")
         
         let alcoholTolerance = addedItems.map { item in
             return [
@@ -103,10 +104,51 @@ class DrinkingRecordViewController: UIViewController {
             ]
         }
         
-        print(alcoholTolerance)
+        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let drinkDate = dateFormatter.string(from: yesterday)
         
-        let recordCompleteVC = RecordCompleteViewController()
-        navigationController?.pushViewController(recordCompleteVC, animated: true)
+        let parameters: [String: Any] = [
+            "drinkDate": drinkDate,
+            "hangoverOptions": hangoverOptions,
+            "alcoholTolerance": alcoholTolerance
+        ]
+        
+        guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+            print("JWT Token not found")
+            return
+        }
+        
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(jwt)",
+            "Content-Type": "application/json"
+        ]
+        
+        let url = "https://puppy-mode.site/drinks/record"
+        
+        AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+            .responseJSON { response in
+                switch response.result {
+                case .success(let data):
+                    print("✅ 요청 성공: \(data)")
+                    
+                    // API 응답을 파싱하고 처리
+                    if let json = data as? [String: Any],
+                       let result = json["result"] as? [String: Any],
+                       let message = result["message"] as? String {
+                        print("✅ 서버 메시지: \(message)")
+                    }
+                    
+                    // 성공 시 다음 화면으로 이동
+                    let recordCompleteVC = RecordCompleteViewController()
+                    self.navigationController?.pushViewController(recordCompleteVC, animated: true)
+                    
+                case .failure(let error):
+                    print("❌ 요청 실패: \(error.localizedDescription)")
+                }
+            }
     }
     
     @objc private func deleteButtonTapped(_ sender: UIButton) {
