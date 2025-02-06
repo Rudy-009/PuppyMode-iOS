@@ -15,15 +15,15 @@ struct CollectionResponse: Decodable {
 }
 
 struct CollectionResult: Decodable {
-    let userCollectionViewDTOs: [UserCollectionItem]
-}
+    let userCollectionViewDTOs: [userCollectionDTO]?
+} 
 
-struct UserCollectionItem: Decodable {
-    let userCollectionId: Int
+struct userCollectionDTO: Decodable {
+    let collectionId: Int
     let collectionName: String
     let puppyItemId: Int
     let hangoverName: String
     let requiredNum: Int
     let currentNum: Int
-    let completed: Bool
+    let isCompleted: Bool
 }

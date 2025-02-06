@@ -10,15 +10,15 @@ import Foundation
 
 // 아이템 카테고리
 struct itemKey {
-    struct String {
-        static let tags = ["모자", "옷", "바닥", "집", "장난감"]
-    }
+    static let tags = ["모자", "옷", "바닥", "집", "장난감"]
+    
 }
 
 // 강아지 레벨
-enum DogLevel {
-    case level1, level2, level3
+enum DogLevel: Int {
+    case level1 = 0, level2, level3
 }
+
 
 struct CategoryModel {
     let categoryId: Int
@@ -48,10 +48,20 @@ class DecoItemModel {
 
     
     // 레벨에 따른 착용 이미지를 가져오는 함수
-    func image(for level: Int) -> UIImage? {
-        guard level >= 0 && level < levelImages.count else { return nil }
-        return levelImages[level]
+    func getImageByLevel(for level: DogLevel) -> UIImage? {
+        return levelImages[level.rawValue]
     }
+    
+    // itemID에 따른 이미지를 가져오는 함수
+    func getImageByID(for itemId: Int) -> UIImage? {
+        for category in [DecoItemModel.hatData, DecoItemModel.clothesData, DecoItemModel.floorData, DecoItemModel.houseData].flatMap({ $0 }) {
+            if let item = category.items.first(where: { $0.itemId == itemId }) {
+                return item.image
+            }
+        }
+        return nil
+    }
+
 }
 
 
@@ -110,7 +120,7 @@ extension DecoItemModel {
             UIImage(named: "level2_명품 강아지 옷"),
             UIImage(named: "level3_명품 강아지 옷")
         ]),
-        DecoItemModel(itemId: 10, image: UIImage(named: "하늘색 체크 옷"), price: "500P", isPurchased: false, mission_item: false, levelImages: [
+        DecoItemModel(itemId: 10, image: UIImage(named: "하늘색 체크 옷"), price: "", isPurchased: false, mission_item: true, levelImages: [
             UIImage(named: "level1_하늘색 체크 옷"),
             UIImage(named: "level2_하늘색 체크 옷"),
             UIImage(named: "level3_하늘색 체크 옷")
@@ -131,7 +141,7 @@ extension DecoItemModel {
             UIImage(named: "level2_좌변기"),
             UIImage(named: "level3_좌변기")
         ]),
-        DecoItemModel(itemId: 13, image: UIImage(named: "핑크 집"), price: "", isPurchased: false, mission_item: true, levelImages: [
+        DecoItemModel(itemId: 13, image: UIImage(named: "핑크 집"), price: "1500P", isPurchased: false, mission_item: false, levelImages: [
             UIImage(named: "level1_핑크 집"),
             UIImage(named: "level2_핑크 집"),
             UIImage(named: "level3_핑크 집")
@@ -146,7 +156,7 @@ extension DecoItemModel {
             UIImage(named: "level2_텐트"),
             UIImage(named: "level3_텐트")
         ]),
-        DecoItemModel(itemId: 16, image: UIImage(named: "박스"), price: "1500P", isPurchased: false, mission_item: false, levelImages: [
+        DecoItemModel(itemId: 16, image: UIImage(named: "박스"), price: "", isPurchased: false, mission_item: true, levelImages: [
             UIImage(named: "level1_박스"),
             UIImage(named: "level2_박스"),
             UIImage(named: "level3_박스")

@@ -131,7 +131,7 @@ class DecoView: UIView {
     
     private func createButtons() {
         var num = 0
-        for tag in itemKey.String.tags {
+        for tag in itemKey.tags {
             let button = UIButton(type: .system)
             button.backgroundColor = .clear
             button.setTitle(tag, for: .normal)
