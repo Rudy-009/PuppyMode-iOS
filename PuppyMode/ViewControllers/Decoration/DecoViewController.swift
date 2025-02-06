@@ -8,6 +8,7 @@
 import UIKit
 import Alamofire
 
+
 class DecoViewController: UIViewController {
     private var selectedButton: UIButton?           // 이전에 눌린 버튼을 저장
     private var collectionView: UICollectionView!
@@ -131,6 +132,8 @@ class DecoViewController: UIViewController {
         self.decoView.puppyNameLabel.text = puppyName
     }
     
+    
+    // MARK: Fetch 정보 from 서버
     // 서버로부터 카테고리 조회
     private func fetchCategoriesFromServer() {
         let headers: HTTPHeaders = [
@@ -153,7 +156,6 @@ class DecoViewController: UIViewController {
             case .failure(let error):
                 print("Network Error: \(error.localizedDescription)")
             }
-
         }
     }
     
@@ -321,6 +323,11 @@ extension DecoViewController: UICollectionViewDelegate {
             
             let wearAction = UIAlertAction(title: "확인", style: .default) { _ in
                 self.postWearItemToServer(categoryId: categoryId!, itemId: selectedItem.itemId)
+                
+                // 착용한 아이템에 대해 셀 색상 변경
+                if let cell = collectionView.cellForItem(at: indexPath) {
+                    // self.applyItemToCell(cell: cell, isWorn: true)
+                }
             }
             let cancelAction = UIAlertAction(title: "취소", style: .cancel)
             
@@ -408,6 +415,7 @@ extension DecoViewController {
     }
     
     
+    // 소유한 아이템 조회하기 (서버연동)
     private func fetchOwnedItemsFromServer() {
         let headers: HTTPHeaders = [
             "accept": "*/*",
@@ -479,14 +487,41 @@ extension DecoViewController {
                     
                 switch response.result {
                 case .success(let response):
-                    print("아이템 착용하기 서버 연동 성공")
+                    print("아이템 착용하기 서버 연동 성공: \(response.result)")
                 
+                    // 아이템 착용하면 선택한 cell에 대한 layer 색상을 다르게 해서 착용한 아이템이 뭔지 보여주도록 함
+                    
+                    
+                    // result로 나온 아이템id에 맞게 착용이미지 보여주도록 함
+                    if let levelImage = DecoItemModel.getLevelImage(forItemId: response.result!.itemId, level: 1) {
+                        self?.decoView.puppyImageButton.setImage(levelImage, for: .normal)
+                    }
+
             
                 case .failure(let error):
                     print("Network Error: \(error.localizedDescription)")
                 }
             }
     }
-
+    
+    // 아이템 착용 후 셀의 색상을 변경하는 함수
+    func applyItemToCell(cell: UICollectionViewCell, isWorn: Bool) {
+        if isWorn {
+            // 아이템이 착용되었으면 셀에 색상을 변경 (예: 초록색 배경)
+            cell.layer.borderColor = UIColor.gray.cgColor
+            cell.layer.borderWidth = 2  // 경계선 두께
+            cell.layer.cornerRadius = 10
+        } else {
+            // 착용되지 않았으면 셀 색상을 원래대로 되돌림
+            cell.layer.borderColor = UIColor.clear.cgColor
+            cell.layer.borderWidth = 0
+        }
+    }
+    
+    // 착용한 아이템 조회하기 (서버연동)
+    private func fetchWornItemsFromServer() {
+        
+    }
+    
 }
 

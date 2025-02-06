@@ -23,7 +23,9 @@ class DecoView: UIView {
     
     //MARK: Puppy Image & Name
     lazy public var puppyImageButton = UIButton().then { button in
-        button.setImage(UIImage(named: "HomeCharacterDefaultImage"), for: .normal)
+        button.setImage(UIImage(named: "비숑_level1"), for: .normal)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.imageView?.contentMode = .center
     }
     
     lazy public var puppyNameLabel = UILabel().then { label in
@@ -87,7 +89,7 @@ class DecoView: UIView {
         puppyImageButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(247)
-            make.top.equalTo(self.safeAreaLayoutGuide).offset(36)
+            make.top.equalTo(self.safeAreaLayoutGuide).offset(68)
         }
         
         self.addSubview(puppyNameLabel)

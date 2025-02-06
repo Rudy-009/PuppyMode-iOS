@@ -16,7 +16,7 @@ struct itemKey {
 
 // 강아지 레벨
 enum DogLevel: Int {
-    case level1 = 0, level2, level3
+    case level1 = 1, level2, level3
 }
 
 
@@ -47,12 +47,7 @@ class DecoItemModel {
      }
 
     
-    // 레벨에 따른 착용 이미지를 가져오는 함수
-    func getImageByLevel(for level: DogLevel) -> UIImage? {
-        return levelImages[level.rawValue]
-    }
-    
-    // itemID에 따른 이미지를 가져오는 함수
+    // itemID에 따른 아이템 이미지를 가져오는 함수
     func getImageByID(for itemId: Int) -> UIImage? {
         for category in [DecoItemModel.hatData, DecoItemModel.clothesData, DecoItemModel.floorData, DecoItemModel.houseData].flatMap({ $0 }) {
             if let item = category.items.first(where: { $0.itemId == itemId }) {
@@ -61,11 +56,28 @@ class DecoItemModel {
         }
         return nil
     }
-
+    
+    // 아이템 ID로 해당 레벨 이미지를 반환하는 함수
+    static func getLevelImage(forItemId itemId: Int, level: Int) -> UIImage? {
+        // 아이템의 레벨 범위 (1, 2, 3)에 맞는지 확인
+        guard level >= 1 && level <= 3 else { return nil }
+        
+        // 모든 카테고리 데이터를 탐색하여 itemId에 해당하는 아이템을 찾음
+        for category in allCategoryData {
+            for item in category.items {
+                if item.itemId == itemId {
+                    return item.levelImages[level - 1] // 해당 레벨의 이미지 반환
+                }
+            }
+        }
+        print("못찾음")
+        return nil // 아이템을 찾지 못한 경우
+    }
 }
 
 
 extension DecoItemModel {
+    static let allCategoryData: [CategoryModel] = hatData + clothesData + floorData + houseData + toyData
     // 모자
     static let hatData: [CategoryModel] = [
         CategoryModel(categoryId: 1, items: [
