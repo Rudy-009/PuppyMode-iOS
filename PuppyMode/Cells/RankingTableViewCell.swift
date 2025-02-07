@@ -51,7 +51,7 @@ class RankingTableViewCell: UITableViewCell {
         addComponents()
     }
     
-    public func configure(rankCell: UserRankInfo) {
+    public func configure(rankCell: RankUserInfo) {
         rankLabel.text = String(rankCell.rank)
         userNameLabel.text = rankCell.username
         characterInfoLabel.text = "\(rankCell.puppyName ?? rankCell.levelName), Level\(rankCell.level) \(rankCell.levelName)"

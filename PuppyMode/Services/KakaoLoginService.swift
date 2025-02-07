@@ -21,8 +21,10 @@ class KakaoLoginService {
             if let error = error {
                 print("UserApi.shared.loginWithKakaoAccount failed: ", error)
             } else {
-                self.saveKakaoUserID()
+                // self.saveKakaoUserID()
                 if let kakaoAccessToekn = oauthToken?.accessToken, let kakaoRefreshToken = oauthToken?.refreshToken {
+                    print("kakaoAccessToken \(kakaoAccessToekn)")
+                    print("kakaoRefreshToken \(kakaoRefreshToken)")
                     _ = saveKakaoToken(accessToken: kakaoAccessToekn, refreshToken: kakaoRefreshToken)
                     self.fetchKakaoUserInfo(with: kakaoAccessToekn, and: kakaoRefreshToken)
                 }
@@ -32,6 +34,7 @@ class KakaoLoginService {
     
     static func fetchKakaoUserInfo(with kakaoAccessToken: String, and kakaoRefreshToken: String) {
         let fcm = KeychainService.get(key: FCMTokenKey.fcm.rawValue) ?? "none"
+        print("FCM: \(fcm)")
         
         AF.request(K.String.puppymodeLink + "/auth/kakao/login",
                    method: .get,
@@ -45,7 +48,6 @@ class KakaoLoginService {
                 if UserInfoService.addUserInfoToKeychainService(userInfo: loginResponse.result) {
                     if let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue ) {
                         print("JWT: \(jwt)")
-                        print("FCM: \(fcm)")
                         // print("Kakao Access Token: \(kakaoAccessToken)")
                     }
                     if loginResponse.result.userInfo.isNewUser {

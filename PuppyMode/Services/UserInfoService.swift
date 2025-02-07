@@ -11,9 +11,9 @@ class UserInfoService {
     
     static func addUserInfoToKeychainService(userInfo: LoginResult) -> Bool {
         return KeychainService.add(key: UserInfoKey.jwt.rawValue, value: userInfo.jwt) &&
-        KeychainService.add(key: UserInfoKey.userId.rawValue, value: String(userInfo.userInfo.userId)) &&
-        KeychainService.add(key: UserInfoKey.username.rawValue, value: userInfo.userInfo.username) &&
-        KeychainService.add(key: UserInfoKey.email.rawValue, value: userInfo.userInfo.email)
+        KeychainService.add(key: UserInfoKey.username.rawValue, value: userInfo.userInfo.username)
+        // KeychainService.add(key: UserInfoKey.userId.rawValue, value: String(userInfo.userInfo)) &&
+        // KeychainService.add(key: UserInfoKey.email.rawValue, value: userInfo.userInfo)
     }
     
     static func deleteAllUserInfoFromKeychainService() -> Bool {

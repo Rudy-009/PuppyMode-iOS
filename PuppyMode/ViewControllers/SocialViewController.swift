@@ -11,7 +11,7 @@ import KakaoSDKTalk
 class SocialViewController: UIViewController {
     
     private var socialView = SocialView()
-    private var rankDataToShow: [UserRankInfo] = RankModel.globalRankData
+    private var rankDataToShow: [RankUserInfo] = RankModel.globalRankData
     private var throttleWorkItem: DispatchWorkItem?
     
     override func viewDidLoad() {
@@ -36,6 +36,11 @@ class SocialViewController: UIViewController {
     
     private func loadInitialData() {
         SocialService.fetchGlobalRankData { [weak self] in
+            DispatchQueue.main.async {
+                self?.refreshData()
+            }
+        }
+        SocialService.fetchFriendRankData { [weak self] in
             DispatchQueue.main.async {
                 self?.refreshData()
             }
@@ -106,9 +111,16 @@ extension SocialViewController: UITableViewDelegate, UITableViewDataSource {
             cell.addTrophyComponent(rank: Rank(rawValue: indexPath.row + 1) ?? Rank.first)
         }
         
-        if RankModel.currentState == .global { // Change background to figure my rank
+        switch RankModel.currentState { // Change background to figure my rank
+        case .global:
             if let rank = RankModel.myGlobalRank?.rank {
-                if rank == data.rank {
+                if rank == data.rank && RankModel.myGlobalRank?.username == data.username {
+                    cell.markMyRank()
+                }
+            }
+        case .friends:
+            if let rank = RankModel.myRankInFriends?.rank {
+                if rank == data.rank && RankModel.myRankInFriends?.username == data.username {
                     cell.markMyRank()
                 }
             }
@@ -128,7 +140,12 @@ extension SocialViewController: UITableViewDelegate, UITableViewDataSource {
             
             // 새로운 work item 생성, 0.3초(조절 가능) 후 실행
             throttleWorkItem = DispatchWorkItem { [weak self] in
-                SocialService.fetchGlobalRankData()
+                switch RankModel.currentState {
+                case .global:
+                    SocialService.fetchGlobalRankData()
+                case .friends:
+                    SocialService.fetchFriendRankData()
+                }
                 self?.socialView.rankingTableView.reloadData()
             }
             
