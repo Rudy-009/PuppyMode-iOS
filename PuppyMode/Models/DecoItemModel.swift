@@ -10,15 +10,15 @@ import Foundation
 
 // 아이템 카테고리
 struct itemKey {
-    struct String {
-        static let tags = ["모자", "옷", "바닥", "집", "장난감"]
-    }
+    static let tags = ["모자", "옷", "바닥", "집", "장난감"]
+    
 }
 
 // 강아지 레벨
-enum DogLevel {
-    case level1, level2, level3
+enum DogLevel: Int {
+    case level1 = 1, level2, level3
 }
+
 
 struct CategoryModel {
     let categoryId: Int
@@ -47,15 +47,37 @@ class DecoItemModel {
      }
 
     
-    // 레벨에 따른 착용 이미지를 가져오는 함수
-    func image(for level: Int) -> UIImage? {
-        guard level >= 0 && level < levelImages.count else { return nil }
-        return levelImages[level]
+    // itemID에 따른 아이템 이미지를 가져오는 함수
+    func getImageByID(for itemId: Int) -> UIImage? {
+        for category in [DecoItemModel.hatData, DecoItemModel.clothesData, DecoItemModel.floorData, DecoItemModel.houseData].flatMap({ $0 }) {
+            if let item = category.items.first(where: { $0.itemId == itemId }) {
+                return item.image
+            }
+        }
+        return nil
+    }
+    
+    // 아이템 ID로 해당 레벨 이미지를 반환하는 함수
+    static func getLevelImage(forItemId itemId: Int, level: Int) -> UIImage? {
+        // 아이템의 레벨 범위 (1, 2, 3)에 맞는지 확인
+        guard level >= 1 && level <= 3 else { return nil }
+        
+        // 모든 카테고리 데이터를 탐색하여 itemId에 해당하는 아이템을 찾음
+        for category in allCategoryData {
+            for item in category.items {
+                if item.itemId == itemId {
+                    return item.levelImages[level - 1] // 해당 레벨의 이미지 반환
+                }
+            }
+        }
+        print("못찾음")
+        return nil // 아이템을 찾지 못한 경우
     }
 }
 
 
 extension DecoItemModel {
+    static let allCategoryData: [CategoryModel] = hatData + clothesData + floorData + houseData + toyData
     // 모자
     static let hatData: [CategoryModel] = [
         CategoryModel(categoryId: 1, items: [
@@ -110,7 +132,7 @@ extension DecoItemModel {
             UIImage(named: "level2_명품 강아지 옷"),
             UIImage(named: "level3_명품 강아지 옷")
         ]),
-        DecoItemModel(itemId: 10, image: UIImage(named: "하늘색 체크 옷"), price: "300P", isPurchased: false, mission_item: false, levelImages: [
+        DecoItemModel(itemId: 10, image: UIImage(named: "하늘색 체크 옷"), price: "", isPurchased: false, mission_item: true, levelImages: [
             UIImage(named: "level1_하늘색 체크 옷"),
             UIImage(named: "level2_하늘색 체크 옷"),
             UIImage(named: "level3_하늘색 체크 옷")
@@ -131,7 +153,7 @@ extension DecoItemModel {
             UIImage(named: "level2_좌변기"),
             UIImage(named: "level3_좌변기")
         ]),
-        DecoItemModel(itemId: 13, image: UIImage(named: "핑크 집"), price: "", isPurchased: false, mission_item: true, levelImages: [
+        DecoItemModel(itemId: 13, image: UIImage(named: "핑크 집"), price: "1500P", isPurchased: false, mission_item: false, levelImages: [
             UIImage(named: "level1_핑크 집"),
             UIImage(named: "level2_핑크 집"),
             UIImage(named: "level3_핑크 집")
