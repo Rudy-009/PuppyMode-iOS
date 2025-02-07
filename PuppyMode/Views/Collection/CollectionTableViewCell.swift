@@ -22,7 +22,7 @@ class CollectionTableViewCell: UITableViewCell {
         stackView.axis = .vertical
         stackView.spacing = 1
     }
-
+    
     public lazy var titleLabel = UILabel().then { label in
         label.textColor = .black
         label.textAlignment = .left
@@ -58,7 +58,7 @@ class CollectionTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-
+        
         self.addComponents()
     }
     
@@ -67,8 +67,8 @@ class CollectionTableViewCell: UITableViewCell {
         
         collectionImageView.layer.cornerRadius = collectionImageView.frame.width / 2
     }
-
-        
+    
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
         self.addComponents()
@@ -77,7 +77,7 @@ class CollectionTableViewCell: UITableViewCell {
     private func addComponents() {
         self.addSubview(collectionImageView)
         self.addSubview(stackView)
-
+        
         collectionImageView.snp.makeConstraints { make in
             make.width.height.equalTo(64)
             make.top.equalToSuperview().offset(3)
@@ -92,7 +92,7 @@ class CollectionTableViewCell: UITableViewCell {
         
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(subtitleLabel)
-
+        
         self.addSubview(progressLabel)
         self.addSubview(progressBar)
         
@@ -120,5 +120,13 @@ class CollectionTableViewCell: UITableViewCell {
     
     func configureSeparator(isLastCell: Bool) {
         separatorView.isHidden = isLastCell
+    }
+    
+    func configure(imageView: UIImage?, title: String, subtitle: String, currentNum: Int, requiredNum: Int) {
+        collectionImageView.image = imageView
+        titleLabel.text = title
+        subtitleLabel.text = subtitle
+        progressBar.setProgress(Float(currentNum)/Float(requiredNum), animated: false)
+        progressLabel.text = "\(currentNum)/\(requiredNum)"
     }
 }

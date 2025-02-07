@@ -18,6 +18,7 @@ class SocialService {
     
     static func fetchGlobalRankData(completion: (() -> Void)? = nil) {
         guard !isFetchingGlobalRankData else { print("fetching global data"); return }
+        
         guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else { return }
         
         isFetchingGlobalRankData = true
@@ -26,6 +27,7 @@ class SocialService {
             method: .get,
             headers: ["accept": "*/*",
                       "Authorization": "Bearer \(jwt)"])
+        
         .responseDecodable(of: SocialRankResponse.self) { response in
             switch response.result {
             case .success(let response):

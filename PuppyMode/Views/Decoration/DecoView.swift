@@ -23,10 +23,12 @@ class DecoView: UIView {
     
     //MARK: Puppy Image & Name
     lazy public var puppyImageButton = UIButton().then { button in
-        button.setImage(UIImage(named: "HomeCharacterDefaultImage"), for: .normal)
+        button.setImage(UIImage(named: "비숑_level1"), for: .normal)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.imageView?.contentMode = .center
     }
     
-    lazy private var puppyNameLabel = UILabel().then { label in
+    lazy public var puppyNameLabel = UILabel().then { label in
         label.font = UIFont(name: "NotoSansKR-Regular", size: 20)
         label.text = "이름"
     }
@@ -87,7 +89,7 @@ class DecoView: UIView {
         puppyImageButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(247)
-            make.top.equalTo(self.safeAreaLayoutGuide).offset(36)
+            make.top.equalTo(self.safeAreaLayoutGuide).offset(68)
         }
         
         self.addSubview(puppyNameLabel)
@@ -131,7 +133,7 @@ class DecoView: UIView {
     
     private func createButtons() {
         var num = 0
-        for tag in itemKey.String.tags {
+        for tag in itemKey.tags {
             let button = UIButton(type: .system)
             button.backgroundColor = .clear
             button.setTitle(tag, for: .normal)

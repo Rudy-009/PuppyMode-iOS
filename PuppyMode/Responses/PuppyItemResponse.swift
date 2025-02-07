@@ -81,3 +81,17 @@ struct PuppyOwnedItemResponseResult: Decodable {
     let mission_item: Bool
 }
 
+
+// 아이템 착용
+struct PuppyWearResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: PuppyWearResult?
+}
+
+struct PuppyWearResult: Decodable {
+    let itemId: Int
+    let itemName: String
+    let equippedImage: String
+}

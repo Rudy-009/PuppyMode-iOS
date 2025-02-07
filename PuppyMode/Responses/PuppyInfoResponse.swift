@@ -30,13 +30,9 @@ struct PuppyNameResponse: Codable {
     let isSuccess: Bool
     let code: String
     let message: String
-    let result: PuppyNameResult?
+    let result: String
 }
 
-struct PuppyNameResult: Codable {
-    let puppyId: Int
-    let name: String
-}
 
 struct PuppyPointResponse: Codable {
     let isSuccess: Bool
