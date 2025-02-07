@@ -15,6 +15,7 @@ class HomeCustomButtonView: UIButton {
         $0.layer.borderWidth = 1
         $0.layer.borderColor = UIColor(red: 0.83, green: 0.83, blue: 0.83, alpha: 1).cgColor
         $0.backgroundColor = .white
+        $0.isUserInteractionEnabled = false
     }
     
     lazy private var buttonTitleLabel = UILabel().then { label in
