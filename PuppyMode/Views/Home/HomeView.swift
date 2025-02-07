@@ -8,6 +8,8 @@
 import UIKit
 import SnapKit
 import Then
+import SDWebImage
+import SDWebImageSVGKitPlugin
 
 class HomeView: UIView {
     
@@ -145,6 +147,17 @@ extension HomeView {
         
         progressLabel.text = String(Int(percentageDouble * 100)) + "%"
         progressBar.setProgress(Float(percentageDouble), animated: false)
+        
+        puppyImageButton.sd_setImage(
+            with: URL(string: puppyInfo.imageUrl!)!,
+            for: .normal,
+            placeholderImage: nil,
+            options: [],
+            context: [
+                .imageThumbnailPixelSize: CGSize(width: 100, height: 100),
+                .imagePreserveAspectRatio: true
+            ]
+        )
     }
     
 }
