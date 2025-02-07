@@ -103,5 +103,5 @@ class PolicyOrTermPopoverView: UIView {
 }
 
 #Preview{
-    SettingPopoverViewController()
+    PolicyOrTermPopoverViewController()
 }

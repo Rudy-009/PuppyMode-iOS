@@ -17,12 +17,18 @@ class CustomTabBar: UITabBar {
 }
 
 class BaseViewController: UITabBarController {
-    private lazy var homeVC: UINavigationController = {
+    
+    private var homeVC: UINavigationController = {
         let homeViewController = HomeViewController()
         homeViewController.getPupptInfo()
         return UINavigationController(rootViewController: homeViewController)
     }()
-    private lazy var socialVC = UINavigationController(rootViewController: SocialViewController())
+    
+    private let socialVC: UINavigationController = {
+        let socialViewController = SocialViewController()
+        return UINavigationController(rootViewController: socialViewController)
+    }()
+
     private let calendarVC = UINavigationController(rootViewController: CalendarViewController())
     private lazy var settingVC: UINavigationController = {
         let settingViewController = SettingViewController()
@@ -33,6 +39,7 @@ class BaseViewController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBar()
+        SocialService.fetchGlobalRankData()
         
         // 탭바 아이템 설정
         homeVC.tabBarItem = UITabBarItem(title: "홈", image: UIImage(systemName: "house.fill"), tag: 0)

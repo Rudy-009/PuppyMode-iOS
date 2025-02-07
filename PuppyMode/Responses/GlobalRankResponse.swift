@@ -28,7 +28,3 @@ struct UserRankInfo: Codable {
     let levelName: String
     let imageUrl: URL?
 }
-
-struct SocialFriendResponse {
-    
-}

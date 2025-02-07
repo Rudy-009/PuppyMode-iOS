@@ -44,7 +44,7 @@ class DecoView: UIView {
     }
     
     
-    public lazy var itemButtonsScrollView: UIScrollView = {
+    public lazy var categoryButtonsScrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.showsHorizontalScrollIndicator = false
@@ -54,7 +54,7 @@ class DecoView: UIView {
         return scrollView
     }()
     
-    public lazy var itemButtonsStackView: UIStackView = {
+    public lazy var categoryButtonsStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
@@ -111,15 +111,15 @@ class DecoView: UIView {
         }
         
           
-        backgroundView.addSubview(itemButtonsScrollView)
-        itemButtonsScrollView.snp.makeConstraints { make in
+        backgroundView.addSubview(categoryButtonsScrollView)
+        categoryButtonsScrollView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.top.equalToSuperview().offset(16)
             make.height.equalTo(32)
         }
         
-        itemButtonsScrollView.addSubview(itemButtonsStackView)
-        itemButtonsStackView.snp.makeConstraints { make in
+        categoryButtonsScrollView.addSubview(categoryButtonsStackView)
+        categoryButtonsStackView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
             make.height.equalToSuperview() 
         }
@@ -140,14 +140,15 @@ class DecoView: UIView {
             button.tintColor = .lightGray
             button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 21, bottom: 8, right: 21)
             button.tag = num
+
             num += 1
             itemButtons.append(button)
-            itemButtonsStackView.addArrangedSubview(button)
+            categoryButtonsStackView.addArrangedSubview(button)
         }
     }
     
     public func forEachButton(_ action: (UIButton) -> Void) {
-        itemButtonsStackView.arrangedSubviews.compactMap { $0 as? UIButton }.forEach(action)
+        categoryButtonsStackView.arrangedSubviews.compactMap { $0 as? UIButton }.forEach(action)
     }
     
 }

@@ -21,34 +21,17 @@ class PuppySelectionViewController: UIViewController {
     }
     
     private func connectButtonActions() {
-        puppySelectionView.cardButton03.addTarget(self, action: #selector(showConfirmVC), for: .touchUpInside)
-        puppySelectionView.cardButton02.addTarget(self, action: #selector(showConfirmVC), for: .touchUpInside)
-        puppySelectionView.cardButton01.addTarget(self, action: #selector(deletePuppy), for: .touchUpInside)
+        puppySelectionView.cardButton04.addTarget(self, action: #selector(puppyChosed(_:)), for: .touchUpInside)
+        puppySelectionView.cardButton03.addTarget(self, action: #selector(puppyChosed(_:)), for: .touchUpInside)
+        puppySelectionView.cardButton02.addTarget(self, action: #selector(puppyChosed(_:)), for: .touchUpInside)
+        puppySelectionView.cardButton01.addTarget(self, action: #selector(puppyChosed(_:)), for: .touchUpInside)
     }
     
     @objc
-    private func deletePuppy() {
-        let headers: HTTPHeaders = [
-            "accept": "*/*",
-            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
-        ]
-        
-        AF.request(K.String.puppymodeLink + "/puppies",
-                   method: .delete,
-                   headers: headers)
-            .responseDecodable(of: PuppyDeletionResponse.self)  { [weak self] response in
-                
-                guard let _ = self else { return }
-                
-                switch response.result {
-                case .success(let response) :
-                    print(response.result)
-                case .failure(let error) :
-                    print("Network Error: \(error.localizedDescription)")
-                }
-            }
+    private func puppyChosed(_ sender: PuppyCardButtonView) {
+        puppySelectionView.showDimAndActiveAnimation(sender)
+        print("btn pressed")
     }
-
     
     @objc
     private func showConfirmVC() {
@@ -71,7 +54,6 @@ class PuppySelectionViewController: UIViewController {
                             // Wrong Puppy String => 강아지 정보 삭제, 다시 요청 or 다시 뽑게 만들기?
                             return
                         }
-                        confirmVC.modalPresentationStyle = .fullScreen
                         confirmVC.configure(puppy: puppy, imageURL: puppyResponse.result.puppyImageUrl)
                         present(confirmVC,animated: false)
                     } else {

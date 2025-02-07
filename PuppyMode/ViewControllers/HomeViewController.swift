@@ -33,6 +33,11 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
         checkAppointmentStatus()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        getPupptInfo()
+    }
+    
     // 위치 매니저 설정
     private func setupLocationManager() {
         locationManager.delegate = self
@@ -223,6 +228,7 @@ extension HomeViewController {
                 switch response.result {
                 case .success(let puppyResponse) :
                     if puppyResponse.isSuccess {
+                        print("놀아주기 서버 연동 성공")
                         print("성공")
                         getPupptInfo()
                     } else {

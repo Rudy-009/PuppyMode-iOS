@@ -9,8 +9,13 @@ import UIKit
 
 class HomeCustomButtonView: UIButton {
     
-    lazy private var backgroundImage = UIImageView().then { image in
-        image.image = UIImage(named: "BottomButtonImage")
+    lazy private var frameView = UIView().then {
+        $0.clipsToBounds = true
+        $0.layer.cornerRadius = 10
+        $0.layer.borderWidth = 1
+        $0.layer.borderColor = UIColor(red: 0.83, green: 0.83, blue: 0.83, alpha: 1).cgColor
+        $0.backgroundColor = .white
+        $0.isUserInteractionEnabled = false
     }
     
     lazy private var buttonTitleLabel = UILabel().then { label in
@@ -21,22 +26,20 @@ class HomeCustomButtonView: UIButton {
         label.font = UIFont(name: "NotoSansKR-Regular", size: 17)
         label.alpha = 0.78
     }
-    
+        
     override init(frame: CGRect) {
         super.init(frame: frame)
         addComponents()
     }
     
-    func addComponents() {
-        self.addSubview(backgroundImage)
+    private func addComponents() {
+        self.addSubview(frameView)
+        frameView.addSubview(buttonTitleLabel)
+        frameView.addSubview(buttonSubtitleLabel)
         
-        backgroundImage.addSubview(buttonTitleLabel)
-        backgroundImage.addSubview(buttonSubtitleLabel)
-        
-        backgroundImage.snp.makeConstraints { make in
-            make.centerX.centerY.equalToSuperview()
-            make.width.equalTo(155)
-            make.height.equalTo(125)
+        // framView의 제약조건 수정
+        frameView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
         
         buttonTitleLabel.snp.makeConstraints { make in
@@ -50,11 +53,11 @@ class HomeCustomButtonView: UIButton {
         }
     }
     
-    func setTitleLabel( to title: String) {
+    public func setTitleLabel(to title: String) {
         buttonTitleLabel.text = title
     }
     
-    func setSubTitleLabel( to title: String) {
+    public func setSubTitleLabel(to title: String) {
         buttonSubtitleLabel.text = title
     }
     

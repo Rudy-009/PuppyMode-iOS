@@ -34,7 +34,7 @@ extension SettingViewController {
     func setToggle() {
         let headers: HTTPHeaders = [
             "accept": "*/*",
-            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue))"
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
         ]
         
         AF.request(K.String.puppymodeLink + "/users/notifications",
@@ -82,7 +82,7 @@ extension SettingViewController {
     
     @objc
     private func termsOfServiceButtonPressed() {
-        let viewControllerToPresent = SettingPopoverViewController()
+        let viewControllerToPresent = PolicyOrTermPopoverViewController()
         viewControllerToPresent.configurePopoverView(title: "이용약관", content: K.String.policy)
         viewControllerToPresent.modalPresentationStyle = .overFullScreen
         viewControllerToPresent.modalTransitionStyle = .crossDissolve
@@ -91,7 +91,7 @@ extension SettingViewController {
     
     @objc
     private func privacyPolicyButtonPressed() {
-        let viewControllerToPresent = SettingPopoverViewController()
+        let viewControllerToPresent = PolicyOrTermPopoverViewController()
         viewControllerToPresent.configurePopoverView(title: "개인정보 처리 방침", content: K.String.policy)
         viewControllerToPresent.modalPresentationStyle = .overFullScreen
         viewControllerToPresent.modalTransitionStyle = .crossDissolve
@@ -107,15 +107,10 @@ extension SettingViewController {
     
     @objc
     private func logoutButtonPressed() {
-        UserApi.shared.logout {(error) in
-            if let error = error {
-                print(error)
-            }
-            else {
-                self.changeRootToLoginViewController()
-                print("logout() success.")
-            }
-        }
+        let viewControllerToPresent = LogoutCheckViewController()
+        viewControllerToPresent.modalPresentationStyle = .overFullScreen
+        viewControllerToPresent.modalTransitionStyle = .crossDissolve
+        present(viewControllerToPresent, animated: true, completion: nil)
     }
     
     private func changeRootToLoginViewController() {

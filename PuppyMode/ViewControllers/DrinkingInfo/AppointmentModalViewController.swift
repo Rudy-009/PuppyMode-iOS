@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Alamofire
 
 class AppointmentModalViewController: UIViewController, AddressSearchDelegate {
     
@@ -251,15 +252,58 @@ class AppointmentModalViewController: UIViewController, AddressSearchDelegate {
     }
     
     @objc private func didTapConfirmButton() {
-        let selectedTime = timeButton.title(for: .normal) ?? "시간을 선택해주세요"
-        let location = locationTextField.text ?? "장소를 선택해주세요"
-        let locationDetail = detailAddressTextField.text ?? "장소를 선택해주세요"
-        
-        print("선택된 시간:", selectedTime) // 선택된 시간 출력
-        print("입력된 장소:", location)   // 입력된 장소 출력
-        print("입력된 세부 장소:", locationDetail)   // 입력된 장소 출력
-        
-        dismiss(animated: true, completion: nil) // 모달 닫기
+        // 필수 필드 검증
+        guard let selectedTime = timeButton.title(for: .normal), selectedTime != "시간을 선택해주세요",
+              let location = locationTextField.text, !location.isEmpty,
+              let locationDetail = detailAddressTextField.text, !locationDetail.isEmpty,
+              let userIdString = KeychainService.get(key: UserInfoKey.userId.rawValue),
+              let userId = Int(userIdString) else {
+            print("필수 정보가 누락되었습니다.")
+            return
+        }
+
+        // 날짜 포맷 변환 (ISO8601)
+        let formatter = ISO8601DateFormatter()
+        let dateTime = formatter.string(from: Date()) // 실제 선택된 시간 사용 시 수정 필요*
+
+        // API 파라미터 (임시 하드코딩 값 포함)
+        let parameters: [String: Any] = [
+            "dateTime": dateTime,
+            "latitude": 37.498095, // 실제 좌표 값으로 대체 필요
+            "longitude": 127.027610,
+            "address": location,
+            "locationName": location,
+            "userId": userId
+        ]
+
+        // 헤더 설정
+        let fcmToken = KeychainService.get(key: UserInfoKey.jwt.rawValue) ?? ""
+        let headers: HTTPHeaders = [
+            "Content-Type": "application/json",
+            "Authorization": "Bearer \(fcmToken)"
+        ]
+
+        // API 요청
+        AF.request(K.String.puppymodeLink + "/appointments",
+                   method: .post,
+                   parameters: parameters,
+                   encoding: JSONEncoding.default,
+                   headers: headers)
+            .responseDecodable(of: CreateAppointmentResponse.self) { response in
+                switch response.result {
+                case .success(let data):
+                    if data.code == "SUCCESS_POST_APPOINTMENT" {
+                        print("약속 생성 성공! ID: \(data.result?.appointmentId ?? 0)")
+                        DispatchQueue.main.async {
+                            self.dismiss(animated: true, completion: nil)
+                        }
+                    } else {
+                        print("에러 발생: \(data.message)")
+                    }
+                case .failure(let error):
+                    print("API 요청 실패: \(error.localizedDescription)")
+                }
+            }
     }
     
     @objc private func didTapTimeButton() {
