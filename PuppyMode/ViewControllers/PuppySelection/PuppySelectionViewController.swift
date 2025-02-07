@@ -56,7 +56,6 @@ class PuppySelectionViewController: UIViewController {
                         }
                         confirmVC.configure(puppy: puppy, imageURL: puppyResponse.result.puppyImageUrl)
                         present(confirmVC,animated: false)
-                        RootViewControllerService.toBaseViewController()
                     } else {
                         print("Puppy Random Generate API Error: \(puppyResponse.message)")
                     }
