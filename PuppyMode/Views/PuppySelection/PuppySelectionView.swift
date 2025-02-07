@@ -222,18 +222,7 @@ class PuppySelectionView: UIView {
                         self.characterNameLabel.text = "포메라니안"
                         self.subTitleLabel.text = "Pomeranian"
                         sender.puppyImage.image = .babyPomeranian
-                    }
-                    
-                    let headers: HTTPHeaders = [
-                        "accept": "*/*",
-                        "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
-                    ]
-                    
-                    AF.request(K.String.puppymodeLink + "/puppies",
-                               method: .post,
-                               headers: headers)
-                    .responseDecodable(of: PuppySelectionResponse.self) { [weak self] response in
-                        
+                    }   
                         UIView.transition(with: sender, duration: 0.5, options: .transitionFlipFromRight , animations: nil ) { _ in
                             UIView.animate(withDuration: 0.8) {
                                 self.dimView.backgroundColor = .white
