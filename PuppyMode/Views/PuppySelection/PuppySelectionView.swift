@@ -284,4 +284,3 @@ class PuppySelectionView: UIView {
         }
         
     }
-}
