@@ -69,7 +69,13 @@ class CalendarViewController: UIViewController {
     
     @objc
     private func changeButtonTapped() {
-        calendarView.blurBackgroundView.isHidden = false
+        calendarView.modalBackgroundView.alpha = 0
+        calendarView.modalBackgroundView.isHidden = false
+
+        UIView.animate(withDuration: 0.3) {
+            self.calendarView.modalBackgroundView.alpha = 1
+        }
+        
         let modalVC = CalendarModalViewController(calendarView: calendarView)
         modalVC.modalPresentationStyle = .overFullScreen
         present(modalVC, animated: true)

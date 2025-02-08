@@ -111,8 +111,9 @@ class CalendarView: UIView {
         $0.register(CalendarCollectionViewCell.self, forCellWithReuseIdentifier: CalendarCollectionViewCell.identifier)
     }
     
-    // 블러 배경
-    public let blurBackgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .light)).then {
+    // 모달 배경
+    public let modalBackgroundView = UIView().then {
+        $0.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.6)
         $0.isHidden = true
     }
     
@@ -167,7 +168,7 @@ class CalendarView: UIView {
             monthLabel,
             calendar,
             carouselBackground, carouselSlide,
-            blurBackgroundView
+            modalBackgroundView
         ].forEach {
             addSubview($0)
         }
@@ -223,7 +224,7 @@ class CalendarView: UIView {
             $0.height.equalTo(274)
         }
         
-        blurBackgroundView.snp.makeConstraints {
+        modalBackgroundView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
     }
