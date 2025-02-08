@@ -53,8 +53,8 @@ class RankingTableViewCell: UITableViewCell {
     
     public func configure(rankCell: RankUserInfo) {
         rankLabel.text = String(rankCell.rank)
-        userNameLabel.text = rankCell.username
-        characterInfoLabel.text = "\(rankCell.puppyName ?? rankCell.levelName), Level\(rankCell.level) \(rankCell.levelName)"
+        userNameLabel.text = String.sliceText(string: rankCell.username, max: 14)
+        characterInfoLabel.text = String.sliceText(string: rankCell.puppyName ?? rankCell.levelName, max: 17) + ", Level\(rankCell.level) \(rankCell.levelName)"
         self.backgroundColor = .white
         
         trophyImageView.removeFromSuperview() // 기존 트로피 이미지 제거

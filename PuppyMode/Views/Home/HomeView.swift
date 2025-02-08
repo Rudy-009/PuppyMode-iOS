@@ -85,6 +85,7 @@ class HomeView: UIView {
     lazy private var puppyNameLabel = UILabel().then { label in
         label.font = UIFont(name: "OTSBAggroM", size: 25)
         label.text = "눈송이 비숑"
+        label.textColor = .black
     }
     
     //MARK: Bottom Dog Info
