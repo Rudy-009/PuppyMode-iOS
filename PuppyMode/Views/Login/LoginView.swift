@@ -89,7 +89,7 @@ class LoginView: UIView {
         self.bringSubviewToFront(slogunLabel)
         self.bringSubviewToFront(subLabel)
         
-        kakaoLoginButton.configure(name: "카카오로 로그인", logo: UIImage(named: "KakaoLogin")!, backgroundColor: .kakaoLogin)
+        kakaoLoginButton.configure(name: "카카오 로그인", logo: UIImage(named: "KakaoLogin")!, backgroundColor: .kakaoLogin)
         
         kakaoLoginButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)

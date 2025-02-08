@@ -120,7 +120,7 @@ extension SocialViewController: UITableViewDelegate, UITableViewDataSource {
             }
         case .friends:
             if let rank = RankModel.myRankInFriends?.rank {
-                if rank == data.rank && RankModel.myRankInFriends?.username == data.username {
+                if rank == data.rank {
                     cell.markMyRank()
                 }
             }
@@ -133,7 +133,7 @@ extension SocialViewController: UITableViewDelegate, UITableViewDataSource {
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
         let height = scrollView.frame.size.height
-                
+        
         if offsetY > contentHeight - height {
             // 기존의 work item이 있다면 취소
             throttleWorkItem?.cancel()
