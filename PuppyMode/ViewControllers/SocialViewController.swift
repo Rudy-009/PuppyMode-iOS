@@ -60,10 +60,21 @@ class SocialViewController: UIViewController {
     
     private func requestToCallFriendsInfo() {
         TalkApi.shared.friends { (friends, error) in
-            if let error = error {
-                print(error)
+            if let _ = error {
+                print("Not allowed to call friends")
             } else {
-                
+                print("Allowed to call friends")
+                print("Friends Array 01 \(RankModel.friendsRankData)")
+                SocialService.fetchFriendRankData {
+                    DispatchQueue.main.async {
+                        print("fetching friend rank data is over")
+                        print("Friends Array 02 \(RankModel.friendsRankData)")
+                        self.rankDataToShow = RankModel.friendsRankData
+                        self.refreshData()
+                        self.socialView.rankingTableView.reloadData()
+                        print("Friends Array 03 \(RankModel.friendsRankData)")
+                    }
+                }
             }
         }
     }
@@ -81,8 +92,10 @@ class SocialViewController: UIViewController {
         } else {
             RankModel.currentState = .friends
             rankDataToShow = RankModel.friendsRankData
+            requestToCallFriendsInfo()
             socialView.removeMyRankView()
         }
+        refreshData()
         socialView.myRankView.configure(rankCell: RankModel.myGlobalRank!)
         socialView.myRankView.markMyRank()
         socialView.rankingTableView.reloadData()
@@ -112,15 +125,15 @@ extension SocialViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         switch RankModel.currentState { // Change background to figure my rank
-        case .global:
+        case .global :
             if let rank = RankModel.myGlobalRank?.rank {
                 if rank == data.rank && RankModel.myGlobalRank?.username == data.username {
                     cell.markMyRank()
                 }
             }
-        case .friends:
+        case .friends :
             if let rank = RankModel.myRankInFriends?.rank {
-                if rank == data.rank && RankModel.myRankInFriends?.username == data.username {
+                if rank == data.rank {
                     cell.markMyRank()
                 }
             }
@@ -133,7 +146,7 @@ extension SocialViewController: UITableViewDelegate, UITableViewDataSource {
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
         let height = scrollView.frame.size.height
-                
+        
         if offsetY > contentHeight - height {
             // 기존의 work item이 있다면 취소
             throttleWorkItem?.cancel()

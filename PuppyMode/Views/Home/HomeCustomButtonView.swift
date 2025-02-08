@@ -19,11 +19,11 @@ class HomeCustomButtonView: UIButton {
     }
     
     lazy private var buttonTitleLabel = UILabel().then { label in
-        label.font = UIFont(name: "NotoSansKR-Medium", size: 22)
+        label.font = UIFont(name: "NotoSansKR-Medium", size: 20)
     }
     
     lazy private var buttonSubtitleLabel = UILabel().then { label in
-        label.font = UIFont(name: "NotoSansKR-Regular", size: 17)
+        label.font = UIFont(name: "NotoSansKR-Regular", size: 15)
         label.alpha = 0.78
     }
         
@@ -44,12 +44,12 @@ class HomeCustomButtonView: UIButton {
         
         buttonTitleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalToSuperview().offset(26)
+            make.top.equalToSuperview().offset(20)
         }
         
         buttonSubtitleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().inset(32)
+            make.top.equalTo(buttonTitleLabel.snp.bottom).offset(10)
         }
     }
     

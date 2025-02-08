@@ -17,7 +17,7 @@ class SocialService {
     static let pageSize: Int = 10
     
     static func fetchGlobalRankData(completion: (() -> Void)? = nil) {
-        guard !isFetchingGlobalRankData else { print("fetching global data"); return }
+        guard !isFetchingGlobalRankData else { return }
         
         guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else { return }
         
@@ -35,14 +35,11 @@ class SocialService {
                 guard let _ = RankModel.myGlobalRank else {
                     RankModel.myGlobalRank = response.result.currentUserRank
                     globalRankPage += pageSize
-                    isFetchingGlobalRankData = false
                     return
                 }
             case .failure(let error):
                 print(error)
             }
-            // 인덱스 값 변화
-            globalRankPage += pageSize
             isFetchingGlobalRankData = false
         }
         
@@ -52,37 +49,42 @@ class SocialService {
     }
     
     static func fetchFriendRankData(completion: (() -> Void)? = nil) {
-        guard !isFetchingFriendRankData else { print("fetching friend data"); return }
-        guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else { return }
-        guard let kakaoAccessToken = KeychainService.get(key: KakaoAPIKey.kakaoAccessToken.rawValue) else { return }
+        guard !isFetchingFriendRankData else { print("Friend Data is fetching..."); return }
+        guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue),
+              let kakaoAccessToken = KeychainService.get(key: KakaoAPIKey.kakaoAccessToken.rawValue) else { return }
         
         isFetchingFriendRankData = true
+        print("Friend Data fetching started...")
+        
         AF.request(
             K.String.puppymodeLink + "/rankings/friends?accessToken=\(kakaoAccessToken)&page=\(friendRankPage)&size=\(pageSize)",
             method: .get,
             headers: ["accept": "*/*",
                       "Authorization": "Bearer \(jwt)"])
         .responseDecodable(of: SocialRankResponse.self) { response in
+            defer {
+                isFetchingFriendRankData = false
+                DispatchQueue.main.async { completion?() } // 완료 핸들러 이동
+            }
+            
             switch response.result {
             case .success(let response):
+                print("me among friends: \(response.result.currentUserRank)")
+                print("friends: \(response.result.rankings)")
+                
                 RankModel.friendsRankData.append(contentsOf: response.result.rankings)
-                guard let _ = RankModel.myRankInFriends else {
+                
+                if RankModel.myRankInFriends == nil {
                     RankModel.myRankInFriends = response.result.currentUserRank
-                    friendRankPage += pageSize
-                    isFetchingFriendRankData = false
-                    return
                 }
+                
+                friendRankPage += pageSize // 페이지 증가 로직 이동
+                
             case .failure(let error):
-                print(error)
+                print("Friends error \(error)")
             }
-            // 인덱스 값 변화
-            friendRankPage += pageSize
-            isFetchingFriendRankData = false
-        }
-        
-        DispatchQueue.main.async {
-            completion?()
         }
     }
+
     
 }
