@@ -15,6 +15,7 @@ class DecoViewController: UIViewController {
     private var items: [DecoItemModel] = []         // 컬렉션 뷰에 표시할 데이터 배열
     private var selectedLevel: Int = 1              // 초기 레벨 설정
     private var purchasedItemIds: Set<Int> = []
+    private var currentLevel: Int = 0                   // 현재 레벨 값 저장
     
     private lazy var decoView: DecoView = {
         let view = DecoView()
@@ -56,6 +57,7 @@ class DecoViewController: UIViewController {
         fetchCategoriesFromServer()
         fetchPointFromServer()
         fetchOwnedItemsFromServer()
+        fetchEquippedItemsFromServer()
     }
     
     private func setupCollectionView() {
@@ -215,6 +217,7 @@ class DecoViewController: UIViewController {
         }
     }
     
+    // 강아지 정보 조회 - 이름, 레벨 저장
     private func fetchPuppyNameFromServer() {
         guard let fcm = KeychainService.get(key: UserInfoKey.jwt.rawValue) else { return }
         
@@ -228,12 +231,56 @@ class DecoViewController: UIViewController {
             case .success(let response):
                 let puppyName = response.result.puppyName
                 print(puppyName)
+                self.currentLevel = response.result.level
                 
                 self.decoView.puppyNameLabel.text = puppyName
                 
             case .failure(let error):
                 // 강아지 정보 불러오기에 실패했습니다. 라는 알림 띄우기? (다시시도)
-                print("/puppies error", error)
+                print("강아지 정보 조회 실패", error)
+            }
+        }
+    }
+    
+    // 착용한 아이템 목록 조회 - 아이템 목록에 따라 이미지 띄우는거 보여주도록 수정
+    private func fetchEquippedItemsFromServer() {
+        guard let fcm = KeychainService.get(key: UserInfoKey.jwt.rawValue) else { return }
+        
+        AF.request( K.String.puppymodeLink + "/puppies/items/equip",
+                    headers: [
+                        "accept": "*/*",
+                        "Authorization": "Bearer " + fcm
+                    ])
+        .responseDecodable(of: PuppyWearResponse.self) { response in
+            switch response.result {
+            case .success(let response):
+                
+                if let items = response.result, !items.isEmpty {
+                    // 배열에 아이템이 있을 경우 → 첫 번째 아이템 사용
+                    if let firstItem = items.first,
+                       let puppyImage = DecoItemModel.getLevelImage(forItemId: firstItem.itemId, level: self.currentLevel) {
+                        self.decoView.puppyImageButton.setImage(puppyImage, for: .normal)
+                    }
+                } else {
+                    // 배열이 비어있을 경우 → 현재 레벨에 따라 기본 이미지 설정
+                    let defaultImage: UIImage?
+                        
+                        switch self.currentLevel {
+                        case 1:
+                            defaultImage = UIImage(named: "비숑_level1")
+                        case 2:
+                            defaultImage = UIImage(named: "비숑_level2")
+                        case 3:
+                            defaultImage = UIImage(named: "비숑_level3")
+                        default:
+                            defaultImage = UIImage(named: "비숑_level1")
+                        }
+                    
+                    self.decoView.puppyImageButton.setImage(defaultImage, for: .normal)
+                }
+                                                
+            case .failure(let error):
+                print("착용한 아이템 목록 조회 실패", error)
             }
         }
     }
@@ -364,7 +411,7 @@ extension DecoViewController {
                     if let responseMessage = response.message as? String {
                         switch responseMessage {
                         case "아이템 구매 성공":
-                            if let purchasedItem = self?.items.first(where: { $0.itemId == response.result?.itemId }) {
+                            if let purchasedItem = self?.items.first(where: { $0.itemId == response.result.itemId }) {
                                 self?.purchaseItem(item: purchasedItem)
                             }
                         case "잔여 포인트가 부족합니다.":
@@ -490,14 +537,7 @@ extension DecoViewController {
                     print("아이템 착용하기 서버 연동 성공: \(response.result)")
                 
                     // 아이템 착용하면 선택한 cell에 대한 layer 색상을 다르게 해서 착용한 아이템이 뭔지 보여주도록 함
-                    
-                    
-                    // result로 나온 아이템id에 맞게 착용이미지 보여주도록 함
-                    if let levelImage = DecoItemModel.getLevelImage(forItemId: response.result!.itemId, level: 1) {
-                        self?.decoView.puppyImageButton.setImage(levelImage, for: .normal)
-                    }
-
-            
+    
                 case .failure(let error):
                     print("Network Error: \(error.localizedDescription)")
                 }

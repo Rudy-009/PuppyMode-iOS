@@ -55,12 +55,12 @@ struct PuppyPurchaseResponse: Decodable {
     let isSucess: Bool
     let code: String
     let message: String
-    let result: PuppyPurchaseResult?
+    let result: PuppyPurchaseResult
 }
 
 struct PuppyPurchaseResult: Decodable {
-    let currentPoint: Int
     let itemId: Int
+    let currentPoint: Int
 }
 
 
@@ -87,7 +87,7 @@ struct PuppyWearResponse: Decodable {
     let isSuccess: Bool
     let code: String
     let message: String
-    let result: PuppyWearResult?
+    let result: [PuppyWearResult]?
 }
 
 struct PuppyWearResult: Decodable {
