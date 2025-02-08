@@ -20,11 +20,13 @@ class HomeCustomButtonView: UIButton {
     
     lazy private var buttonTitleLabel = UILabel().then { label in
         label.font = UIFont(name: "NotoSansKR-Medium", size: 20)
+        label.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)
     }
     
     lazy private var buttonSubtitleLabel = UILabel().then { label in
         label.font = UIFont(name: "NotoSansKR-Regular", size: 15)
         label.alpha = 0.78
+        label.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)
     }
         
     override init(frame: CGRect) {
