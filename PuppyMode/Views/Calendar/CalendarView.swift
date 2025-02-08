@@ -16,6 +16,7 @@ class CalendarView: UIView {
     // 뒤로가기 버튼
     public let backButton = UIButton().then {
         $0.setImage(.iconBack, for: .normal)
+        $0.isHidden = true
     }
     
     // 년도
@@ -99,6 +100,11 @@ class CalendarView: UIView {
         $0.isHidden = true
     }
     
+    // 날짜 개요
+    public let dateView = CalendarDateView().then {
+        $0.isHidden = true
+    }
+    
     // MARK: - init
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -135,6 +141,20 @@ class CalendarView: UIView {
         }
     }
     
+    public func updateCalendarScope(to scope: FSCalendarScope) {
+        calendar.scope = scope
+        calendar.snp.remakeConstraints {
+            $0.top.equalTo(safeAreaLayoutGuide).offset(180)
+            $0.horizontalEdges.equalToSuperview().inset(15)
+            $0.height.equalTo(scope == .month ? 310 : 130)
+        }
+        
+        UIView.animate(withDuration: 0.3) {
+            self.layoutIfNeeded()
+        }
+    }
+
+    
     private func setStackView() {
         [ afterYearLabel, afterMonthLabel ].forEach { dateTitleStackView.addArrangedSubview($0) }
     }
@@ -149,6 +169,7 @@ class CalendarView: UIView {
             changeButton,
             monthLabel,
             calendar,
+            dateView,
             modalBackgroundView
         ].forEach {
             addSubview($0)
@@ -188,9 +209,15 @@ class CalendarView: UIView {
         }
         
         calendar.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide).offset(210)
+            $0.top.equalTo(safeAreaLayoutGuide).offset(180)
             $0.horizontalEdges.equalToSuperview().inset(15)
-            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-150)
+            $0.height.equalTo(310)
+        }
+        
+        dateView.snp.makeConstraints {
+            $0.top.equalTo(calendar.snp.bottom).offset(30)
+            $0.horizontalEdges.equalToSuperview()
+            $0.height.equalTo(600)
         }
         
         modalBackgroundView.snp.makeConstraints {

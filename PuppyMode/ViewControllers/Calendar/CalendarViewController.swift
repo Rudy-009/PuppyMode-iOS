@@ -12,8 +12,6 @@ import ToosieSlide
 class CalendarViewController: UIViewController {
     private let calendarView = CalendarView()
     
-    private var lastContentOffset: CGFloat = 0 // 스크롤 시작 위치 저장 변수
-    
     private var selectedDate: Date? {
         didSet {
             guard let selectedDate = selectedDate else { return }
@@ -51,12 +49,18 @@ class CalendarViewController: UIViewController {
         self.calendarView.monthLabel.isHidden = false
         self.calendarView.changeButton.isHidden = false
         
+        self.calendarView.backButton.isHidden = true
         self.calendarView.afterYearLabel.isHidden = true
         self.calendarView.afterMonthLabel.isHidden = true
         self.calendarView.afterChangeButton.isHidden = true
         
+        self.calendarView.dateView.isHidden = true
+        
+        self.calendarView.updateCalendarScope(to: .month)
+        
         UIView.animate(withDuration: 0.3, animations: {
             self.calendarView.calendar.transform = .identity
+            self.calendarView.dateView.transform = .identity
         })
     }
     
@@ -96,13 +100,18 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
             self.calendarView.monthLabel.isHidden = true
             self.calendarView.changeButton.isHidden = true
             
+            self.calendarView.backButton.isHidden = false
             self.calendarView.afterYearLabel.isHidden = false
             self.calendarView.afterMonthLabel.isHidden = false
             self.calendarView.afterChangeButton.isHidden = false
             
+            self.calendarView.dateView.isHidden = false
+            
             self.calendarView.calendar.transform = CGAffineTransform(translationX: 0, y: -160)
-            self.calendarView.calendar.scope = .week
+            self.calendarView.dateView.transform = CGAffineTransform(translationX: 0, y: -180)
         })
+        
+        self.calendarView.updateCalendarScope(to: .week)
     }
     
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, fillSelectionColorFor date: Date) -> UIColor? {
