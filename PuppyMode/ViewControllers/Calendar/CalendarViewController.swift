@@ -36,8 +36,6 @@ class CalendarViewController: UIViewController {
     // MARK: - function
     private func setDelegate() {
         calendarView.calendar.delegate = self
-        calendarView.carouselSlide.dataSource = self
-        calendarView.carouselSlide.delegate = self
     }
     
     // MARK: - action
@@ -57,13 +55,8 @@ class CalendarViewController: UIViewController {
         self.calendarView.afterMonthLabel.isHidden = true
         self.calendarView.afterChangeButton.isHidden = true
         
-        self.calendarView.carouselBackground.isHidden = true
-        self.calendarView.carouselSlide.isHidden = true
-        
         UIView.animate(withDuration: 0.3, animations: {
             self.calendarView.calendar.transform = .identity
-            self.calendarView.carouselBackground.transform = .identity
-            self.calendarView.carouselSlide.transform = .identity
         })
     }
     
@@ -107,15 +100,9 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
             self.calendarView.afterMonthLabel.isHidden = false
             self.calendarView.afterChangeButton.isHidden = false
             
-            self.calendarView.carouselBackground.isHidden = false
-            self.calendarView.carouselSlide.isHidden = false
-            
-            self.calendarView.calendar.transform = CGAffineTransform(translationX: 0, y: -170)
-            self.calendarView.carouselBackground.transform = CGAffineTransform(translationX: 0, y: -170)
-            self.calendarView.carouselSlide.transform = CGAffineTransform(translationX: 0, y: -170)
+            self.calendarView.calendar.transform = CGAffineTransform(translationX: 0, y: -160)
+            self.calendarView.calendar.scope = .week
         })
-        
-        calendarView.carouselSlide.reloadData()
     }
     
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, fillSelectionColorFor date: Date) -> UIColor? {
@@ -124,50 +111,5 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
     
     func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
         calendarView.updateMonthLabel(for: calendar.currentPage)
-    }
-}
-
-extension CalendarViewController: UICollectionViewDataSource, UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return Int.max
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CalendarCollectionViewCell.identifier, for: indexPath) as? CalendarCollectionViewCell else {
-            return UICollectionViewCell()
-        }
-        
-        if let selectedDate = selectedDate {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy.MM.dd"
-            dateFormatter.locale = Locale(identifier: "ko_KR")
-            cell.dateLabel.text = dateFormatter.string(from: selectedDate)
-        }
-        
-        return cell
-    }
-    
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        lastContentOffset = scrollView.contentOffset.x // 스크롤 시작할 때 위치 저장
-    }
-
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        guard let selectedDate = selectedDate else { return }
-
-        let currentOffset = scrollView.contentOffset.x
-
-        // 스크롤 방향 판별
-        let dateChange = currentOffset > lastContentOffset ? 1 : -1
-        
-        // 날짜 변경
-        let newDate = Calendar.current.date(byAdding: .day, value: dateChange, to: selectedDate) ?? selectedDate
-        self.selectedDate = newDate
-        
-        // 달력(FSCalendar)에 반영
-        calendarView.calendar.select(newDate)
-        calendarView.updateMonthLabel(for: newDate)
-        
-        // 캐러셀 갱신
-        calendarView.carouselSlide.reloadData()
     }
 }
