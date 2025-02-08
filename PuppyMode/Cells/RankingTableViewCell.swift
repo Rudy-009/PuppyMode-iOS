@@ -150,7 +150,3 @@ enum Rank: Int {
     case second = 2
     case third = 3
 }
-
-#Preview{
-    SocialViewController()
-}
