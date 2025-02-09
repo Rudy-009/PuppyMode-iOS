@@ -4,7 +4,7 @@ import KakaoSDKAuth
 import FirebaseCore
 import UserNotifications
 import Firebase
-import SDWebImageSVGKitPlugin
+import SDWebImageSVGNativeCoder
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Messaging.messaging().delegate = self
         
         // MARK: Add SVG Coder
-        let svgCoder = SDImageSVGKCoder.shared
+        let svgCoder = SDImageSVGNativeCoder.shared
         SDImageCodersManager.shared.addCoder(svgCoder)
         
         return true

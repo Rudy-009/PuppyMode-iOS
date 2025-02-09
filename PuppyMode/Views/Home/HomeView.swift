@@ -10,6 +10,7 @@ import SnapKit
 import Then
 import SDWebImage
 import SDWebImageSVGKitPlugin
+import SVGKit
 
 class HomeView: UIView {
     
@@ -49,7 +50,7 @@ class HomeView: UIView {
         button.layer.cornerRadius = topButtonsCornerRadius
     }
     
-    lazy private var decorationLabel = UILabel().then { label in
+    lazy private var decorationLabel = UILabel().then   { label in
         label.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)
         label.font = UIFont(name: "NotoSansKR-Bold", size: 14)
         var paragraphStyle = NSMutableParagraphStyle()
@@ -78,8 +79,10 @@ class HomeView: UIView {
     
     //MARK: Puppy Image & Name
     
-    lazy public var puppyImageButton = UIButton().then { button in
+    lazy public var puppyImageButton = UIButton(type: .system).then { button in
         button.setImage(UIImage(named: "HomeCharacterDefaultImage"), for: .normal)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.tintColor = .clear
     }
     
     lazy private var puppyNameLabel = UILabel().then { label in
@@ -104,7 +107,7 @@ class HomeView: UIView {
     
     lazy public var progressLabel = UILabel().then { label in
         label.font = UIFont(name: "NotoSansKR-Bold", size: 14)
-        label.text = "55%"
+        label.text = "00%"
         label.textColor = UIColor(red: 0.624, green: 0.584, blue: 0.584, alpha: 1)
     }
     
@@ -130,6 +133,11 @@ class HomeView: UIView {
         self.addButtomComponents()
     }
     
+    public func setPuppyImage(svgURL: URL) {
+        let svgImage = SVGKImage(contentsOf: svgURL)
+        puppyImageButton.setImage(svgImage?.uiImage, for: .normal)
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -149,16 +157,6 @@ extension HomeView {
         progressLabel.text = String(Int(percentageDouble * 100)) + "%"
         progressBar.setProgress(Float(percentageDouble), animated: false)
         
-        puppyImageButton.sd_setImage(
-            with: URL(string: puppyInfo.imageUrl!)!,
-            for: .normal,
-            placeholderImage: nil,
-            options: [],
-            context: [
-                .imageThumbnailPixelSize: CGSize(width: 100, height: 100),
-                .imagePreserveAspectRatio: true
-            ]
-        )
     }
     
 }
