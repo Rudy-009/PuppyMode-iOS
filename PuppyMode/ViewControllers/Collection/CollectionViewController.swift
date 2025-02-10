@@ -12,6 +12,8 @@ class CollectionViewController: UIViewController {
     
     private var collections: [userCollectionDTO] = []   // 컬렉션 데이터 저장
     private var decoItems: [DecoItemModel] = []
+    public var coinAlermButton = AlermView()
+
         
     private lazy var collectionView: CollectionView = {
         let view = CollectionView()
@@ -29,6 +31,7 @@ class CollectionViewController: UIViewController {
         setupNavigationBar(title: "컬렉션", rightText: "")
         getCollectionfromServer()
     }
+    
     
     private func getCollectionfromServer() {
         let headers: HTTPHeaders = [
@@ -51,10 +54,40 @@ class CollectionViewController: UIViewController {
                     DispatchQueue.main.async {
                         self?.collectionView.collectionTableView.reloadData()  // UI 업데이트
                     }
+                    
+                    // 알림이 아직 안 떴고, 조건이 충족될 경우에만 띄우기
+                    if !UserDefaults.standard.bool(forKey: "isPointAlertShown") {  // UserDefaults에 저장된 값이 false일 때만 실행
+                        for collection in self!.collections {
+                            if collection.currentNum == collection.requiredNum {
+                                self?.showPointAlert()
+                                UserDefaults.standard.set(true, forKey: "isPointAlertShown")  // 알림을 띄운 기록 저장
+                                break
+                            }
+                        }
+                    }
+
                 case .failure(let error) :
                     print("Network Error: \(error.localizedDescription)")
                 }
             }
+    }
+    
+    private func showPointAlert() {
+        // 알림 버튼 위치 설정
+        self.view.addSubview(coinAlermButton)
+        coinAlermButton.coinLabel.text = "별 하나 휙득"
+        
+        coinAlermButton.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(66)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(335)
+            make.height.equalTo(59)
+        }
+        
+        // 알림 버튼 5초 후에 사라지게 설정
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            self.coinAlermButton.removeFromSuperview()
+        }
     }
 }
 
