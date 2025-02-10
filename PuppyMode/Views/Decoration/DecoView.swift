@@ -16,8 +16,10 @@ class DecoView: UIView {
     
     public lazy var imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
+        imageView.contentMode = .scaleAspectFit
+        // imageView.clipsToBounds =
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+
         return imageView
     }()
     
@@ -26,6 +28,8 @@ class DecoView: UIView {
         button.setImage(UIImage(named: "비숑_level1"), for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         button.imageView?.contentMode = .center
+        button.imageView?.clipsToBounds = false
+        button.imageView?.translatesAutoresizingMaskIntoConstraints = false
     }
     
     lazy public var puppyNameLabel = UILabel().then { label in
@@ -89,8 +93,17 @@ class DecoView: UIView {
         puppyImageButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(247)
-            make.top.equalTo(self.safeAreaLayoutGuide).offset(68)
+            make.top.equalTo(self.safeAreaLayoutGuide).offset(100)
         }
+        
+        puppyImageButton.addSubview(imageView)
+        if let imageSize = imageView.image?.size {
+            imageView.snp.makeConstraints { make in
+                make.top.leading.trailing.equalToSuperview()
+                make.height.equalTo(imageView.snp.width).multipliedBy(imageSize.height / imageSize.width)
+            }
+        }
+
         
         self.addSubview(puppyNameLabel)
         puppyNameLabel.snp.makeConstraints { make in

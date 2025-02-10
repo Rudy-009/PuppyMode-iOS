@@ -15,7 +15,9 @@ class CollectionTableViewCell: UITableViewCell {
     public lazy var collectionImageView = UIImageView().then { imageView in
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        imageView.backgroundColor = UIColor(hex: "#D9D9D9")
+        imageView.backgroundColor = .clear
+        imageView.layer.borderColor = UIColor(hex: "#D9D9D9").cgColor
+        imageView.layer.borderWidth = 1
     }
     
     private lazy var stackView = UIStackView().then { stackView in
@@ -99,7 +101,7 @@ class CollectionTableViewCell: UITableViewCell {
         progressBar.snp.makeConstraints { make in
             make.top.equalTo(stackView.snp.bottom).offset(10)
             make.leading.equalTo(stackView)
-            make.width.equalTo(251)
+            make.width.equalTo(241)
             make.height.equalTo(10)
         }
         

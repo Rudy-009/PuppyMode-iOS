@@ -50,8 +50,8 @@ class DecoItemModel {
 
     
     // itemID에 따른 아이템 이미지를 가져오는 함수
-    func getImageByID(for itemId: Int) -> UIImage? {
-        for category in [DecoItemModel.hatData, DecoItemModel.clothesData, DecoItemModel.floorData, DecoItemModel.houseData].flatMap({ $0 }) {
+    static func getImageByID(for itemId: Int) -> UIImage? {
+        for category in [DecoItemModel.hatData, DecoItemModel.clothesData, DecoItemModel.floorData, DecoItemModel.houseData, DecoItemModel.toyData].flatMap({ $0 }) {
             if let item = category.items.first(where: { $0.itemId == itemId }) {
                 return item.image
             }

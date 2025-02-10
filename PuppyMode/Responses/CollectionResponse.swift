@@ -19,11 +19,11 @@ struct CollectionResult: Decodable {
 } 
 
 struct userCollectionDTO: Decodable {
-    let collectionId: Int
+    let userCollectionId: Int
     let collectionName: String
     let puppyItemId: Int
     let hangoverName: String
     let requiredNum: Int
     let currentNum: Int
-    let isCompleted: Bool
+    let completed: Bool
 }

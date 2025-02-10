@@ -70,12 +70,8 @@ extension CollectionViewController: UITableViewDelegate, UITableViewDataSource{
         let isLastCell = indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1
         
         // DecoItemModel에서 collection의 puppyItemId와 일치하는 item 찾기
-        let matchingItem = decoItems.first { $0.itemId == collection.puppyItemId }
+        let itemImage = DecoItemModel.getImageByID(for: collection.puppyItemId)
 
-        // 해당 item의 image를 가져오거나, 없으면 기본 이미지 설정
-        let itemImage = matchingItem?.image 
-
-                                                       
         cell.configureSeparator(isLastCell: isLastCell)
         cell.configure(
             imageView: itemImage,
@@ -96,5 +92,10 @@ extension CollectionViewController: UITableViewDelegate, UITableViewDataSource{
     // 셀의 높이 설정
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 95 + 30
+    }
+    
+    // 셀 선택을 아예 못 하게 막기
+    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        return false
     }
 }

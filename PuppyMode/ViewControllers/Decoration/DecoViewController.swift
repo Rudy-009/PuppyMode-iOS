@@ -32,6 +32,8 @@ class DecoViewController: UIViewController {
         super.viewDidLoad()
         self.view = decoView
         
+        setupNavigationBar(title: "꾸미기", rightText: "")
+        
         // '모자' 버튼을 눌린 상태로 설정
         if let hatButton = view.viewWithTag(0) as? UIButton {
             hatButton.isSelected = true
@@ -275,7 +277,7 @@ class DecoViewController: UIViewController {
                         default:
                             defaultImage = UIImage(named: "비숑_level1")
                         }
-                    
+            
                     self.decoView.puppyImageButton.setImage(defaultImage, for: .normal)
                 }
                                                 
