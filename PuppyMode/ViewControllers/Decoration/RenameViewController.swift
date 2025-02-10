@@ -26,14 +26,12 @@ class RenameViewController: UIViewController {
         self.view = renameView
         
         setupNavigationBar(title: "이름 수정", rightText: "")
-
     }
     
     @objc
     private func textFieldDidChange() {
         let hasText = !(renameView.renameTextField.text ?? "").isEmpty
         renameView.renameSaveButton.isEnabled = hasText
-        renameView.renameSaveButton.setTitleColor(hasText ? .black : .white, for: .normal)
     }
     
     @objc

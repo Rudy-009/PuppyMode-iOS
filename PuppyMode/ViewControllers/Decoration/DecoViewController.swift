@@ -15,6 +15,7 @@ class DecoViewController: UIViewController {
     private var items: [DecoItemModel] = []         // 컬렉션 뷰에 표시할 데이터 배열
     private var selectedLevel: Int = 1              // 초기 레벨 설정
     private var purchasedItemIds: Set<Int> = []
+    private var currentLevel: Int = 0                   // 현재 레벨 값 저장
     
     private lazy var decoView: DecoView = {
         let view = DecoView()
@@ -30,6 +31,8 @@ class DecoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = decoView
+        
+        setupNavigationBar(title: "꾸미기", rightText: "")
         
         // '모자' 버튼을 눌린 상태로 설정
         if let hatButton = view.viewWithTag(0) as? UIButton {
@@ -56,6 +59,7 @@ class DecoViewController: UIViewController {
         fetchCategoriesFromServer()
         fetchPointFromServer()
         fetchOwnedItemsFromServer()
+        fetchEquippedItemsFromServer()
     }
     
     private func setupCollectionView() {
@@ -215,6 +219,7 @@ class DecoViewController: UIViewController {
         }
     }
     
+    // 강아지 정보 조회 - 이름, 레벨 저장
     private func fetchPuppyNameFromServer() {
         guard let fcm = KeychainService.get(key: UserInfoKey.jwt.rawValue) else { return }
         
@@ -228,12 +233,56 @@ class DecoViewController: UIViewController {
             case .success(let response):
                 let puppyName = response.result.puppyName
                 print(puppyName)
+                self.currentLevel = response.result.level
                 
                 self.decoView.puppyNameLabel.text = puppyName
                 
             case .failure(let error):
                 // 강아지 정보 불러오기에 실패했습니다. 라는 알림 띄우기? (다시시도)
-                print("/puppies error", error)
+                print("강아지 정보 조회 실패", error)
+            }
+        }
+    }
+    
+    // 착용한 아이템 목록 조회 - 아이템 목록에 따라 이미지 띄우는거 보여주도록 수정
+    private func fetchEquippedItemsFromServer() {
+        guard let fcm = KeychainService.get(key: UserInfoKey.jwt.rawValue) else { return }
+        
+        AF.request( K.String.puppymodeLink + "/puppies/items/equip",
+                    headers: [
+                        "accept": "*/*",
+                        "Authorization": "Bearer " + fcm
+                    ])
+        .responseDecodable(of: PuppyItemEquipImageResponse.self) { response in
+            switch response.result {
+            case .success(let response):
+                
+                if let items = response.result, !items.isEmpty {
+                    // 배열에 아이템이 있을 경우 → 첫 번째 아이템 사용
+                    if let firstItem = items.first,
+                       let puppyImage = DecoItemModel.getLevelImage(forItemId: firstItem.itemId, level: self.currentLevel) {
+                        self.decoView.puppyImageButton.setImage(puppyImage, for: .normal)
+                    }
+                } else {
+                    // 배열이 비어있을 경우 → 현재 레벨에 따라 기본 이미지 설정
+                    let defaultImage: UIImage?
+                        
+                        switch self.currentLevel {
+                        case 1:
+                            defaultImage = UIImage(named: "비숑_level1")
+                        case 2:
+                            defaultImage = UIImage(named: "비숑_level2")
+                        case 3:
+                            defaultImage = UIImage(named: "비숑_level3")
+                        default:
+                            defaultImage = UIImage(named: "비숑_level1")
+                        }
+            
+                    self.decoView.puppyImageButton.setImage(defaultImage, for: .normal)
+                }
+                                                
+            case .failure(let error):
+                print("착용한 아이템 목록 조회 실패", error)
             }
         }
     }
@@ -318,23 +367,44 @@ extension DecoViewController: UICollectionViewDelegate {
         // 아이템 소유가 된 경우
         if selectedItem.isPurchased == true {
             
-            // 아이템 착용 확인
-            let alert = UIAlertController(title: nil, message: "아이템을 착용하시겠습니까?", preferredStyle: .alert)
-            
-            let wearAction = UIAlertAction(title: "확인", style: .default) { _ in
-                self.postWearItemToServer(categoryId: categoryId!, itemId: selectedItem.itemId)
+            // 아이템 착용이 안된 경우
+            if selectedItem.isWeared == false {
+                // 아이템 착용 확인
+                let alert = UIAlertController(title: nil, message: "아이템을 착용하시겠습니까?", preferredStyle: .alert)
                 
-                // 착용한 아이템에 대해 셀 색상 변경
-                if let cell = collectionView.cellForItem(at: indexPath) {
-                    // self.applyItemToCell(cell: cell, isWorn: true)
+                let wearAction = UIAlertAction(title: "확인", style: .default) { _ in
+                    self.postWearItemToServer(categoryId: categoryId!, itemId: selectedItem.itemId)
+                    
+                    // 착용한 아이템에 대해 셀 색상 변경
+                    if let cell = collectionView.cellForItem(at: indexPath) {
+                    }
                 }
+                let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+                
+                alert.addAction(wearAction)
+                alert.addAction(cancelAction)
+                
+                present(alert, animated: true, completion: nil)
             }
-            let cancelAction = UIAlertAction(title: "취소", style: .cancel)
             
-            alert.addAction(wearAction)
-            alert.addAction(cancelAction)
-            
-            present(alert, animated: true, completion: nil)
+            // 아이템 착용이 된 경우
+            if selectedItem.isWeared == true {
+                let alert = UIAlertController(title: nil, message: "아이템 착용을 해제하시겠습니까?", preferredStyle: .alert)
+                
+                let wearAction = UIAlertAction(title: "확인", style: .default) { _ in
+                    self.postUnWearItemToServer(categoryId: categoryId!, itemId: selectedItem.itemId)
+
+                    // 착용한 아이템에 대해 셀 색상 변경
+                    if let cell = collectionView.cellForItem(at: indexPath) {
+                    }
+                }
+                let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+                
+                alert.addAction(wearAction)
+                alert.addAction(cancelAction)
+                
+                present(alert, animated: true, completion: nil)
+            }
         }
         
     }
@@ -350,7 +420,7 @@ extension DecoViewController {
         let urlString = K.String.puppymodeLink + "/puppies/\(categoryId)/items/\(itemId)"
         
         AF.request(urlString,
-                   method: .get,
+                   method: .post,
                    headers: headers)
             .responseDecodable(of: PuppyPurchaseResponse.self) { [weak self] response in
         
@@ -364,9 +434,13 @@ extension DecoViewController {
                     if let responseMessage = response.message as? String {
                         switch responseMessage {
                         case "아이템 구매 성공":
-                            if let purchasedItem = self?.items.first(where: { $0.itemId == response.result?.itemId }) {
+                            if let purchasedItem = self?.items.first(where: { $0.itemId == response.result!.itemId }) {
                                 self?.purchaseItem(item: purchasedItem)
                             }
+                            if let index = self?.items.firstIndex(where: { $0.itemId == response.result!.itemId }) {
+                                self?.items[index].isPurchased = true
+                            }
+
                         case "잔여 포인트가 부족합니다.":
                             self?.showAlert(title: "", message: "포인트가 부족합니다.")
                             
@@ -488,21 +562,62 @@ extension DecoViewController {
                 switch response.result {
                 case .success(let response):
                     print("아이템 착용하기 서버 연동 성공: \(response.result)")
-                
-                    // 아이템 착용하면 선택한 cell에 대한 layer 색상을 다르게 해서 착용한 아이템이 뭔지 보여주도록 함
                     
                     
-                    // result로 나온 아이템id에 맞게 착용이미지 보여주도록 함
-                    if let levelImage = DecoItemModel.getLevelImage(forItemId: response.result!.itemId, level: 1) {
-                        self?.decoView.puppyImageButton.setImage(levelImage, for: .normal)
+                    // 착용한 아이템 : isWeared = true 처리
+                    if let index = self?.items.firstIndex(where: { $0.itemId == response.result!.itemId }) {
+                        self?.items[index].isWeared = true
                     }
-
-            
+                    
+                    self!.fetchEquippedItemsFromServer()
+                    
+                    
+                    // 아이템 착용하면 선택한 cell에 대한 layer 색상을 다르게 해서 착용한 아이템이 뭔지 보여주도록 함
+    
                 case .failure(let error):
                     print("Network Error: \(error.localizedDescription)")
                 }
             }
     }
+    
+    // 아이템 해제시 서버 연동
+    private func postUnWearItemToServer(categoryId: Int, itemId: Int) {
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+        ]
+        let urlString = K.String.puppymodeLink + "/puppies/\(categoryId)/items/\(itemId)/unequip"
+        
+        AF.request(urlString,
+                   method: .post,
+                   headers: headers)
+            .responseDecodable(of: PuppyWearResponse.self) { [weak self] response in
+        
+                guard let _ = self else { return }
+                    
+                switch response.result {
+                case .success(let response):
+                    print("아이템 해제하기 서버 연동 성공: \(response.result)")
+                    
+                    
+                    // 착용한 아이템 : isWeared = true 처리
+                    if let index = self?.items.firstIndex(where: { $0.itemId == response.result!.itemId }) {
+                        self?.items[index].isWeared = false
+                    }
+                    
+                    self!.fetchEquippedItemsFromServer()
+                    
+                    
+                    // 아이템 착용하면 선택한 cell에 대한 layer 색상을 다르게 해서 착용한 아이템이 뭔지 보여주도록 함
+    
+                case .failure(let error):
+                    print("Network Error: \(error.localizedDescription)")
+                }
+            }
+    }
+    
+    
+    //
     
     // 아이템 착용 후 셀의 색상을 변경하는 함수
     func applyItemToCell(cell: UICollectionViewCell, isWorn: Bool) {
@@ -517,11 +632,5 @@ extension DecoViewController {
             cell.layer.borderWidth = 0
         }
     }
-    
-    // 착용한 아이템 조회하기 (서버연동)
-    private func fetchWornItemsFromServer() {
-        
-    }
-    
 }
 

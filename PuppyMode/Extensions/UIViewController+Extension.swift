@@ -13,7 +13,7 @@ extension UIViewController {
     func setupNavigationBar(title: String, rightText: String) {
         // Create a custom navigation bar container
         let navigationBar = UIView()
-        navigationBar.backgroundColor = UIColor(hex: "#FBFBFB")
+        navigationBar.backgroundColor = UIColor.white
         view.addSubview(navigationBar)
         
         // Add constraints for the navigation bar using SnapKit
@@ -27,7 +27,7 @@ extension UIViewController {
         let titleLabel = UILabel()
         titleLabel.text = title
         titleLabel.textColor = UIColor(hex: "#3C3C3C")
-        titleLabel.font = UIFont(name: "NotoSansKR-Regular", size: 20) ?? UIFont.systemFont(ofSize: 20, weight: .medium)
+        titleLabel.font = UIFont(name: "NotoSansKR-Regular", size: 20)
         titleLabel.textAlignment = .center
         navigationBar.addSubview(titleLabel)
         
@@ -54,7 +54,7 @@ extension UIViewController {
         let rightLabel = UILabel()
         rightLabel.text = rightText
         rightLabel.textColor = UIColor(hex: "#3C3C3C")
-        rightLabel.font = UIFont(name: "NotoSansKR-Regular", size: 20) ?? UIFont.systemFont(ofSize: 20, weight: .medium)
+        rightLabel.font = UIFont(name: "NotoSansKR-Regular", size: 20)
         titleLabel.textAlignment = .right
         navigationBar.addSubview(rightLabel)
         
