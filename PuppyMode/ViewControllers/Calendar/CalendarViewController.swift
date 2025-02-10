@@ -107,8 +107,8 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
             
             self.calendarView.dateView.isHidden = false
             
-            self.calendarView.calendar.transform = CGAffineTransform(translationX: 0, y: -160)
-            self.calendarView.dateView.transform = CGAffineTransform(translationX: 0, y: -180)
+            self.calendarView.calendar.transform = CGAffineTransform(translationX: 0, y: -125)
+            self.calendarView.dateView.transform = CGAffineTransform(translationX: 0, y: -145)
         })
         
         self.calendarView.updateCalendarScope(to: .week)
