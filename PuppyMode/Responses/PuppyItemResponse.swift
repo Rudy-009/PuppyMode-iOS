@@ -52,10 +52,10 @@ struct Item: Decodable {
 
 // 아이템 구매
 struct PuppyPurchaseResponse: Decodable {
-    let isSucess: Bool
+    let isSuccess: Bool
     let code: String
     let message: String
-    let result: PuppyPurchaseResult
+    let result: PuppyPurchaseResult?
 }
 
 struct PuppyPurchaseResult: Decodable {
@@ -82,15 +82,30 @@ struct PuppyOwnedItemResponseResult: Decodable {
 }
 
 
-// 아이템 착용
+// 아이템 착용 / 해제
 struct PuppyWearResponse: Decodable {
     let isSuccess: Bool
     let code: String
     let message: String
-    let result: [PuppyWearResult]?
+    let result: PuppyWearResult?
 }
 
 struct PuppyWearResult: Decodable {
+    let itemId: Int
+    let itemName: String
+    let equippedImage: String
+}
+
+
+// 아이템 착용된 이미지
+struct PuppyItemEquipImageResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: [PuppyItemEquipImageResult]?
+}
+
+struct PuppyItemEquipImageResult: Decodable {
     let itemId: Int
     let itemName: String
     let equippedImage: String
