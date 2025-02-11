@@ -11,6 +11,7 @@ import SnapKit
 
 class CalendarDetailView: UIView {
     // MARK: - view
+    // MARK: - 상단
     // 뒤로가기
     public let backButton = UIButton().then {
         $0.setImage(.iconBack, for: .normal)
@@ -25,13 +26,30 @@ class CalendarDetailView: UIView {
     
     // 날짜
     public let dateLabel = UILabel().then {
+        $0.text = "2000.00.00"
         $0.textColor = UIColor(red: 0.541, green: 0.541, blue: 0.557, alpha: 1)
         $0.font = UIFont(name: "NotoSansKR-Medium", size: 15)
     }
     
+    // 구분선
+    private let lineView = UIView().then {
+        $0.layer.backgroundColor = UIColor(red: 0.94, green: 0.94, blue: 0.94, alpha: 1).cgColor
+    }
+    
+    // 스크롤뷰
+    private let scrollView = UIScrollView().then {
+        $0.showsVerticalScrollIndicator = true
+        $0.showsHorizontalScrollIndicator = false
+    }
+    
+    private let contentView = UIView()
+    
+    // MARK: - 섭취량
     // 배경
-    private let whiteBackgroundView = UIView().then {
+    private let intakeBackgroundView = UIView().then {
         $0.backgroundColor = .white
+        $0.layer.borderColor = UIColor(red: 0.91, green: 0.91, blue: 0.91, alpha: 1).cgColor
+        $0.layer.borderWidth = 1
         $0.layer.cornerRadius = 10
     }
     
@@ -118,7 +136,51 @@ class CalendarDetailView: UIView {
     
     // 테이블뷰
     
-    // 먹이 보기 버튼
+    // MARK: - 겪은 숙취
+    // 배경
+    private let hangoverBackgroundView = UIView().then {
+        $0.backgroundColor = .white
+        $0.layer.borderColor = UIColor(red: 0.91, green: 0.91, blue: 0.91, alpha: 1).cgColor
+        $0.layer.borderWidth = 1
+        $0.layer.cornerRadius = 10
+    }
+    
+    // 타이틀
+    private let hangoverTitleLabel = UILabel().then {
+        $0.text = "겪은 숙취"
+        $0.textColor = UIColor(red: 0.541, green: 0.541, blue: 0.557, alpha: 1)
+        $0.font = UIFont(name: "NotoSansKR-Medium", size: 14.25)
+    }
+    
+    // 테이블뷰
+    
+    // MARK: - 획득한 먹이
+    // 배경
+    private let feedBackgroundView = UIView().then {
+        $0.backgroundColor = .white
+        $0.layer.borderColor = UIColor(red: 0.91, green: 0.91, blue: 0.91, alpha: 1).cgColor
+        $0.layer.borderWidth = 1
+        $0.layer.cornerRadius = 10
+    }
+    
+    // 타이틀
+    private let feedTitleLabel = UILabel().then {
+        $0.text = "획득한 먹이"
+        $0.textColor = UIColor(red: 0.541, green: 0.541, blue: 0.557, alpha: 1)
+        $0.font = UIFont(name: "NotoSansKR-Medium", size: 14.25)
+    }
+    
+    // 먹이 이름
+    public let feedLabel = UILabel().then {
+        $0.text = "먹이"
+        $0.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)
+        $0.font = UIFont(name: "NotoSansKR-Medium", size: 14.9)
+    }
+    
+    // 먹이 이미지
+    public let feedImage = UIImageView().then {
+        $0.backgroundColor = .main
+    }
     
     // MARK: - init
     override init(frame: CGRect) {
@@ -134,18 +196,19 @@ class CalendarDetailView: UIView {
     
     // MARK: - function
     private func setView() {
+        setScrollView()
+        
         [
             backButton,
             titleLabel,
             dateLabel,
-            whiteBackgroundView, backgroundLine,
-            intakeLabel, progressViewShadow, progressView,
-            safeLabel, safePointImage, safeBottleLabel, safeGlassLabel,
-            deadLabel, deadPointImage, deadBottleLabel, deadGlassLabel,
+            lineView,
+            scrollView
         ].forEach {
             addSubview($0)
         }
         
+        // MARK: - 상단
         backButton.snp.makeConstraints {
             $0.top.equalTo(safeAreaLayoutGuide).offset(32)
             $0.left.equalToSuperview().offset(37)
@@ -160,35 +223,68 @@ class CalendarDetailView: UIView {
         
         dateLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.top.equalTo(titleLabel.snp.bottom).offset(42)
+            $0.top.equalTo(titleLabel.snp.bottom).offset(10)
         }
         
-        whiteBackgroundView.snp.makeConstraints {
-            $0.top.equalTo(dateLabel.snp.bottom).offset(14)
-            $0.bottom.equalToSuperview().offset(-174)
-            $0.horizontalEdges.equalToSuperview().inset(16)
+        lineView.snp.makeConstraints {
+            $0.top.equalTo(dateLabel.snp.bottom).offset(45)
+            $0.horizontalEdges.equalToSuperview()
+            $0.height.equalTo(1)
+        }
+        
+        scrollView.snp.makeConstraints {
+            $0.top.equalTo(lineView.snp.bottom)
+            $0.horizontalEdges.equalToSuperview()
+            $0.bottom.equalTo(safeAreaLayoutGuide)
+        }
+    }
+    
+    private func setScrollView() {
+        scrollView.addSubview(contentView)
+        
+        contentView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+            $0.width.equalToSuperview()
+        }
+        
+        [
+            intakeBackgroundView, backgroundLine,
+            intakeLabel, progressViewShadow, progressView,
+            safeLabel, safePointImage, safeBottleLabel, safeGlassLabel,
+            deadLabel, deadPointImage, deadBottleLabel, deadGlassLabel,
+            hangoverBackgroundView, hangoverTitleLabel,
+            feedBackgroundView, feedTitleLabel, feedLabel, feedImage
+        ].forEach {
+            contentView.addSubview($0)
+        }
+        
+        // MARK: - 섭취량
+        intakeBackgroundView.snp.makeConstraints {
+            $0.top.equalTo(scrollView).offset(4)
+            $0.horizontalEdges.equalTo(scrollView).inset(20)
+            $0.height.equalTo(450)
         }
         
         backgroundLine.snp.makeConstraints {
             $0.height.equalTo(1)
-            $0.horizontalEdges.equalTo(whiteBackgroundView)
-            $0.top.equalTo(whiteBackgroundView.snp.top).offset(206)
+            $0.horizontalEdges.equalTo(intakeBackgroundView)
+            $0.top.equalTo(intakeBackgroundView.snp.top).offset(206)
         }
         
         intakeLabel.snp.makeConstraints {
-            $0.top.equalTo(whiteBackgroundView.snp.top).offset(34)
-            $0.left.equalTo(whiteBackgroundView.snp.left).offset(21)
+            $0.top.equalTo(intakeBackgroundView.snp.top).offset(34)
+            $0.left.equalTo(intakeBackgroundView.snp.left).offset(21)
         }
         
         progressViewShadow.snp.makeConstraints {
             $0.top.equalTo(intakeLabel.snp.bottom).offset(33)
-            $0.horizontalEdges.equalTo(whiteBackgroundView).inset(14)
+            $0.horizontalEdges.equalTo(intakeBackgroundView).inset(14)
             $0.height.equalTo(21)
         }
         
         progressView.snp.makeConstraints {
             $0.top.equalTo(intakeLabel.snp.bottom).offset(33)
-            $0.horizontalEdges.equalTo(whiteBackgroundView).inset(14)
+            $0.horizontalEdges.equalTo(intakeBackgroundView).inset(14)
             $0.height.equalTo(21)
         }
         
@@ -214,7 +310,7 @@ class CalendarDetailView: UIView {
         
         deadLabel.snp.makeConstraints {
             $0.centerY.equalTo(intakeLabel)
-            $0.right.equalTo(whiteBackgroundView.snp.right).offset(-11)
+            $0.right.equalTo(intakeBackgroundView.snp.right).offset(-11)
         }
         
         deadPointImage.snp.makeConstraints {
@@ -230,6 +326,43 @@ class CalendarDetailView: UIView {
         deadGlassLabel.snp.makeConstraints {
             $0.top.equalTo(deadBottleLabel.snp.bottom)
             $0.centerX.equalTo(deadPointImage)
+        }
+        
+        // MARK: - 겪은 숙취
+        hangoverBackgroundView.snp.makeConstraints {
+            $0.top.equalTo(intakeBackgroundView.snp.bottom).offset(10)
+            $0.horizontalEdges.equalToSuperview().inset(20)
+            $0.height.equalTo(400)
+        }
+        
+        hangoverTitleLabel.snp.makeConstraints {
+            $0.top.equalTo(hangoverBackgroundView.snp.top).offset(27)
+            $0.left.equalTo(hangoverBackgroundView.snp.left).offset(35)
+        }
+        
+        // MARK: - 획득한 먹이
+        feedBackgroundView.snp.makeConstraints {
+            $0.top.equalTo(hangoverBackgroundView.snp.bottom).offset(10)
+            $0.horizontalEdges.equalToSuperview().inset(20)
+            $0.bottom.equalTo(scrollView.snp.bottom)
+        }
+        
+        feedTitleLabel.snp.makeConstraints {
+            $0.top.equalTo(feedBackgroundView.snp.top).offset(27)
+            $0.left.equalTo(feedBackgroundView.snp.left).offset(35)
+        }
+        
+        feedLabel.snp.makeConstraints {
+            $0.top.equalTo(feedTitleLabel.snp.bottom).offset(5)
+            $0.left.equalTo(feedTitleLabel.snp.left)
+            $0.bottom.equalTo(feedBackgroundView.snp.bottom).offset(-25)
+        }
+        
+        feedImage.snp.makeConstraints {
+            $0.centerY.equalTo(feedLabel)
+            $0.right.equalTo(feedBackgroundView)
+            $0.width.equalTo(90)
+            $0.height.equalTo(64)
         }
     }
 }

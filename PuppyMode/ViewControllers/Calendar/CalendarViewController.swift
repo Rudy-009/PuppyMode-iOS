@@ -41,6 +41,7 @@ class CalendarViewController: UIViewController {
         calendarView.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
         calendarView.changeButton.addTarget(self, action: #selector(changeButtonTapped), for: .touchUpInside)
         calendarView.afterChangeButton.addTarget(self, action: #selector(changeButtonTapped), for: .touchUpInside)
+        calendarView.dateView.recordButton.backView.addTarget(self, action: #selector(recordButtonTapped), for: .touchUpInside)
     }
     
     @objc
@@ -77,6 +78,14 @@ class CalendarViewController: UIViewController {
         modalVC.modalPresentationStyle = .overFullScreen
         present(modalVC, animated: true)
     }
+    
+    @objc
+    private func recordButtonTapped() {
+        let detailVC = CalendarDetailViewController()
+        detailVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.isNavigationBarHidden = true
+        self.navigationController?.pushViewController(detailVC, animated: true)
+    }
 
 }
 
@@ -91,11 +100,6 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
         let formattedDate = dateFormatter.string(from: date)
         
         calendarView.dateView.dateLabel.text = formattedDate
-    
-//        let detailVC = CalendarDetailViewController()
-//        detailVC.calendarDetailView.dateLabel.text = formattedDate
-//        self.navigationController?.isNavigationBarHidden = true
-//        self.navigationController?.pushViewController(detailVC, animated: true)
         
         UIView.animate(withDuration: 0.3, animations: {
             self.calendarView.yearLabel.isHidden = true

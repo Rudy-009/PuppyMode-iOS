@@ -11,7 +11,7 @@ class CalendarDateCustomButton: UIView {
 
     // MARK: - layout
     // 배경
-    private let backView = UIButton().then {
+    public let backView = UIButton().then {
         $0.backgroundColor = .white
         $0.clipsToBounds = true
         

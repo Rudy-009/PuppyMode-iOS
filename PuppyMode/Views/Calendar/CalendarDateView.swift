@@ -40,7 +40,7 @@ class CalendarDateView: UIView {
         $0.font = UIFont(name: "NotoSansKR-Medium", size: 15)
     }
     
-    private let recordButton = CalendarDateCustomButton()
+    public let recordButton = CalendarDateCustomButton()
     
     // 술 약속
     private let appointmentLabel = UILabel().then {
@@ -49,7 +49,7 @@ class CalendarDateView: UIView {
         $0.font = UIFont(name: "NotoSansKR-Medium", size: 15)
     }
     
-    private let appointmentButton = CalendarDateCustomButton()
+    public let appointmentButton = CalendarDateCustomButton()
     
     // MARK: - init
     override init(frame: CGRect) {
