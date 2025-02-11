@@ -85,11 +85,13 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         selectedDate = date
         
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "yyyy.MM.dd"
-//        dateFormatter.locale = Locale(identifier: "ko_KR")
-//        let formattedDate = dateFormatter.string(from: date)
-//        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy.MM.dd"
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        let formattedDate = dateFormatter.string(from: date)
+        
+        calendarView.dateView.dateLabel.text = formattedDate
+    
 //        let detailVC = CalendarDetailViewController()
 //        detailVC.calendarDetailView.dateLabel.text = formattedDate
 //        self.navigationController?.isNavigationBarHidden = true
