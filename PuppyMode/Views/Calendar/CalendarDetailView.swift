@@ -135,6 +135,11 @@ class CalendarDetailView: UIView {
     }
     
     // 테이블뷰
+    public let alcoholTableView = UITableView().then {
+        $0.register(CalendarAlcoholTableViewCell.self, forCellReuseIdentifier: CalendarAlcoholTableViewCell.identifier)
+        $0.showsVerticalScrollIndicator = false
+        $0.separatorStyle = .none
+    }
     
     // MARK: - 겪은 숙취
     // 배경
@@ -252,6 +257,7 @@ class CalendarDetailView: UIView {
             intakeLabel, progressViewShadow, progressView,
             safeLabel, safePointImage, safeBottleLabel, safeGlassLabel,
             deadLabel, deadPointImage, deadBottleLabel, deadGlassLabel,
+            alcoholTableView,
             hangoverBackgroundView, hangoverTitleLabel,
             feedBackgroundView, feedTitleLabel, feedLabel, feedImage
         ].forEach {
@@ -262,7 +268,6 @@ class CalendarDetailView: UIView {
         intakeBackgroundView.snp.makeConstraints {
             $0.top.equalTo(scrollView).offset(4)
             $0.horizontalEdges.equalTo(scrollView).inset(20)
-            $0.height.equalTo(450)
         }
         
         backgroundLine.snp.makeConstraints {
@@ -326,6 +331,13 @@ class CalendarDetailView: UIView {
         deadGlassLabel.snp.makeConstraints {
             $0.top.equalTo(deadBottleLabel.snp.bottom)
             $0.centerX.equalTo(deadPointImage)
+        }
+        
+        alcoholTableView.snp.makeConstraints {
+            $0.top.equalTo(backgroundLine.snp.bottom).offset(15)
+            $0.horizontalEdges.equalTo(intakeBackgroundView).inset(1)
+            $0.bottom.equalTo(intakeBackgroundView.snp.bottom).offset(-30)
+            $0.height.equalTo(53)
         }
         
         // MARK: - 겪은 숙취
