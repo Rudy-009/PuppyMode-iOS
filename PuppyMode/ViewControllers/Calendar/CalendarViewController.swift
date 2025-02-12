@@ -7,21 +7,11 @@
 
 import UIKit
 import FSCalendar
-import ToosieSlide
+import Alamofire
 
 class CalendarViewController: UIViewController {
     private let calendarView = CalendarView()
-    
-    private var selectedDate: Date? {
-        didSet {
-            guard let selectedDate = selectedDate else { return }
-            calendarView.calendar.select(selectedDate)
-            calendarView.updateMonthLabel(for: selectedDate)
-        }
-    }
-
-    private var dates: [Date] = []
-
+    private var drinkRecords: [String: DrinkRecord] = [:] // 날짜별 상태 저장
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,11 +19,47 @@ class CalendarViewController: UIViewController {
         
         setDelegate()
         setAction()
+        fetchDrinkRecords(for: calendarView.calendar.currentPage)
     }
     
     // MARK: - function
     private func setDelegate() {
         calendarView.calendar.delegate = self
+        calendarView.calendar.dataSource = self
+    }
+    
+    private func fetchDrinkRecords(for date: Date) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM"
+        let monthString = dateFormatter.string(from: date)
+        
+        let url = "https://puppy-mode.site/calendar?month=\(monthString)"
+        
+        guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+            print("JWT Token not found")
+            return
+        }
+        
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(jwt)"]
+        
+        AF.request(url, method: .get, headers: headers).responseDecodable(of: CalendarResponse.self) { response in
+            switch response.result {
+            case .success(let data):
+                self.processDrinkRecords(data.result)
+            case .failure(let error):
+                print("Error fetching data: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    private func processDrinkRecords(_ records: [DrinkRecord]) {
+        drinkRecords.removeAll()
+        for record in records {
+            if record.drinkHistoryId != nil {
+                drinkRecords[record.drinkDate] = record
+            }
+        }
+        calendarView.calendar.reloadData()
     }
     
     // MARK: - action
@@ -90,10 +116,8 @@ class CalendarViewController: UIViewController {
 }
 
 // MARK: - extension
-extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearance {
+extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearance, FSCalendarDataSource {
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-        selectedDate = date
-        
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy.MM.dd"
         dateFormatter.locale = Locale(identifier: "ko_KR")
@@ -120,11 +144,38 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
         self.calendarView.updateCalendarScope(to: .week)
     }
     
+    func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateString = dateFormatter.string(from: date)
+        
+        return drinkRecords[dateString] != nil ? 1 : 0
+    }
+    
+    // 이벤트 표시
+    func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventDefaultColorsFor date: Date) -> [UIColor]? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateString = dateFormatter.string(from: date)
+        
+        if drinkRecords[dateString] != nil {
+            return [.main]
+        }
+        return nil
+    }
+    
+    // 이벤트 점 위치 조정
+    func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventOffsetFor date: Date) -> CGPoint {
+        return CGPoint(x: 0, y: -3)
+    }
+    
+    // 선택된 날짜 표시 색상
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, fillSelectionColorFor date: Date) -> UIColor? {
         return .black
     }
     
     func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
+        fetchDrinkRecords(for: calendar.currentPage)
         calendarView.updateMonthLabel(for: calendar.currentPage)
     }
 }

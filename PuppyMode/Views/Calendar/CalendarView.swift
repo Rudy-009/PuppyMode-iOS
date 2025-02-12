@@ -89,7 +89,7 @@ class CalendarView: UIView {
         $0.appearance.todayColor = .none
         $0.appearance.titleTodayColor = .black
         
-        // 이벤트 색상
+        // 이벤트
         $0.appearance.eventDefaultColor = .main
         $0.appearance.eventSelectionColor = .main
     }
