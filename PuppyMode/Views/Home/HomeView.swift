@@ -79,10 +79,16 @@ class HomeView: UIView {
     
     //MARK: Puppy Image & Name
     
+    
     lazy public var puppyImageButton = UIButton(type: .system).then { button in
         button.setImage(UIImage(named: "HomeCharacterDefaultImage"), for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         button.tintColor = .clear
+    }
+    
+    lazy public var puppyImageView = UIImageView().then {
+        $0.contentMode = .scaleAspectFill
+        $0.image = .homeCharacterDefault
     }
     
     lazy private var puppyNameLabel = UILabel().then { label in
@@ -157,6 +163,18 @@ extension HomeView {
         progressLabel.text = String(Int(percentageDouble * 100)) + "%"
         progressBar.setProgress(Float(percentageDouble), animated: false)
         
+        guard let url = URL(string: puppyInfo.imageUrl!) else { return }
+        print("Puppy image url is \(url)")
+        
+        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            guard let _ = data, error == nil else {
+                print("Image download error: \(error?.localizedDescription ?? "")")
+                return
+            }
+            DispatchQueue.main.async {
+                self?.puppyImageView.load(url: url)
+            }
+        }.resume()
     }
     
 }
@@ -228,9 +246,16 @@ extension HomeView {
 
     private func addPuppyImageAndName() {
         
-        self.addSubview(puppyImageButton)
+        // self.addSubview(puppyImageButton)
         
-        puppyImageButton.snp.makeConstraints { make in
+//        puppyImageButton.snp.makeConstraints { make in
+//            make.leading.trailing.equalToSuperview().inset(superViewSpacing)
+//            make.height.equalToSuperview().multipliedBy(0.25)
+//            make.top.equalTo(topButtonStack.snp.bottom).offset(41)
+//        }
+        self.addSubview(puppyImageView)
+        
+        puppyImageView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(superViewSpacing)
             make.height.equalToSuperview().multipliedBy(0.25)
             make.top.equalTo(topButtonStack.snp.bottom).offset(41)
@@ -239,7 +264,7 @@ extension HomeView {
         self.addSubview(puppyNameLabel)
         
         puppyNameLabel.snp.makeConstraints { make in
-            make.top.equalTo(puppyImageButton.snp.bottom).offset(14)
+            make.top.equalTo(puppyImageView.snp.bottom).offset(14)
             make.centerX.equalToSuperview()
         }
     }

@@ -132,7 +132,7 @@ extension SettingViewController {
         .responseDecodable(of: PuppyInfoResponse.self) { response in
             switch response.result {
             case .success(let response):
-                self.revokeViewController.setPuppyName(response.result.puppyName)
+                self.revokeViewController.setPuppyInfo(puppy: response.result)
             case .failure(let error):
                 // 강아지 정보 불러오기에 실패했습니다. 라는 알림 띄우기? (다시시도)
                 print("/puppies error", error)

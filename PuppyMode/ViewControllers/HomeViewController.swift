@@ -100,7 +100,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
 
 //MARK: GET Puppy Character Info
 extension HomeViewController {
-        
+    
     func getPupptInfo() {
         guard let fcm = KeychainService.get(key: UserInfoKey.jwt.rawValue) else { return }
         
@@ -115,7 +115,7 @@ extension HomeViewController {
                 let puppyInfo = response.result
                 print(puppyInfo)
                 self.homeView.configurePuppyInfo(to: puppyInfo)
-                self.homeView.setPuppyImage(svgURL: URL(string: puppyInfo.imageUrl!)!)
+                // self.homeView.setPuppyImage(svgURL: URL(string: puppyInfo.imageUrl!)!)
             case .failure(let error):
                 // 강아지 정보 불러오기에 실패했습니다. 라는 알림 띄우기? (다시시도)
                 print("/puppies error", error)

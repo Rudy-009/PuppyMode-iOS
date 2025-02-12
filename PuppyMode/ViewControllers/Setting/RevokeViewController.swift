@@ -65,8 +65,8 @@ extension RevokeViewController {
         RootViewControllerService.toLoginViewController()
     }
     
-    public func setPuppyName(_ name: String) {
-        self.revokeView.configure(name)
+    public func setPuppyInfo(puppy: PuppyInfoResult) {
+        self.revokeView.configure(puppy: puppy)
     }
         
     private func kakaoRevoke() {
