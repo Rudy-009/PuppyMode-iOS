@@ -53,6 +53,9 @@ class RankingTableViewCell: UITableViewCell {
     
     public func configure(rankCell: RankUserInfo) {
         rankLabel.text = String(rankCell.rank)
+        if let imageURL = rankCell.imageUrl {
+            profileImage.load(url: imageURL)
+        }
         userNameLabel.text = String.sliceText(string: rankCell.username, max: 14)
         characterInfoLabel.text = String.sliceText(string: rankCell.puppyName ?? rankCell.levelName, max: 17) + ", Level\(rankCell.level) \(rankCell.levelName)"
         self.backgroundColor = .white
