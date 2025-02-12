@@ -21,7 +21,7 @@ class CalendarDateCustomButton: UIView {
     }
     
     // 동그라미
-    private let circleView = UIView().then {
+    public let circleView = UIView().then {
         $0.layer.cornerRadius = 20
         $0.clipsToBounds = true
         
@@ -39,7 +39,7 @@ class CalendarDateCustomButton: UIView {
     }
     
     // 타이틀
-    private let titleLabel = UILabel().then {
+    public let titleLabel = UILabel().then {
         $0.text = "미입력"
         $0.textColor = UIColor(red: 0.72, green: 0.72, blue: 0.72, alpha: 1)
         $0.font = UIFont(name: "NotoSansKR-Medium", size: 20)
