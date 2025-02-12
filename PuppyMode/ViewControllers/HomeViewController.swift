@@ -283,7 +283,7 @@ extension HomeViewController {
     private func showPointAlert() {
         // 알림 버튼 위치 설정
         self.view.addSubview(coinAlermButton)
-        coinAlermButton.coinLabel.text = "10P 휙득 !"
+        coinAlermButton.coinLabel.text = "10P 획득 !"
         
         coinAlermButton.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(66)
@@ -294,7 +294,7 @@ extension HomeViewController {
         
         
         // 알림 버튼 10초 후에 사라지게 설정
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.coinAlermButton.removeFromSuperview()
         }
     }
