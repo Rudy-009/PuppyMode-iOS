@@ -78,7 +78,6 @@ class HomeView: UIView {
     
     //MARK: Puppy Image & Name
     lazy public var puppyImageButton = UIButton().then { button in
-        button.setImage(.appleLogin , for: .normal)
         button.imageView?.contentMode = .scaleAspectFill
         button.tintColor = .clear
     }
@@ -156,17 +155,8 @@ extension HomeView {
         progressBar.setProgress(Float(percentageDouble), animated: false)
         
         guard let url = URL(string: puppyInfo.imageUrl!) else { return }
-        print("Puppy image url is \(url)")
         
-        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
-            guard let _ = data, error == nil else {
-                print("Image download error: \(error?.localizedDescription ?? "")")
-                return
-            }
-            DispatchQueue.main.async {
-                self?.puppyImageButton.load(url: url)
-            }
-        }.resume()
+        self.puppyImageButton.load(url: url)
     }
     
 }

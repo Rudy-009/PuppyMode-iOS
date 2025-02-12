@@ -1,27 +1,28 @@
 //
-//  SettingCustomButton.swift
+//  alarmSettingView.swift
 //  PuppyMode
 //
-//  Created by 이승준 on 1/11/25.
+//  Created by 이승준 on 1/12/25.
 //
 
 import UIKit
 
-class ArrowSettingButton: UIButton {
+class AlarmSettingView: UIView {
     
-    private lazy var title = UILabel().then { label in
+    private lazy var notificationTitleLabel = UILabel().then { label in
         label.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)
         label.font = UIFont(name: "Pretendard-Regular", size: 18)
+        label.text = "알림"
     }
     
-    private lazy var biggerImage = UIImageView().then { image in
-        image.image = UIImage(named: "Bigger")
+    public lazy var toggleView = UISwitch().then { toggle in
+        toggle.onTintColor = .main
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .white
-        addComponents()
+        self.addComponents()
     }
     
     required init?(coder: NSCoder) {
@@ -33,24 +34,20 @@ class ArrowSettingButton: UIButton {
             make.height.equalTo(60)
         }
         
-        self.addSubview(title)
-        self.addSubview(biggerImage)
+        self.addSubview(notificationTitleLabel)
+        self.addSubview(toggleView)
         
-        title.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
+        notificationTitleLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(self.snp.centerY)
             make.leading.equalToSuperview().offset(36)
         }
         
-        biggerImage.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
+        toggleView.snp.makeConstraints { make in
+            make.centerY.equalTo(self.snp.centerY)
             make.trailing.equalToSuperview().offset(-36)
-            make.height.equalTo(8)
-            make.width.equalTo(4)
         }
     }
     
-    public func setTitle(for title: String) {
-        self.title.text = title
-    }
-    
 }
+
+

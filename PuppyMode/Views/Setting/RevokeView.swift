@@ -72,8 +72,8 @@ class RevokeView: UIView {
         popButton.snp.makeConstraints { make in
             make.centerY.equalTo(titlaLabel.snp.centerY)
             make.leading.equalToSuperview().offset(37)
-            make.width.equalTo(13)
-            make.height.equalTo(20)
+            make.width.equalTo(13 + 10)
+            make.height.equalTo(20 + 10)
         }
         
         self.addSubview(messageFrame)
