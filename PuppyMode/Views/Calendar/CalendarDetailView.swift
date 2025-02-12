@@ -37,7 +37,7 @@ class CalendarDetailView: UIView {
     }
     
     // 스크롤뷰
-    private let scrollView = UIScrollView().then {
+    public let scrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = true
         $0.showsHorizontalScrollIndicator = false
     }
@@ -46,7 +46,7 @@ class CalendarDetailView: UIView {
     
     // MARK: - 섭취량
     // 배경
-    private let intakeBackgroundView = UIView().then {
+    public let intakeBackgroundView = UIView().then {
         $0.backgroundColor = .white
         $0.layer.borderColor = UIColor(red: 0.91, green: 0.91, blue: 0.91, alpha: 1).cgColor
         $0.layer.borderWidth = 1
@@ -143,7 +143,7 @@ class CalendarDetailView: UIView {
     
     // MARK: - 겪은 숙취
     // 배경
-    private let hangoverBackgroundView = UIView().then {
+    public let hangoverBackgroundView = UIView().then {
         $0.backgroundColor = .white
         $0.layer.borderColor = UIColor(red: 0.91, green: 0.91, blue: 0.91, alpha: 1).cgColor
         $0.layer.borderWidth = 1
@@ -151,17 +151,22 @@ class CalendarDetailView: UIView {
     }
     
     // 타이틀
-    private let hangoverTitleLabel = UILabel().then {
+    public let hangoverTitleLabel = UILabel().then {
         $0.text = "겪은 숙취"
         $0.textColor = UIColor(red: 0.541, green: 0.541, blue: 0.557, alpha: 1)
         $0.font = UIFont(name: "NotoSansKR-Medium", size: 14.25)
     }
     
     // 테이블뷰
+    public let hangoverTableView = UITableView().then {
+        $0.register(CalendarHangoverTableViewCell.self, forCellReuseIdentifier: CalendarHangoverTableViewCell.identifier)
+        $0.showsVerticalScrollIndicator = false
+        $0.separatorStyle = .none
+    }
     
     // MARK: - 획득한 먹이
     // 배경
-    private let feedBackgroundView = UIView().then {
+    public let feedBackgroundView = UIView().then {
         $0.backgroundColor = .white
         $0.layer.borderColor = UIColor(red: 0.91, green: 0.91, blue: 0.91, alpha: 1).cgColor
         $0.layer.borderWidth = 1
@@ -258,7 +263,7 @@ class CalendarDetailView: UIView {
             safeLabel, safePointImage, safeBottleLabel, safeGlassLabel,
             deadLabel, deadPointImage, deadBottleLabel, deadGlassLabel,
             alcoholTableView,
-            hangoverBackgroundView, hangoverTitleLabel,
+            hangoverBackgroundView, hangoverTitleLabel, hangoverTableView,
             feedBackgroundView, feedTitleLabel, feedLabel, feedImage
         ].forEach {
             contentView.addSubview($0)
@@ -337,19 +342,25 @@ class CalendarDetailView: UIView {
             $0.top.equalTo(backgroundLine.snp.bottom).offset(15)
             $0.horizontalEdges.equalTo(intakeBackgroundView).inset(1)
             $0.bottom.equalTo(intakeBackgroundView.snp.bottom).offset(-30)
-            $0.height.equalTo(53)
+            $0.height.equalTo(0)
         }
         
         // MARK: - 겪은 숙취
         hangoverBackgroundView.snp.makeConstraints {
             $0.top.equalTo(intakeBackgroundView.snp.bottom).offset(10)
             $0.horizontalEdges.equalToSuperview().inset(20)
-            $0.height.equalTo(400)
         }
         
         hangoverTitleLabel.snp.makeConstraints {
             $0.top.equalTo(hangoverBackgroundView.snp.top).offset(27)
             $0.left.equalTo(hangoverBackgroundView.snp.left).offset(35)
+        }
+        
+        hangoverTableView.snp.makeConstraints {
+            $0.top.equalTo(hangoverTitleLabel.snp.bottom).offset(25)
+            $0.horizontalEdges.equalTo(hangoverBackgroundView).inset(1)
+            $0.bottom.equalTo(hangoverBackgroundView.snp.bottom).offset(-20)
+            $0.height.equalTo(0)
         }
         
         // MARK: - 획득한 먹이
