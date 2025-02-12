@@ -79,17 +79,16 @@ class HomeView: UIView {
     
     //MARK: Puppy Image & Name
     
-    
-    lazy public var puppyImageButton = UIButton(type: .system).then { button in
-        button.setImage(UIImage(named: "HomeCharacterDefaultImage"), for: .normal)
+    lazy public var puppyImageButton = UIButton().then { button in
+        button.setImage(.appleLogin , for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         button.tintColor = .clear
     }
     
-    lazy public var puppyImageView = UIImageView().then {
-        $0.contentMode = .scaleAspectFill
-        $0.image = .homeCharacterDefault
-    }
+//    lazy public var puppyImageView = UIImageView().then {
+//        $0.contentMode = .scaleAspectFill
+//        $0.image = .homeCharacterDefault
+//    }
     
     lazy private var puppyNameLabel = UILabel().then { label in
         label.font = UIFont(name: "OTSBAggroM", size: 25)
@@ -172,7 +171,7 @@ extension HomeView {
                 return
             }
             DispatchQueue.main.async {
-                self?.puppyImageView.load(url: url)
+                self?.puppyImageButton.load(url: url)
             }
         }.resume()
     }
@@ -246,25 +245,26 @@ extension HomeView {
 
     private func addPuppyImageAndName() {
         
-        // self.addSubview(puppyImageButton)
+         self.addSubview(puppyImageButton)
         
-//        puppyImageButton.snp.makeConstraints { make in
-//            make.leading.trailing.equalToSuperview().inset(superViewSpacing)
-//            make.height.equalToSuperview().multipliedBy(0.25)
-//            make.top.equalTo(topButtonStack.snp.bottom).offset(41)
-//        }
-        self.addSubview(puppyImageView)
-        
-        puppyImageView.snp.makeConstraints { make in
+        puppyImageButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(superViewSpacing)
             make.height.equalToSuperview().multipliedBy(0.25)
             make.top.equalTo(topButtonStack.snp.bottom).offset(41)
         }
         
+//        self.addSubview(puppyImageView)
+//        
+//        puppyImageView.snp.makeConstraints { make in
+//            make.leading.trailing.equalToSuperview().inset(superViewSpacing)
+//            make.height.equalToSuperview().multipliedBy(0.25)
+//            make.top.equalTo(topButtonStack.snp.bottom).offset(41)
+//        }
+        
         self.addSubview(puppyNameLabel)
         
         puppyNameLabel.snp.makeConstraints { make in
-            make.top.equalTo(puppyImageView.snp.bottom).offset(14)
+            make.top.equalTo(puppyImageButton.snp.bottom).offset(14)
             make.centerX.equalToSuperview()
         }
     }
