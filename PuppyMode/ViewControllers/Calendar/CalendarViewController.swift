@@ -203,7 +203,7 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
                                    title: "주량 조절 실패",
                                    highlightText: "실패",
                                    highlightColor: UIColor.red,
-                                   borderColor: UIColor(red: 0.94, green: 0.84, blue: 0.69, alpha: 1),
+                                   borderColor: UIColor(red: 0.95, green: 0.8, blue: 0.8, alpha: 1),
                                    gradientEndColor: .redMedium)
                 
             default:
