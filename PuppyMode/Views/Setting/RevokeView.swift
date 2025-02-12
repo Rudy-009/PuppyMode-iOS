@@ -29,16 +29,16 @@ class RevokeView: UIView {
         label.text = "정말 떠나시나요?"
     }
     
-    private lazy var characterImage = UIImageView().then { image in
-        image.image = UIImage(named: "CryingDog")
-        image.contentMode = .scaleAspectFit
-    }
-    
     private lazy var subMessageLabel = UILabel().then { label in
         label.textColor = UIColor(red: 0.541, green: 0.541, blue: 0.557, alpha: 1)
         label.font = UIFont(name: "NotoSansKR-Medium", size: 18)
         label.numberOfLines = 2
         label.text = "000 이는 이제 볼 수 없을지도 몰라요.."
+    }
+    
+    private lazy var characterImage = UIImageView().then { image in
+        image.image = .babyWelshCorgi
+        image.contentMode = .scaleAspectFit
     }
     
     public lazy var revokeButton = UIButton().then { btn in
@@ -78,7 +78,6 @@ class RevokeView: UIView {
         
         self.addSubview(messageFrame)
         messageFrame.addSubview(mainMessageLabel)
-        messageFrame.addSubview(characterImage)
         messageFrame.addSubview(subMessageLabel)
         
         messageFrame.snp.makeConstraints { make in
@@ -92,13 +91,6 @@ class RevokeView: UIView {
             make.top.equalToSuperview().offset(18)
         }
         
-        characterImage.snp.makeConstraints { make in
-            make.leading.equalTo(mainMessageLabel.snp.trailing).offset(8)
-            make.top.equalToSuperview()
-            make.width.equalTo(44)
-            make.height.equalTo(58)
-        }
-        
         subMessageLabel.snp.makeConstraints { make in
             make.bottom.leading.equalToSuperview()
         }
@@ -110,10 +102,21 @@ class RevokeView: UIView {
             make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).inset(48)
             make.height.equalTo(46)
         }
+
+        self.addSubview(characterImage)
+        
+        characterImage.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(20)
+            make.bottom.equalTo(revokeButton.snp.top).offset(-30)
+            make.width.equalTo(200)
+            make.height.equalTo(200)
+        }
+        
     }
     
-    public func configure(_ name: String) {
-        subMessageLabel.text = name + "이는 이제 볼 수 없을지도 몰라요.."
+    public func configure(puppy: PuppyInfoResult) {
+        subMessageLabel.text = puppy.puppyName + "이는 이제 볼 수 없을지도 몰라요.."
+        characterImage.load(url: URL(string: puppy.imageUrl!)!)
     }
 }
 

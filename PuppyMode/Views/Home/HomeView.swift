@@ -10,6 +10,7 @@ import SnapKit
 import Then
 import SDWebImage
 import SDWebImageSVGKitPlugin
+import SVGKit
 
 class HomeView: UIView {
     
@@ -49,7 +50,7 @@ class HomeView: UIView {
         button.layer.cornerRadius = topButtonsCornerRadius
     }
     
-    lazy private var decorationLabel = UILabel().then { label in
+    lazy private var decorationLabel = UILabel().then   { label in
         label.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)
         label.font = UIFont(name: "NotoSansKR-Bold", size: 14)
         var paragraphStyle = NSMutableParagraphStyle()
@@ -79,8 +80,15 @@ class HomeView: UIView {
     //MARK: Puppy Image & Name
     
     lazy public var puppyImageButton = UIButton().then { button in
-        button.setImage(UIImage(named: "HomeCharacterDefaultImage"), for: .normal)
+        button.setImage(.appleLogin , for: .normal)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.tintColor = .clear
     }
+    
+//    lazy public var puppyImageView = UIImageView().then {
+//        $0.contentMode = .scaleAspectFill
+//        $0.image = .homeCharacterDefault
+//    }
     
     lazy private var puppyNameLabel = UILabel().then { label in
         label.font = UIFont(name: "OTSBAggroM", size: 25)
@@ -104,7 +112,7 @@ class HomeView: UIView {
     
     lazy public var progressLabel = UILabel().then { label in
         label.font = UIFont(name: "NotoSansKR-Bold", size: 14)
-        label.text = "55%"
+        label.text = "00%"
         label.textColor = UIColor(red: 0.624, green: 0.584, blue: 0.584, alpha: 1)
     }
     
@@ -130,6 +138,11 @@ class HomeView: UIView {
         self.addButtomComponents()
     }
     
+    public func setPuppyImage(svgURL: URL) {
+        let svgImage = SVGKImage(contentsOf: svgURL)
+        puppyImageButton.setImage(svgImage?.uiImage, for: .normal)
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -149,16 +162,18 @@ extension HomeView {
         progressLabel.text = String(Int(percentageDouble * 100)) + "%"
         progressBar.setProgress(Float(percentageDouble), animated: false)
         
-        puppyImageButton.sd_setImage(
-            with: URL(string: puppyInfo.imageUrl!)!,
-            for: .normal,
-            placeholderImage: nil,
-            options: [],
-            context: [
-                .imageThumbnailPixelSize: CGSize(width: 100, height: 100),
-                .imagePreserveAspectRatio: true
-            ]
-        )
+        guard let url = URL(string: puppyInfo.imageUrl!) else { return }
+        print("Puppy image url is \(url)")
+        
+        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            guard let _ = data, error == nil else {
+                print("Image download error: \(error?.localizedDescription ?? "")")
+                return
+            }
+            DispatchQueue.main.async {
+                self?.puppyImageButton.load(url: url)
+            }
+        }.resume()
     }
     
 }
@@ -230,13 +245,21 @@ extension HomeView {
 
     private func addPuppyImageAndName() {
         
-        self.addSubview(puppyImageButton)
+         self.addSubview(puppyImageButton)
         
         puppyImageButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(superViewSpacing)
             make.height.equalToSuperview().multipliedBy(0.25)
             make.top.equalTo(topButtonStack.snp.bottom).offset(41)
         }
+        
+//        self.addSubview(puppyImageView)
+//        
+//        puppyImageView.snp.makeConstraints { make in
+//            make.leading.trailing.equalToSuperview().inset(superViewSpacing)
+//            make.height.equalToSuperview().multipliedBy(0.25)
+//            make.top.equalTo(topButtonStack.snp.bottom).offset(41)
+//        }
         
         self.addSubview(puppyNameLabel)
         

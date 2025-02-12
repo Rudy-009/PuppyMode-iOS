@@ -1,5 +1,5 @@
 {
-  "originHash" : "0643aac34336875112411eb53252fd9afea127240f8d2bfd790f1f39d5b22139",
+  "originHash" : "15f09ab539113244eab544596c3ce73fc29baeec8981a8e16629f3b5ae691078",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -164,6 +164,15 @@
       }
     },
     {
+      "identity" : "sdwebimagesvgnativecoder",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SDWebImage/SDWebImageSVGNativeCoder.git",
+      "state" : {
+        "revision" : "09a6199bbc0899c90382e734bbe07850eae2aa83",
+        "version" : "0.2.0"
+      }
+    },
+    {
       "identity" : "snapkit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SnapKit/SnapKit",
@@ -179,6 +188,15 @@
       "state" : {
         "revision" : "58152b9f7c85eab239160b36ffdfd364aa43d666",
         "version" : "3.0.0"
+      }
+    },
+    {
+      "identity" : "svgnative-xcode",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SDWebImage/svgnative-Xcode.git",
+      "state" : {
+        "revision" : "de560bb9f69bc89f4624855998148eb6e0bb8e60",
+        "version" : "0.1.0"
       }
     },
     {
