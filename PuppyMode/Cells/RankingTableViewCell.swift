@@ -53,6 +53,7 @@ class RankingTableViewCell: UITableViewCell {
     
     public func configure(rankCell: RankUserInfo) {
         rankLabel.text = String(rankCell.rank)
+        profileImage.image = .rankCellDefaultProfile // Reuseable 대처
         if let imageURL = rankCell.imageUrl {
             profileImage.load(url: imageURL)
         }
@@ -61,6 +62,7 @@ class RankingTableViewCell: UITableViewCell {
         self.backgroundColor = .white
         
         trophyImageView.removeFromSuperview() // 기존 트로피 이미지 제거
+        
         
         if rankCell.rank < 4 {
             addTrophyComponent(rank: Rank(rawValue: rankCell.rank) ?? .first)
