@@ -73,13 +73,11 @@ class HangoverViewController: UIViewController {
         let hasSelection = selectedCells.contains(true)
         
         if hasSelection {
+            hangoverView.nextButton.alpha = 1
             hangoverView.nextButton.isEnabled = true
-            hangoverView.nextButton.backgroundColor = .main
-            hangoverView.skipButton.isEnabled = false
         } else {
+            hangoverView.nextButton.alpha = 0.5
             hangoverView.nextButton.isEnabled = false
-            hangoverView.nextButton.backgroundColor = .white
-            hangoverView.skipButton.isEnabled = true
         }
     }
 
