@@ -49,6 +49,7 @@ class IntakeView: UIView {
         $0.minimumValue = 0.0
         $0.maximumValue = 10.0 // Default for glass mode (10 steps for glasses)
         $0.value = 1.0
+        $0.tintColor = .main
     }
     
     private let modeSwitchButton = UIButton().then {
@@ -180,7 +181,7 @@ class IntakeView: UIView {
     
     private func updateSliderMode() {
         if isBottleMode {
-            slider.maximumValue = 4.0 // Bottle mode has a max of 4 (4 bottles max)
+            slider.maximumValue = 10.0 // Bottle mode has a max of 4 (4 bottles max)
             slider.value = min(slider.value, slider.maximumValue) // Ensure value is within range
         } else {
             slider.maximumValue = 10.0 // Glass mode has a max of 10 (10 glasses max)
