@@ -91,13 +91,11 @@ class CalendarDetailView: UIView {
     }
     
     public let safeBottleLabel = UILabel().then {
-        $0.text = "1.5병"
         $0.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.263, alpha: 0.6)
         $0.font = UIFont(name: "NotoSansKR-Medium", size: 14)
     }
     
     public let safeGlassLabel = UILabel().then {
-        $0.text = "5잔"
         $0.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.263, alpha: 0.6)
         $0.font = UIFont(name: "NotoSansKR-Medium", size: 14)
     }
@@ -114,13 +112,11 @@ class CalendarDetailView: UIView {
     }
     
     public let deadBottleLabel = UILabel().then {
-        $0.text = "2.5병"
         $0.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.263, alpha: 0.6)
         $0.font = UIFont(name: "NotoSansKR-Medium", size: 14)
     }
     
     public let deadGlassLabel = UILabel().then {
-        $0.text = "16잔"
         $0.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.263, alpha: 0.6)
         $0.font = UIFont(name: "NotoSansKR-Medium", size: 14)
     }
@@ -129,6 +125,7 @@ class CalendarDetailView: UIView {
     public let alcoholTableView = UITableView().then {
         $0.register(CalendarAlcoholTableViewCell.self, forCellReuseIdentifier: CalendarAlcoholTableViewCell.identifier)
         $0.showsVerticalScrollIndicator = false
+        $0.isScrollEnabled = false
         $0.separatorStyle = .none
     }
     
