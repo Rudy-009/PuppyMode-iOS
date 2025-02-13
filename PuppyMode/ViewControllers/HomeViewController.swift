@@ -292,7 +292,6 @@ extension HomeViewController {
             make.height.equalTo(59)
         }
         
-        
         // 알림 버튼 10초 후에 사라지게 설정
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.coinAlermButton.removeFromSuperview()
