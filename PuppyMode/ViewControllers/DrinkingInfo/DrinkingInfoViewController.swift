@@ -7,8 +7,10 @@
 
 import UIKit
 import Alamofire
+import ToosieSlide
 
 struct AlcoholItem {
+    let id: Int
     let imageName: String  // 이미지 이름
     let name: String       // 술 이름
     let percentage: String // 도수
@@ -22,6 +24,9 @@ class DrinkingInfoViewController: UIViewController, UICollectionViewDelegate {
     // 캐러셀 데이터 저장
     private var alcoholItems: [AlcoholItem] = []
     
+    // UICollectionView 인스턴스 생성
+    private var carouselCollectionView: UICollectionView!
+    
     override func loadView() {
         self.view = drinkingInfoView
     }
@@ -31,10 +36,47 @@ class DrinkingInfoViewController: UIViewController, UICollectionViewDelegate {
         setupNavigationBar()
         setupActions()
         configureData()
+        setupCarousel()
         
-        drinkingInfoView.carouselCollectionView.delegate = self
+        drinkingInfoView.setCarouselData(alcoholItems)
+        carouselCollectionView.delegate = self // UIScrollViewDelegate 설정
+        carouselCollectionView.dataSource = self
     }
     
+    private func setupCarousel() {
+        // Initialize UICollectionViewCarouselLayout
+        let carouselLayout = UICollectionViewCarouselLayout()
+        carouselLayout.itemSize = CGSize(width: 218, height: 247)
+        carouselLayout.minimumLineSpacing = 10
+        carouselLayout.focusedItemScaleFactor = 0.95 // Focused cell scale
+        carouselLayout.nonFocusedItemsScaleFactor = 0.9 // Non-focused cell scale
+        carouselLayout.focusedItemAlphaValue = 1.0 // Focused cell alpha
+        carouselLayout.nonFocusedItemsAlphaValue = 0.5 // Non-focused cell alpha
+        
+        // Initialize UICollectionView with carousel layout
+        carouselCollectionView = UICollectionView(frame: .zero, collectionViewLayout: carouselLayout)
+        carouselCollectionView.decelerationRate = .fast
+        carouselCollectionView.showsHorizontalScrollIndicator = false
+        carouselCollectionView.backgroundColor = .clear
+        
+        // Register cell
+        carouselCollectionView.register(DrinkInfoCarouselCollectionViewCell.self, forCellWithReuseIdentifier: DrinkInfoCarouselCollectionViewCell.identifier)
+        
+        // Set data source and delegate
+        carouselCollectionView.dataSource = self
+        carouselCollectionView.delegate = self
+        
+        // Add to view and set constraints
+        drinkingInfoView.addSubview(carouselCollectionView)
+        
+        carouselCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(drinkingInfoView.alcoholPercentageLabel.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(247) // Adjust height as needed for carousel items
+        }
+    }
+    
+    // 네비게이션 바 설정
     private func setupNavigationBar() {
         // Create a custom navigation bar container
         let navigationBar = UIView()
@@ -93,24 +135,35 @@ class DrinkingInfoViewController: UIViewController, UICollectionViewDelegate {
         drinkingInfoView.makeAppointmentButton.addTarget(self, action: #selector(didTapMakeAppointmentButton), for: .touchUpInside)
     }
     
+    // 오늘 술 마실 거에요! 버튼 클릭 이벤트
     @objc private func didTapMakeAppointmentButton() {
         print("오늘 술 마실 거에요! 버튼 클릭됨")
-        let modalVC = AppointmentModalViewController()
-        modalVC.modalPresentationStyle = .overFullScreen // 화면 전체를 덮는 스타일로 설정
-        modalVC.modalTransitionStyle = .crossDissolve   // 부드러운 전환 효과 추가
-        present(modalVC, animated: true, completion: nil) // 모달 표시
+        
+        // AppointmentViewController로 이동
+        let appointmentVC = AppointmentViewController()
+        
+        // 네비게이션 컨트롤러가 있는지 확인
+        if let navigationController = self.navigationController {
+            navigationController.pushViewController(appointmentVC, animated: true)
+        } else {
+            // 네비게이션 컨트롤러가 없는 경우 수동으로 추가
+            let navController = UINavigationController(rootViewController: appointmentVC)
+            navController.modalPresentationStyle = .fullScreen
+            present(navController, animated: true, completion: nil)
+        }
     }
     
-    // 데이터 구성
+    // 캐러셀 데이터 구성
     private func configureData() {
         let carouselData: [AlcoholItem] = [
-            AlcoholItem(imageName: "chamisul", name: "참이슬 후레쉬", percentage: "16.0도"),
-            AlcoholItem(imageName: "likefirsttime", name: "처음처럼", percentage: "16.5도"),
-            AlcoholItem(imageName: "jinro", name: "진로", percentage: "17.0도"),
-            AlcoholItem(imageName: "tera", name: "테라", percentage: "4.5도"),
-            AlcoholItem(imageName: "cass", name: "카스", percentage: "4.7도"),
-            AlcoholItem(imageName: "krush", name: "크러쉬", percentage: "4.5도"),
-            AlcoholItem(imageName: "kelly", name: "켈리", percentage: "4.7도")
+            AlcoholItem(id: 1,imageName: "chamisul", name: "참이슬 후레쉬", percentage: "16.0도"),
+            AlcoholItem(id: 4, imageName: "jinro", name: "진로 이즈백", percentage: "16.0도"),
+            AlcoholItem(id: 5,imageName: "likefirsttime", name: "처음처럼", percentage: "16.5도"),
+            AlcoholItem(id: 6,imageName: "saero", name: "새로", percentage: "16.0도"),
+            AlcoholItem(id: 7,imageName: "cass", name: "카스", percentage: "4.5도"),
+            AlcoholItem(id: 8,imageName: "tera", name: "테라", percentage: "4.6도"),
+            AlcoholItem(id: 9,imageName: "kelly", name: "켈리", percentage: "4.5도"),
+            AlcoholItem(id: 10,imageName: "krush", name: "크러쉬", percentage: "4.5도")
         ]
         
         alcoholItems = carouselData
@@ -120,22 +173,25 @@ class DrinkingInfoViewController: UIViewController, UICollectionViewDelegate {
         if let firstItem = alcoholItems.first {
             drinkingInfoView.alcoholNameLabel.text = firstItem.name
             drinkingInfoView.alcoholPercentageLabel.text = firstItem.percentage
+            fetchDrinkCapacity(drinkItemId: firstItem.id)
         }
     }
     
+    // 술 이름, 술 도수, 안전, 위험 지수 업데이트 함수
     private func updateLabels(forItemAt index: Int) {
         guard index < alcoholItems.count else { return } // 데이터 범위 확인
         
         let item = alcoholItems[index] // 활성화된 아이템 가져오기
-        print("현재 활성화 인덱스:", item) // 디버깅용 출력
+        // print("현재 활성화 인덱스:", item) // 디버깅용 출력
         
         // 라벨 업데이트
         drinkingInfoView.alcoholNameLabel.text = item.name
         drinkingInfoView.alcoholPercentageLabel.text = item.percentage
         
-        print("현재 활성화된 아이템:", item.name, item.percentage) // 디버깅용 출력
+        // print("현재 활성화된 아이템:", item.name, item.percentage) // 디버깅용 출력
     }
     
+    // 안전주량, 치사량 연동 Api
     private func fetchDrinkCapacity(drinkItemId: Int) {
         guard let authToken = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
             print("인증 토큰을 가져올 수 없습니다.")
@@ -147,48 +203,95 @@ class DrinkingInfoViewController: UIViewController, UICollectionViewDelegate {
             "Authorization": "Bearer \(authToken)"
         ]
         
-        let url = "\(K.String.puppymodeLink)/drink/capacity/\(drinkItemId)"
+        // URL에 쿼리 파라미터 추가
+        let url = "\(K.String.puppymodeLink)/drinks/capacity"
+        let parameters: [String: Any] = [
+            "drinkItemId": drinkItemId
+        ]
         
         AF.request(url,
                    method: .get,
+                   parameters: parameters, // 쿼리 파라미터 추가
+                   encoding: URLEncoding.default, // URL 인코딩 사용
                    headers: headers)
-        .responseDecodable(of: DrinkCapacityResponse.self) { response in
-            switch response.result {
-            case .success(let data):
-                if data.code == "COMMON200" {
-                    print("술 정보 조회 성공!")
-                    
-                    // 뷰 업데이트
-                    DispatchQueue.main.async {
-                        self.updateDrinkInfoView(with: data.result)
+            .responseDecodable(of: DrinkCapacityResponse.self) { response in
+                switch response.result {
+                case .success(let data):
+                    if data.code == "COMMON200" {
+                        DispatchQueue.main.async {
+                            self.updateDrinkInfoView(with: data.result)
+                        }
+                    } else {
+                        // COMMON200이 아니면 기본값으로 ProgressBar와 라벨 업데이트
+                        DispatchQueue.main.async {
+                            self.updateDrinkInfoView(with: nil)
+                        }
                     }
-                } else {
-                    print("응답 코드가 COMMON200이 아닙니다.")
+                case .failure(let error):
+                    // API 요청 실패 시 기본값으로 ProgressBar와 라벨 업데이트
+                    DispatchQueue.main.async {
+                        self.updateDrinkInfoView(with: nil)
+                    }
                 }
-            case .failure(let error):
-                print("API 요청 실패:", error.localizedDescription)
             }
+    }
+
+    // 캐러셀 인덱스에 맞는 술 이름, 도수 라벨 업데이트
+    private func updateDrinkInfoView(with result: DrinkCapacityResult?) {
+        if let result = result {
+            // 이름과 도수 업데이트
+            drinkingInfoView.alcoholNameLabel.text = result.drinkItemName
+            drinkingInfoView.alcoholPercentageLabel.text = "\(result.alcoholPercentage)%"
+            
+            // 소주 기준 병과 잔 계산 (1병=360ml, 1잔=50ml)
+            let (safeBottles, safeGlasses) = convertToBottlesAndGlasses(valueML: result.safetyValue, bottleML: 360.0, glassML: 50)
+            let (dangerBottles, dangerGlasses) = convertToBottlesAndGlasses(valueML: result.maxValue, bottleML: 360.0, glassML: 50)
+            
+            // ProgressBar 업데이트
+            DrinkingProgressBar.configure(
+                progress: Float(result.safetyValue) / Float(result.maxValue),
+                safeText: "\(safeBottles)병\n\(safeGlasses)잔",
+                dangerText: "\(dangerBottles)병\n\(dangerGlasses)잔"
+            )
+        } else {
+            // 기본값 설정 (result가 nil인 경우)
+            DrinkingProgressBar.configure(
+                progress: 0.0,
+                safeText: "0.0병\n0잔",
+                dangerText: "0.0병\n0잔"
+            )
         }
     }
 
-    
-    private func updateDrinkInfoView(with result: DrinkCapacityResult?) {
-        guard let result = result else { return }
-        
-        // 이름, 도수 업데이트
-        drinkingInfoView.alcoholNameLabel.text = result.drinkItemName
-        drinkingInfoView.alcoholPercentageLabel.text = "\(result.alcoholPercentage)%"
-        
-        // ProgressBar 업데이트
-        DrinkingProgressBar.configure(
-            progress: Float(result.safetyValue) / Float(result.maxValue),
-            safeText: "\(result.safetyValue)ml",
-            dangerText: "\(result.maxValue)ml"
-        )
+    // 병과 잔 계산 함수
+    private func convertToBottlesAndGlasses(valueML: Int, bottleML: Float, glassML: Int) -> (Float, Int) {
+        let bottles = Float(valueML) / bottleML // 병은 소수 첫째 자리까지 계산
+        let glasses = valueML / glassML        // 잔은 정수값으로 계산
+        return (round(bottles * 10) / 10, glasses) // 소수 첫째 자리로 반올림
     }
 
+}
 
+extension DrinkingInfoViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return alcoholItems.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DrinkInfoCarouselCollectionViewCell.identifier, for: indexPath) as! DrinkInfoCarouselCollectionViewCell
+        
+        let item = alcoholItems[indexPath.item]
+        cell.configure(withImageName: item.imageName)
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("Selected item at index \(indexPath.item): \(alcoholItems[indexPath.item].name)")
+        
+        fetchDrinkCapacity(drinkItemId: indexPath.item + 1)
+    }
 }
 
 extension DrinkingInfoViewController: UIScrollViewDelegate {
@@ -211,43 +314,15 @@ extension DrinkingInfoViewController: UIScrollViewDelegate {
                 minimumDistance = distance
                 closestIndex = collectionView.indexPath(for: cell)?.item
             }
-            
-            // Scale cells based on their distance from the center (closer cells appear larger)
-            let scale = max(0.8, 1 - distance / collectionView.bounds.size.width)
-            cell.transform = CGAffineTransform(scaleX: scale, y: scale)
         }
         
-        // Update labels and fetch drink capacity based on the closest cell to the center
+        // Update labels based on the closest cell to the center
         if let closestIndex = closestIndex {
             updateLabels(forItemAt: closestIndex)
             
-            // Fetch drink capacity for the selected item (drinkItemId는 데이터에 따라 설정)
-            fetchDrinkCapacity(drinkItemId: closestIndex + 1) // 예시로 drinkItemId를 index + 1로 설정
+            // Get drinkItemId based on active index
+            let drinkItemId = alcoholItems[closestIndex].id
+            fetchDrinkCapacity(drinkItemId: drinkItemId)
         }
-    }
-
-    
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset targetContentOffsetPointer: UnsafeMutablePointer<CGPoint>) {
-        guard let collectionView = scrollView as? UICollectionView else { return }
-        guard let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
-        
-        // Calculate cell width including spacing
-        let cellWidthIncludingSpacing = layout.itemSize.width + layout.minimumLineSpacing
-        
-        // Calculate proposed offset for snapping behavior
-        let proposedOffset = targetContentOffsetPointer.pointee.x
-        
-        // Determine the index of the nearest cell
-        var index = round((proposedOffset + scrollView.contentInset.left) / cellWidthIncludingSpacing)
-        
-        // Clamp index to ensure it doesn't exceed bounds
-        let maxIndex = max(0, collectionView.numberOfItems(inSection: 0) - 1)
-        index = min(max(0, index), CGFloat(maxIndex))
-        
-        // Calculate new offset for snapping to center
-        let newOffsetX = index * cellWidthIncludingSpacing - scrollView.contentInset.left
-        
-        // Update targetContentOffset to snap to the nearest cell
-        targetContentOffsetPointer.pointee.x = newOffsetX
     }
 }
