@@ -10,6 +10,8 @@
 *.xcuserstate
 xcuserdata/
 .DS_Store
+API_Keys.xcconfig
+GoogleService-Info.plist
 
 ## xcconfig
 *.xcconfig
