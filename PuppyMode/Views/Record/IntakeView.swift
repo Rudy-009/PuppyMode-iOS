@@ -173,10 +173,12 @@ class IntakeView: UIView {
     // MARK: - Slider Action (슬라이더 값 변경 시 호출되는 함수)
     @objc private func sliderValueChanged(_ sender: UISlider) {
         updateValueLabel()
+        updateAddButtonState()
     }
     
     @objc private func toggleMode() {
         isBottleMode.toggle() // Toggle between bottle and glass modes
+        updateAddButtonState()
     }
     
     private func updateSliderMode() {
@@ -187,6 +189,12 @@ class IntakeView: UIView {
             slider.maximumValue = 10.0 // Glass mode has a max of 10 (10 glasses max)
             slider.value = min(slider.value, slider.maximumValue)
         }
+    }
+    
+    private func updateAddButtonState() {
+        let sliderValue = Int(slider.value)
+        addButton.alpha = sliderValue > 0 ? 1.0 : 0.5
+        addButton.isEnabled = sliderValue > 0
     }
     
     private func updateButtonText() {
