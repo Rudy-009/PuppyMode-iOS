@@ -277,10 +277,10 @@ class AppointmentModalViewController: UIViewController, AddressSearchDelegate {
         ]
 
         // 헤더 설정
-        let fcmToken = KeychainService.get(key: UserInfoKey.jwt.rawValue) ?? ""
+        let authToken = KeychainService.get(key: UserInfoKey.jwt.rawValue) ?? ""
         let headers: HTTPHeaders = [
             "Content-Type": "application/json",
-            "Authorization": "Bearer \(fcmToken)"
+            "Authorization": "Bearer \(authToken)"
         ]
 
         // API 요청
@@ -406,10 +406,6 @@ class AppointmentModalViewController: UIViewController, AddressSearchDelegate {
         pickerContainerView.removeFromSuperview()
     }
     
-    func didSelectAddress(_ roadAddress: String) {
-        locationTextField.text = roadAddress // 선택된 도로명 주소를 텍스트 필드에 표시
-    }
-    
     @objc private func didTapLocationTextField() {
         let addressSearchVC = AddressSearchModalViewController()
         addressSearchVC.delegate = self // Delegate 설정
@@ -417,5 +413,9 @@ class AppointmentModalViewController: UIViewController, AddressSearchDelegate {
         addressSearchVC.modalTransitionStyle = .crossDissolve
         
         present(addressSearchVC, animated: true, completion: nil)
+    }
+
+    func didSelectAddress(_ roadAddress: String) {
+        locationTextField.text = roadAddress // 선택된 도로명 주소를 텍스트 필드에 표시
     }
 }

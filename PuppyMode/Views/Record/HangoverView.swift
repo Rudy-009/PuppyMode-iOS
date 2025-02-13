@@ -18,7 +18,7 @@ class HangoverView: UIView {
     
     // 타이틀
     private let titleLabel = UILabel().then {
-        $0.text = "1. 숙취 선택"
+        $0.text = "숙취 선택"
         $0.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)
         $0.font = UIFont(name: "NotoSansKR-Medium", size: 20)
     }
@@ -66,7 +66,8 @@ class HangoverView: UIView {
     }
     
     public let nextButton = UIButton().then {
-        $0.backgroundColor = .white
+        $0.backgroundColor = .main
+        $0.alpha = 0.5
 
         $0.setTitle("다음", for: .normal)
         $0.setTitleColor(UIColor(red: 0.35, green: 0.35, blue: 0.35, alpha: 1), for: .normal)
