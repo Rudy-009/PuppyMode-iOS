@@ -11,6 +11,10 @@ import Alamofire
 
 class HomeViewController: UIViewController, CLLocationManagerDelegate {
     
+    private var animationImages: [UIImage] = []
+    private var currentIndex = 0
+    private var animationTimer: Timer?
+    
     private var timer: Timer?
     private var remainingTime: Int = 1800 // 30분 (초 단위)
     public var coinAlermButton = AlermView()
@@ -277,8 +281,54 @@ extension HomeViewController {
     
     
     private func showDogAnimation() {
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+        ]
         
+        let parameter =  PuppyAnimationParameter(animationType: "PLAYING")
+        
+        AF.request(K.String.puppymodeLink + "/puppies/animations/frames",
+                   method: .get,
+                   parameters: parameter,
+                   headers: headers)
+        .responseDecodable(of: PuppyAnimationResponse.self) { [weak self] response in
+            
+            guard let self = self else { return }
+            
+            switch response.result {
+            case .success(let response) :
+                if response.isSuccess {
+                    print("애니메이션 프레임 조회 성공")
+                    
+                    
+                    // self.animationImages = response.result.imageUrls
+                    self.startAnimation() // 애니메이션 시작
+                    
+                } else {
+                    print("애니메이션 프레임 조회 API Error: \(response.message)")
+                }
+            case .failure(let error) :
+                print("애니메이션 프레임 조회 Network Error: \(error.localizedDescription)")
+            }
+        }
+
     }
+    
+    private func startAnimation() {
+        guard !animationImages.isEmpty else { return }
+        
+        animationTimer?.invalidate() // 기존 타이머 종료
+        currentIndex = 0
+
+        animationTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
+            
+            // self.homeView.puppyImageButton.setImageFromURL(self.animationImages[self.currentIndex])
+            // self.currentIndex = (self.currentIndex + 1) % self.animationImages.count
+        }
+    }
+       
     
     private func showPointAlert() {
         // 알림 버튼 위치 설정
@@ -293,7 +343,7 @@ extension HomeViewController {
         }
         
         
-        // 알림 버튼 10초 후에 사라지게 설정
+        // 알림 버튼 1초 후에 사라지게 설정
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.coinAlermButton.removeFromSuperview()
         }
