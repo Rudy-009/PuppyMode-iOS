@@ -19,7 +19,7 @@ class HangoverCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Layout
     public let hangoverImage = UIImageView().then {
-        $0.backgroundColor = .main
+        $0.backgroundColor = .clear
         $0.alpha = 0.5
     }
     

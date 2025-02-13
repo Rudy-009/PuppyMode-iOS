@@ -32,15 +32,19 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
         setupLocationManager()
         self.defineButtonActions()
         
-        // 가장 가까운 약속 확인 및 시작
-        checkClosestAppointment { appointmentId in
+        // 가장 가까운 예약된 술 약속 확인
+        checkNearestScheduledAppointment { appointmentId in
             guard let appointmentId = appointmentId else {
-                print("가장 가까운 약속 ID를 가져올 수 없습니다.")
+                print("오늘 날짜의 예약된 술 약속이 없습니다.")
                 return
             }
             
+            print("술 약속 시작 엔트리")
             // 약속 시작 API 호출
             self.startAppointment(appointmentId: appointmentId)
+            
+            // 필요한 추가 작업 수행 가능
+            print("가장 가까운 예약된 술 약속 ID:", appointmentId)
         }
     }
     
@@ -221,21 +225,19 @@ extension HomeViewController {
             
         } else if buttonTitle == "술 마시는 중..." {
             // 음주 중 화면으로 이동
-            checkClosestAppointment { appointmentId in
-                guard let appointmentId = appointmentId else {
-                    print("가장 가까운 약속 ID를 가져올 수 없습니다.")
-                    return
-                }
-                
-                let drinkingVC = DrinkingViewController(appointmentId: appointmentId) // appointmentId 전달
-                
-                if let navigationController = self.navigationController {
-                    navigationController.pushViewController(drinkingVC, animated: true)
-                } else {
-                    let navController = UINavigationController(rootViewController: drinkingVC)
-                    navController.modalPresentationStyle = .fullScreen
-                    self.present(navController, animated: true, completion: nil)
-                }
+            guard let appointmentId = appointmentId else {
+                print("appointmentId가 없습니다.")
+                return
+            }
+            
+            let drinkingVC = DrinkingViewController(appointmentId: appointmentId) // appointmentId 전달
+            
+            if let navigationController = self.navigationController {
+                navigationController.pushViewController(drinkingVC, animated: true)
+            } else {
+                let navController = UINavigationController(rootViewController: drinkingVC)
+                navController.modalPresentationStyle = .fullScreen
+                self.present(navController, animated: true, completion: nil)
             }
         } else {
             print("알 수 없는 버튼 상태입니다.")
@@ -291,7 +293,6 @@ extension HomeViewController {
             make.width.equalTo(335)
             make.height.equalTo(59)
         }
-        
         
         // 알림 버튼 10초 후에 사라지게 설정
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -390,12 +391,52 @@ extension HomeViewController {
         return closestAppointment?.appointmentId
     }
     
+    // 가장 가까운 SCHEDULED 상태의 약속  조회하기 API
+    private func checkNearestScheduledAppointment(completion: @escaping (Int?) -> Void) {
+        guard let authToken = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+            print("인증 토큰을 가져올 수 없습니다.")
+            completion(nil)
+            return
+        }
+        
+        let headers: HTTPHeaders = [
+            "Content-Type": "application/json",
+            "Authorization": "Bearer \(authToken)"
+        ]
+        
+        let url = "\(K.String.puppymodeLink)/appointments/nearest-scheduled"
+        
+        AF.request(url,
+                   method: .get,
+                   headers: headers)
+            .responseDecodable(of: NearestScheduledAppointmentResponse.self) { response in
+                switch response.result {
+                case .success(let data):
+                    if data.code == "APPOINTMENT_NEAREST_SCHEDULED_FOUND" {
+                        print("가장 가까운 예약된 술 약속 조회 성공!")
+                        completion(data.result?.appointmentId)
+                    } else if data.code == "NO_SCHEDULED_APPOINTMENT_TODAY" {
+                        print("오늘 날짜의 예약된 술 약속이 없습니다.")
+                        completion(nil)
+                    } else {
+                        print("응답 코드가 예상치 못한 값입니다: \(data.code)")
+                        completion(nil)
+                    }
+                case .failure(let error):
+                    print("API 요청 실패:", error.localizedDescription)
+                    completion(nil)
+                }
+            }
+    }
+    
     // 술 약속 시작하기 API --> 시작 성공 시 버튼 기능 변경, 시작 실패 시 주량 기록으로 유지
     private func startAppointment(appointmentId: Int) {
         guard let latitude = currentLatitude, let longitude = currentLongitude else {
             print("위치 정보를 가져올 수 없습니다.")
             return
         }
+        
+        print("위치 정보를 가져올 수 없습니다.")
         
         let fcmToken = KeychainService.get(key: UserInfoKey.jwt.rawValue) ?? ""
         

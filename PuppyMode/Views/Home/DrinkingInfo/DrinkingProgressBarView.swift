@@ -88,8 +88,8 @@ class DrinkingProgressBarView: UIView {
     // Public Method to Update Progress and Labels
     func configure(progress: Float, safeText: String, dangerText: String) {
         progressBar.progress = progress
-        safeLabel.text = safeText
-        dangerLabel.text = dangerText
+        safeValueLabel.text = safeText
+        dangerValueLabel.text = dangerText
     }
     
     override func layoutSubviews() {

@@ -124,18 +124,32 @@ extension String {
 
 // MARK: DrinkCapacity
 
-struct DrinkCapacityResponse: Decodable {
+struct DrinkCapacityResponse: Codable {
     let isSuccess: Bool
     let code: String
     let message: String
     let result: DrinkCapacityResult?
 }
 
-struct DrinkCapacityResult: Decodable {
+struct DrinkCapacityResult: Codable {
     let drinkItemId: Int
     let drinkItemName: String
     let imageUrl: String?
-    let alcoholPercentage: Int
+    let alcoholPercentage: Float
     let safetyValue: Int
     let maxValue: Int
+}
+
+struct NearestScheduledAppointmentResponse: Codable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: NearestScheduledAppointmentResult?
+}
+
+struct NearestScheduledAppointmentResult: Codable {
+    let appointmentId: Int
+    let dateTime: String
+    let address: String
+    let status: String
 }

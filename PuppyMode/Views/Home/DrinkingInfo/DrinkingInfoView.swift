@@ -12,68 +12,12 @@ import SwiftUI
 
 let DrinkingProgressBar = DrinkingProgressBarView()
 
-// MARK: - Carousel Cell
-
-class CarouselCell: UICollectionViewCell {
-    
-    static let identifier = "CarouselCell"
-    
-    private let imageView = UIImageView().then {
-        $0.contentMode = .scaleAspectFit
-        $0.layer.cornerRadius = 10
-        $0.clipsToBounds = true
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        // 셀 배경색 설정
-        contentView.backgroundColor = UIColor(hex: "#FFFFFF")
-        
-        // 그림자 효과 적용
-        contentView.layer.shadowColor = UIColor.black.cgColor // 그림자 색상
-        contentView.layer.shadowOpacity = 0.25 // 그림자 투명도 (rgba의 alpha 값)
-        contentView.layer.shadowOffset = CGSize(width: 0, height: 4) // 그림자 위치 (x: 0px, y: 4px)
-        contentView.layer.shadowRadius = 4 // 그림자 흐림 반경 (blur 효과)
-        
-        // 테두리 설정
-        contentView.layer.cornerRadius = 10 // 둥근 모서리 반경
-        contentView.layer.borderWidth = 1   // 테두리 두께
-        contentView.layer.borderColor = UIColor(hex: "#A8A8A8").cgColor // 테두리 색상
-        
-        contentView.addSubview(imageView)
-        
-        imageView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func configure(withImageName imageName: String) {
-        imageView.image = UIImage(named: imageName)
-    }
-}
-
 class DrinkingInfoView: UIView, UICollectionViewDelegate, UICollectionViewDataSource {
     var alcoholItems: [AlcoholItem] = [] // 전체 데이터를 저장할 배열
     
-    // MARK: - UICollectionViewDataSource
-    
+    // MARK: - UICollectionViewDataSourc
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return alcoholItems.count // 전체 데이터 개수 반환
-    }
-
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CarouselCell.identifier, for: indexPath) as! CarouselCell
-        
-        let item = alcoholItems[indexPath.item]
-        print(item)
-        cell.configure(withImageName: item.imageName) // 이미지 설정
-        
-        return cell
     }
     
     private func adjustItemSizes() {
@@ -86,6 +30,16 @@ class DrinkingInfoView: UIView, UICollectionViewDelegate, UICollectionViewDataSo
         }
     }
     
+    // 지정된 인덱스 경로에 표시할 셀을 반환
+        func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DrinkInfoCarouselCollectionViewCell.identifier, for: indexPath) as! DrinkInfoCarouselCollectionViewCell
+            
+            let item = alcoholItems[indexPath.item]
+            cell.configure(withImageName: item.imageName) // 이미지 설정
+            
+            return cell
+        }
+    
     private func scrollToInitialPosition() {
         guard alcoholItems.count > 0 else { return }
         
@@ -97,12 +51,8 @@ class DrinkingInfoView: UIView, UICollectionViewDelegate, UICollectionViewDataSo
     lazy var carouselCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.minimumLineSpacing = 0 // 셀 간 간격
+        layout.minimumLineSpacing = 10 // 셀 간 간격
         layout.itemSize = CGSize(width: 218, height: 247) // 셀 크기 설정
-        
-        // sectionInset 추가
-        let inset = UIScreen.main.bounds.width / 2 - (layout.itemSize.width / 2)
-        layout.sectionInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.isPagingEnabled = false // 페이징 비활성화 (커스텀 중앙 정렬 구현)
@@ -112,12 +62,13 @@ class DrinkingInfoView: UIView, UICollectionViewDelegate, UICollectionViewDataSo
         
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.register(CarouselCell.self, forCellWithReuseIdentifier: CarouselCell.identifier)
+        
+        // Register DrinkInfoCarouselCollectionViewCell
+        collectionView.register(DrinkInfoCarouselCollectionViewCell.self, forCellWithReuseIdentifier: DrinkInfoCarouselCollectionViewCell.identifier)
         
         return collectionView
     }()
     
-    // MARK: - Public Method to Set Data
     func setCarouselData(_ items: [AlcoholItem]) {
         self.alcoholItems = items // 전체 데이터를 저장
         self.carouselCollectionView.reloadData() // 컬렉션 뷰 갱신
@@ -135,14 +86,7 @@ class DrinkingInfoView: UIView, UICollectionViewDelegate, UICollectionViewDataSo
         $0.font = UIFont.systemFont(ofSize: 16, weight: .regular)
         $0.textColor = UIColor.gray
     }
-    
-    // Carousel (Image Scroll View)
-    let carouselScrollView = UIScrollView().then {
-        $0.isPagingEnabled = true
-        $0.showsHorizontalScrollIndicator = false
-        $0.backgroundColor = .clear
-    }
-    
+
     // makeAppointment Button
     let makeAppointmentButton = UIButton(type: .system).then {
         $0.setTitle("오늘 술 마실 거에요!", for: .normal)
@@ -178,7 +122,7 @@ class DrinkingInfoView: UIView, UICollectionViewDelegate, UICollectionViewDataSo
         addSubview(alcoholNameLabel)
         addSubview(alcoholPercentageLabel)
         
-        addSubview(carouselCollectionView)
+        //addSubview(carouselCollectionView)
         
         addSubview(DrinkingProgressBar)
         
@@ -198,12 +142,7 @@ class DrinkingInfoView: UIView, UICollectionViewDelegate, UICollectionViewDataSo
             make.right.equalToSuperview().offset(-85)
             make.height.equalTo(20)
         }
-        
-        carouselCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(alcoholPercentageLabel.snp.bottom).offset(20)
-            make.leading.trailing.equalToSuperview()
-            make.height.equalTo(247) // Adjust height as needed for carousel items
-        }
+    
         
         DrinkingProgressBar.snp.makeConstraints { make in
             make.bottom.equalTo(makeAppointmentButton.snp.top).offset(-81)
