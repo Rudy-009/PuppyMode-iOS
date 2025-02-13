@@ -14,4 +14,5 @@ struct DrankAlcoholModel {
     let drinkCategoryId: Int
     let drinkItemId: Int
     let unit: String
+    let alcoholImage: String
 }
