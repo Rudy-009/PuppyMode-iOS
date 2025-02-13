@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import Then
+import Kingfisher
 
 class RankingTableViewCell: UITableViewCell {
     
@@ -24,7 +25,7 @@ class RankingTableViewCell: UITableViewCell {
     }
     
     private lazy var profileImage = UIImageView().then {
-        $0.contentMode = .scaleAspectFit
+        $0.contentMode = .scaleAspectFill
         $0.image = .rankCellDefaultProfile
         $0.layer.cornerRadius = 21
         $0.clipsToBounds = true
@@ -53,16 +54,15 @@ class RankingTableViewCell: UITableViewCell {
     
     public func configure(rankCell: RankUserInfo) {
         rankLabel.text = String(rankCell.rank)
-        profileImage.image = .rankCellDefaultProfile // Reuseable 대처
-        if let imageURL = rankCell.imageUrl {
-            profileImage.load(url: imageURL)
-        }
+        
+        profileImage.image = .rankCellDefaultProfile
+        profileImage.kf.setImage(with: rankCell.imageUrl)
+        
         userNameLabel.text = String.sliceText(string: rankCell.username, max: 14)
         characterInfoLabel.text = String.sliceText(string: rankCell.puppyName ?? rankCell.levelName, max: 17) + ", Level\(rankCell.level) \(rankCell.levelName)"
         self.backgroundColor = .white
         
         trophyImageView.removeFromSuperview() // 기존 트로피 이미지 제거
-        
         
         if rankCell.rank < 4 {
             addTrophyComponent(rank: Rank(rawValue: rankCell.rank) ?? .first)
