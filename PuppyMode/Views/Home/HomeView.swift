@@ -15,6 +15,11 @@ import SVGKit
 class HomeView: UIView {
     
     let superViewSpacing: CGFloat = 16
+    let topRectangleHeight = 53
+    let topRectangleWidth = 53
+    let topButtonsCornerRadius: CGFloat = 10
+    let topButtonSpacing = 11
+    let topButtonSuperViewSpacing = 22
     
     lazy public var editDogNameButton = UIButton().then { button in
         button.setImage(UIImage(named: "EditButtonIcon"), for: .normal)
@@ -22,12 +27,6 @@ class HomeView: UIView {
     
     //MARK: Top Buttons
     lazy private var topButtonStack = UIView()
-    
-    let topRectangleHeight = 53
-    let topRectangleWidth = 53
-    let topButtonsCornerRadius: CGFloat = 10
-    let topButtonSpacing = 11
-    let topButtonSuperViewSpacing = 22
     
     lazy public var decorationButton = UIButton().then { button in
         button.setImage(UIImage(named: "DecorationButtonImage"), for: .normal)
@@ -78,17 +77,10 @@ class HomeView: UIView {
     }
     
     //MARK: Puppy Image & Name
-    
     lazy public var puppyImageButton = UIButton().then { button in
-        button.setImage(.appleLogin , for: .normal)
-        button.imageView?.contentMode = .scaleAspectFit
+        button.imageView?.contentMode = .scaleAspectFill
         button.tintColor = .clear
     }
-    
-//    lazy public var puppyImageView = UIImageView().then {
-//        $0.contentMode = .scaleAspectFill
-//        $0.image = .homeCharacterDefault
-//    }
     
     lazy private var puppyNameLabel = UILabel().then { label in
         label.font = UIFont(name: "OTSBAggroM", size: 25)
@@ -163,17 +155,8 @@ extension HomeView {
         progressBar.setProgress(Float(percentageDouble), animated: false)
         
         guard let url = URL(string: puppyInfo.imageUrl!) else { return }
-        print("Puppy image url is \(url)")
         
-        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
-            guard let _ = data, error == nil else {
-                print("Image download error: \(error?.localizedDescription ?? "")")
-                return
-            }
-            DispatchQueue.main.async {
-                self?.puppyImageButton.load(url: url)
-            }
-        }.resume()
+        self.puppyImageButton.load(url: url)
     }
     
 }
@@ -252,14 +235,6 @@ extension HomeView {
             make.height.equalToSuperview().multipliedBy(0.25)
             make.top.equalTo(topButtonStack.snp.bottom).offset(41)
         }
-        
-//        self.addSubview(puppyImageView)
-//        
-//        puppyImageView.snp.makeConstraints { make in
-//            make.leading.trailing.equalToSuperview().inset(superViewSpacing)
-//            make.height.equalToSuperview().multipliedBy(0.25)
-//            make.top.equalTo(topButtonStack.snp.bottom).offset(41)
-//        }
         
         self.addSubview(puppyNameLabel)
         
