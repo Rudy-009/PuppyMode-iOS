@@ -25,6 +25,12 @@ class PuppySelectionViewController: UIViewController {
         puppySelectionView.cardButton03.addTarget(self, action: #selector(puppyChosed(_:)), for: .touchUpInside)
         puppySelectionView.cardButton02.addTarget(self, action: #selector(puppyChosed(_:)), for: .touchUpInside)
         puppySelectionView.cardButton01.addTarget(self, action: #selector(puppyChosed(_:)), for: .touchUpInside)
+        puppySelectionView.startButton.addTarget(self, action: #selector(startButtonPressed), for: .touchUpInside)
+    }
+    
+    @objc
+    private func startButtonPressed() {
+        RootViewControllerService.toBaseViewController()
     }
     
     @objc

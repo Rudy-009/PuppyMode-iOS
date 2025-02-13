@@ -49,6 +49,11 @@ class PuppySelectionView: UIView {
         $0.layer.cornerRadius = 10
     }
     
+    public lazy var brightView = UIView().then {
+        $0.backgroundColor = .white
+        $0.alpha = 0
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.addComponents()
@@ -56,7 +61,142 @@ class PuppySelectionView: UIView {
         self.addComponentsToShowAfterFetch()
         self.fetchPuppy()
     }
+        
+    public  func showDimAndActiveAnimation(_ sender: PuppyCardButtonView) {
+        // 화면 크기 계산
+        let screenWidth = self.bounds.width
+        let screenHeight = self.bounds.height
+        
+        // 목표 크기
+        let targetWidth = (Double(screenWidth) * 1.8)/3.0
+        let targetHeight = (Double)(targetWidth) * 1.8
+        
+        // 현재 카드의 크기
+        let currentWidth = sender.bounds.width
+        let currentHeight = sender.bounds.height
+        
+        // 스케일 계산
+        let scaleX = targetWidth / currentWidth
+        let scaleY = targetHeight / currentHeight
+        
+        // 화면 중앙 위치 계산
+        let centerX = screenWidth / 2
+        let centerY = screenHeight / 2
+        
+        // 선택된 카드 중앙으로 이동 및 크기 조정
+        let translateX = centerX - sender.center.x
+        let translateY = centerY - sender.center.y
+        
+        self.bringSubviewToFront(dimView)
+        self.bringSubviewToFront(sender)
+        
+        UIView.animate(withDuration: 0.3) { // 선택되지 않은 카드들은 흐리게 처리
+            self.dimView.alpha = 0.6
+            [self.cardButton01, self.cardButton02, self.cardButton03, self.cardButton04].forEach { button in
+                if button != sender{
+                    button.alpha = 0.5
+                }
+            }
+        } completion: { _ in // dim 효과 완료 후 카드 확대 애니메이션
+            UIView.animate(withDuration: 1.0, delay: 0, usingSpringWithDamping: 0.7, // 스프링 효과를 더 부드럽게
+                           initialSpringVelocity: 0.3) { // 초기 속도를 낮춤
+                sender.transform = CGAffineTransform.identity
+                    .translatedBy(x: translateX, y: translateY)
+                    .scaledBy(x: scaleX, y: scaleY)
+            } completion: { _ in
+                if let puppy = self.puppy {
+                    UIView.transition(with: sender, duration: 0.7, options: .transitionFlipFromRight , animations: nil ) { _ in
+                        UIView.transition(with: sender, duration: 0.7, options: .transitionFlipFromRight , animations: nil ) { _ in
+                            UIView.transition(with: sender, duration: 0.5, options: .transitionFlipFromRight , animations: nil ) { _ in
+                                UIView.transition(with: sender, duration: 0.4, options: .transitionFlipFromRight , animations: nil ) { _ in
+                                    UIView.transition(with: sender, duration: 0.3, options: .transitionFlipFromRight , animations: nil ) { _ in
+                                        self.sparkStart()
+                                        UIView.transition(with: sender, duration: 0.2, options: .transitionFlipFromRight , animations: nil ) { _ in
+                                            UIView.transition(with: sender, duration: 0.2, options: .transitionFlipFromRight , animations: nil ) { _ in
+                                                UIView.transition(with: sender, duration: 0.2, options: .transitionFlipFromRight , animations: nil ) { _ in
+                                                    UIView.transition(with: sender, duration: 0.1, options: .transitionFlipFromRight , animations: nil ) { _ in
+                                                        UIView.transition(with: sender, duration: 0.1, options: .transitionFlipFromRight , animations: nil ) { _ in
+                                                            UIView.transition(with: sender, duration: 0.1, options: .transitionFlipFromRight , animations: nil ) { _ in
+                                                                UIView.transition(with: sender, duration: 0.1, options: .transitionFlipFromRight , animations: nil ) { _ in
+                                                                    // White Effect
+                                                                    UIView.animate(withDuration: 0.1) {
+                                                                        // self.brightView.isHidden = true
+                                                                        self.setPuppyImage(sender: sender)
+                                                                        self.dimView.backgroundColor = .white
+                                                                        self.dimView.alpha = 1
+                                                                        sender.isEnabled = false
+                                                                        
+                                                                        self.characterNameLabel.isHidden = false
+                                                                        self.subTitleLabel.isHidden = false
+                                                                        self.startButton.isHidden = false
+                                                                    } completion: { _ in
+                                                                        self.sparkEnd()
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                } // Forth 0.4
+                            } // Third 0.5
+                        } // Second: 0.7
+                    } // First: 0.7
+                }
+            }
+        }
+    }
     
+    private func sparkStart() {
+        UIView.animate(withDuration: 0.5) { // bright
+            self.bringSubviewToFront(self.brightView)
+            self.brightView.isHidden = false
+            self.brightView.alpha = 1
+        }
+    }
+    
+    private func sparkEnd() {
+        UIView.animate(withDuration: 0.5) {
+            self.brightView.alpha = 0
+            self.bringSubviewToFront(self.characterNameLabel)
+            self.bringSubviewToFront(self.subTitleLabel)
+            self.bringSubviewToFront(self.startButton)
+        } completion: { _ in
+            self.sendSubviewToBack(self.brightView)
+        }
+    }
+    
+    private func setPuppyImage(sender: PuppyCardButtonView) {
+        switch puppy {
+        case .bichon:
+            self.characterNameLabel.text = "비숑 프리제"
+            self.subTitleLabel.text = "Bichon Frisé"
+            sender.puppyImage.image  = .babyBichon
+        case .welshCorgi:
+            self.characterNameLabel.text = "웰시코기"
+            self.subTitleLabel.text = "Welsh corgi"
+            sender.puppyImage.image = .babyWelshCorgi
+        case .pomeranian:
+            self.characterNameLabel.text = "포메라니안"
+            self.subTitleLabel.text = "Pomeranian"
+            sender.puppyImage.image = .babyPomeranian
+        case .none:
+            self.characterNameLabel.text = "비숑 프리제"
+            self.subTitleLabel.text = "Bichon Frisé"
+            sender.puppyImage.image  = .babyBichon
+        }
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+}
+
+// MARK: Fetch Puppy Character
+extension PuppySelectionView {
     private func fetchPuppy() {
         let headers: HTTPHeaders = [
             "accept": "*/*",
@@ -81,6 +221,46 @@ class PuppySelectionView: UIView {
         }
     }
     
+    private func convertToPuppyType(str: String) -> PuppyEnum? {
+        switch str {
+        case "포메라니안":
+            return .pomeranian
+        case "웰시코기":
+            return .welshCorgi
+        case "비숑 프리제":
+            return .bichon
+        default:
+            print("No such Puppy \(str)")
+            return nil
+        }
+    }
+
+    //    private func deletePuppy() {
+    //        let headers: HTTPHeaders = [
+    //            "accept": "*/*",
+    //            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+    //        ]
+    //
+    //        AF.request(K.String.puppymodeLink + "/puppies",
+    //                   method: .delete,
+    //                   headers: headers)
+    //            .responseDecodable(of: PuppyDeletionResponse.self)  { [weak self] response in
+    //
+    //                guard let _ = self else { return }
+    //
+    //                switch response.result {
+    //                case .success(let response) :
+    //                    print(response.result)
+    //                case .failure(let error) :
+    //                    print("Network Error: \(error.localizedDescription)")
+    //                }
+    //            }
+    //    }
+
+}
+
+// MARK: Add Components
+extension PuppySelectionView {
     private func addComponents() {
         self.addSubview(dimView)
         self.addSubview(mainTitleLabel)
@@ -139,6 +319,7 @@ class PuppySelectionView: UIView {
         self.addSubview(characterNameLabel)
         self.addSubview(subTitleLabel)
         self.addSubview(startButton)
+        self.addSubview(brightView)
         
         characterNameLabel.snp.makeConstraints { make in
             make.top.equalTo(safeAreaLayoutGuide.snp.top).offset(60)
@@ -156,131 +337,13 @@ class PuppySelectionView: UIView {
             make.height.equalTo(60)
         }
         
+        brightView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
         characterNameLabel.isHidden = true
         subTitleLabel.isHidden = true
         startButton.isHidden = true
-        
+        brightView.isHidden = true
     }
-    
-    public  func showDimAndActiveAnimation(_ sender: PuppyCardButtonView) {
-        // 화면 크기 계산
-        let screenWidth = self.bounds.width
-        let screenHeight = self.bounds.height
-        
-        // 목표 크기
-        let targetWidth = (Double(screenWidth) * 1.8)/3.0
-        let targetHeight = (Double)(targetWidth) * 1.8
-        
-        // 현재 카드의 크기
-        let currentWidth = sender.bounds.width
-        let currentHeight = sender.bounds.height
-        
-        // 스케일 계산
-        let scaleX = targetWidth / currentWidth
-        let scaleY = targetHeight / currentHeight
-        
-        // 화면 중앙 위치 계산
-        let centerX = screenWidth / 2
-        let centerY = screenHeight / 2
-        
-        // 선택된 카드 중앙으로 이동 및 크기 조정
-        let translateX = centerX - sender.center.x
-        let translateY = centerY - sender.center.y
-        
-        self.bringSubviewToFront(dimView)
-        self.bringSubviewToFront(sender)
-        
-        UIView.animate(withDuration: 0.3) {
-            self.dimView.alpha = 0.6
-            // 선택되지 않은 카드들은 흐리게 처리
-            [self.cardButton01, self.cardButton02, self.cardButton03, self.cardButton04].forEach { button in
-                if button != sender{
-                    button.alpha = 0.5
-                }
-            }
-        } completion: { _ in
-            // dim 효과 완료 후 카드 확대 애니메이션
-            UIView.animate(withDuration: 1.0, // 애니메이션 시간을 1초로 증가
-                           delay: 0,
-                           usingSpringWithDamping: 0.7, // 스프링 효과를 더 부드럽게
-                           initialSpringVelocity: 0.3) { // 초기 속도를 낮춤
-                sender.transform = CGAffineTransform.identity
-                    .translatedBy(x: translateX, y: translateY)
-                    .scaledBy(x: scaleX, y: scaleY)
-            } completion: { _ in
-                if let puppy = self.puppy {
-                    switch puppy {
-                    case .bichon:
-                        self.characterNameLabel.text = "비숑 프리제"
-                        self.subTitleLabel.text = "Bichon Frisé"
-                        sender.puppyImage.image  = .babyBichon
-                    case .welshCorgi:
-                        self.characterNameLabel.text = "웰시코기"
-                        self.subTitleLabel.text = "Welsh corgi"
-                        sender.puppyImage.image = .babyWelshCorgi
-                    case .pomeranian:
-                        self.characterNameLabel.text = "포메라니안"
-                        self.subTitleLabel.text = "Pomeranian"
-                        sender.puppyImage.image = .babyPomeranian
-                    }   
-                        UIView.transition(with: sender, duration: 0.5, options: .transitionFlipFromRight , animations: nil ) { _ in
-                            UIView.animate(withDuration: 0.8) {
-                                self.dimView.backgroundColor = .white
-                                self.dimView.alpha = 1
-                                sender.isEnabled = false
-                                
-                                self.characterNameLabel.isHidden = false
-                                self.subTitleLabel.isHidden = false
-                                self.startButton.isHidden = false
-                                self.bringSubviewToFront(self.characterNameLabel)
-                                self.bringSubviewToFront(self.subTitleLabel)
-                                self.bringSubviewToFront(self.startButton)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-        private func convertToPuppyType(str: String) -> PuppyEnum? {
-            switch str {
-            case "포메라니안":
-                return .pomeranian
-            case "웰시코기":
-                return .welshCorgi
-            case "비숑 프리제":
-                return .bichon
-            default:
-                print("No such Puppy \(str)")
-                return nil
-            }
-        }
-        
-        //    private func deletePuppy() {
-        //        let headers: HTTPHeaders = [
-        //            "accept": "*/*",
-        //            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
-        //        ]
-        //
-        //        AF.request(K.String.puppymodeLink + "/puppies",
-        //                   method: .delete,
-        //                   headers: headers)
-        //            .responseDecodable(of: PuppyDeletionResponse.self)  { [weak self] response in
-        //
-        //                guard let _ = self else { return }
-        //
-        //                switch response.result {
-        //                case .success(let response) :
-        //                    print(response.result)
-        //                case .failure(let error) :
-        //                    print("Network Error: \(error.localizedDescription)")
-        //                }
-        //            }
-        //    }
-        
-        
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-        
-    }
+}
