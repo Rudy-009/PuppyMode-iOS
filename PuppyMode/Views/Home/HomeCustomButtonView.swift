@@ -46,7 +46,7 @@ class HomeCustomButtonView: UIButton {
         
         buttonTitleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalToSuperview().offset(20)
+            make.top.equalToSuperview().offset(27)
         }
         
         buttonSubtitleLabel.snp.makeConstraints { make in

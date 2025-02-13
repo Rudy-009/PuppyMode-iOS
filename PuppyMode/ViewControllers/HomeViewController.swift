@@ -100,7 +100,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
 
 //MARK: GET Puppy Character Info
 extension HomeViewController {
-        
+    
     func getPupptInfo() {
         guard let fcm = KeychainService.get(key: UserInfoKey.jwt.rawValue) else { return }
         
@@ -115,6 +115,7 @@ extension HomeViewController {
                 let puppyInfo = response.result
                 print(puppyInfo)
                 self.homeView.configurePuppyInfo(to: puppyInfo)
+                // self.homeView.setPuppyImage(svgURL: URL(string: puppyInfo.imageUrl!)!)
             case .failure(let error):
                 // 강아지 정보 불러오기에 실패했습니다. 라는 알림 띄우기? (다시시도)
                 print("/puppies error", error)
@@ -282,7 +283,7 @@ extension HomeViewController {
     private func showPointAlert() {
         // 알림 버튼 위치 설정
         self.view.addSubview(coinAlermButton)
-        coinAlermButton.coinLabel.text = "10P 휙득 !"
+        coinAlermButton.coinLabel.text = "10P 획득 !"
         
         coinAlermButton.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(66)
@@ -291,8 +292,8 @@ extension HomeViewController {
             make.height.equalTo(59)
         }
         
-        // 알림 버튼 5초 후에 사라지게 설정
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+        // 알림 버튼 10초 후에 사라지게 설정
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.coinAlermButton.removeFromSuperview()
         }
     }

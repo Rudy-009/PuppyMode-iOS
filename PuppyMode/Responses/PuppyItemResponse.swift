@@ -16,7 +16,7 @@ struct PuppyCategoryResponse: Decodable {
 }
 
 struct CategoryResult: Decodable {
-    let categories: [Category] 
+    let categories: [Category]
     let totalCount: Int
 }
 
