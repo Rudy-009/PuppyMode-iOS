@@ -12,11 +12,11 @@ class IntakeViewController: UIViewController {
     var onItemAdded: ((DrankAlcoholModel) -> Void)?
     
     private let alcoholName: String
-    private let alcoholImage: UIImage?
+    private let alcoholImage: String
     private let drinkCategoryId: Int
     private let drinkItemId: Int
     
-    init(alcoholName: String, alcoholImage: UIImage?, drinkCategoryId: Int, drinkItemId: Int) {
+    init(alcoholName: String, alcoholImage: String, drinkCategoryId: Int, drinkItemId: Int) {
         self.alcoholName = alcoholName
         self.alcoholImage = alcoholImage
         self.drinkCategoryId = drinkCategoryId
@@ -33,7 +33,7 @@ class IntakeViewController: UIViewController {
         super.viewDidLoad()
         view = intakeView
         
-        intakeView.configure(with: alcoholImage)
+        intakeView.bottleImageView.sd_setImage(with: URL(string: alcoholImage), placeholderImage: UIImage(named: "placeholder"))
         
         setAction()
     }
@@ -61,7 +61,8 @@ class IntakeViewController: UIViewController {
             isBottleMode: isBottleMode,
             drinkCategoryId: drinkCategoryId,
             drinkItemId: drinkItemId,
-            unit: unit
+            unit: unit,
+            alcoholImage: alcoholImage
         )
 
         print("새로운 아이템: \(newItem.name), \(newItem.sliderValue)\(newItem.unit)")

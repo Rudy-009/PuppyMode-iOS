@@ -7,6 +7,7 @@
 
 import UIKit
 import Alamofire
+import SDWebImage
 
 class HangoverViewController: UIViewController {
     private let hangoverView = HangoverView()
@@ -72,13 +73,11 @@ class HangoverViewController: UIViewController {
         let hasSelection = selectedCells.contains(true)
         
         if hasSelection {
+            hangoverView.nextButton.alpha = 1
             hangoverView.nextButton.isEnabled = true
-            hangoverView.nextButton.backgroundColor = .main
-            hangoverView.skipButton.isEnabled = false
         } else {
+            hangoverView.nextButton.alpha = 0.5
             hangoverView.nextButton.isEnabled = false
-            hangoverView.nextButton.backgroundColor = .white
-            hangoverView.skipButton.isEnabled = true
         }
     }
 
@@ -125,6 +124,7 @@ extension HangoverViewController: UICollectionViewDataSource, UICollectionViewDe
 
         let hangover = hangoverList[indexPath.row]
         cell.hangoverLabel.text = hangover.hangoverName
+        cell.hangoverImage.sd_setImage(with: URL(string: hangover.imageUrl ?? ""), placeholderImage: UIImage(named: "placeholder"))
 
         let isSelected = selectedCells[indexPath.row]
         cell.isCellSelected = isSelected

@@ -23,7 +23,6 @@ class IntakeView: UIView {
     
     let bottleImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "soju_bottle") // Replace with your image asset name
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
@@ -50,6 +49,7 @@ class IntakeView: UIView {
         $0.minimumValue = 0.0
         $0.maximumValue = 10.0 // Default for glass mode (10 steps for glasses)
         $0.value = 1.0
+        $0.tintColor = .main
     }
     
     private let modeSwitchButton = UIButton().then {
@@ -170,27 +170,31 @@ class IntakeView: UIView {
         
     }
     
-    func configure(with image: UIImage?) {
-        bottleImageView.image = image // Set the passed image to the bottleImageView
-    }
-    
     // MARK: - Slider Action (슬라이더 값 변경 시 호출되는 함수)
     @objc private func sliderValueChanged(_ sender: UISlider) {
         updateValueLabel()
+        updateAddButtonState()
     }
     
     @objc private func toggleMode() {
         isBottleMode.toggle() // Toggle between bottle and glass modes
+        updateAddButtonState()
     }
     
     private func updateSliderMode() {
         if isBottleMode {
-            slider.maximumValue = 4.0 // Bottle mode has a max of 4 (4 bottles max)
+            slider.maximumValue = 10.0 // Bottle mode has a max of 4 (4 bottles max)
             slider.value = min(slider.value, slider.maximumValue) // Ensure value is within range
         } else {
             slider.maximumValue = 10.0 // Glass mode has a max of 10 (10 glasses max)
             slider.value = min(slider.value, slider.maximumValue)
         }
+    }
+    
+    private func updateAddButtonState() {
+        let sliderValue = Int(slider.value)
+        addButton.alpha = sliderValue > 0 ? 1.0 : 0.5
+        addButton.isEnabled = sliderValue > 0
     }
     
     private func updateButtonText() {

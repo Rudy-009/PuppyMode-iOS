@@ -15,10 +15,7 @@ class RevokeView: UIView {
         label.text = "탈퇴하기"
     }
     
-    public lazy var popButton = UIButton().then { btn in
-        btn.setImage(UIImage(named: "back"), for: .normal)
-        btn.contentMode = .scaleAspectFit
-    }
+    public lazy var popButton = PopButton()
     
     private lazy var messageFrame = UIView().then { frame in
     }
@@ -72,8 +69,8 @@ class RevokeView: UIView {
         popButton.snp.makeConstraints { make in
             make.centerY.equalTo(titlaLabel.snp.centerY)
             make.leading.equalToSuperview().offset(37)
-            make.width.equalTo(13)
-            make.height.equalTo(20)
+            make.width.equalTo(39)
+            make.height.equalTo(60)
         }
         
         self.addSubview(messageFrame)

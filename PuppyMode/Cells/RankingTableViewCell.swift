@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import Then
+import Kingfisher
 
 class RankingTableViewCell: UITableViewCell {
     
@@ -24,7 +25,7 @@ class RankingTableViewCell: UITableViewCell {
     }
     
     private lazy var profileImage = UIImageView().then {
-        $0.contentMode = .scaleAspectFit
+        $0.contentMode = .scaleAspectFill
         $0.image = .rankCellDefaultProfile
         $0.layer.cornerRadius = 21
         $0.clipsToBounds = true
@@ -53,6 +54,10 @@ class RankingTableViewCell: UITableViewCell {
     
     public func configure(rankCell: RankUserInfo) {
         rankLabel.text = String(rankCell.rank)
+        
+        profileImage.image = .rankCellDefaultProfile
+        profileImage.kf.setImage(with: rankCell.imageUrl)
+        
         userNameLabel.text = String.sliceText(string: rankCell.username, max: 14)
         characterInfoLabel.text = String.sliceText(string: rankCell.puppyName ?? rankCell.levelName, max: 17) + ", Level\(rankCell.level) \(rankCell.levelName)"
         self.backgroundColor = .white
