@@ -156,14 +156,14 @@ extension AlcoholViewController: UICollectionViewDataSource, UICollectionViewDel
         // 이전에 선택된 셀 초기화
         if let previousIndex = selectedCategoryIndex,
            let previousCell = collectionView.cellForItem(at: previousIndex) as? AlcoholKindCollectionViewCell {
-            previousCell.backView.backgroundColor = .clear
-            previousCell.backView.layer.borderColor = UIColor.clear.cgColor
+            previousCell.backView.backgroundColor = .white
+            previousCell.backView.layer.borderColor = UIColor(red: 0.95, green: 0.96, blue: 0.96, alpha: 1).cgColor
         }
 
         // 현재 선택된 셀 변경
         guard let cell = collectionView.cellForItem(at: indexPath) as? AlcoholKindCollectionViewCell else { return }
         cell.backView.backgroundColor = .main
-        cell.backView.layer.borderColor = UIColor(red: 0.563, green: 0.563, blue: 0.563, alpha: 1).cgColor
+        cell.backView.layer.borderColor = UIColor.main.cgColor
 
         // 현재 선택된 인덱스 저장
         selectedCategoryIndex = indexPath
