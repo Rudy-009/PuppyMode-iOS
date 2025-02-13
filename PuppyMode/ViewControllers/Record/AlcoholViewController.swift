@@ -40,6 +40,24 @@ class AlcoholViewController: UIViewController {
         alcoholView.nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
     }
     
+    private func selectFirstCategory() {
+        guard !categories.isEmpty else { return }
+
+        let firstIndexPath = IndexPath(item: 0, section: 0)
+        selectedCategoryIndex = firstIndexPath
+        alcoholView.alcoholCollectionView.selectItem(at: firstIndexPath, animated: false, scrollPosition: [])
+
+        DispatchQueue.main.async {
+            if let cell = self.alcoholView.alcoholCollectionView.cellForItem(at: firstIndexPath) as? AlcoholKindCollectionViewCell {
+                cell.backView.backgroundColor = .main
+                cell.backView.layer.borderColor = UIColor.main.cgColor
+            }
+        }
+
+        let firstCategory = categories[0]
+        setAlcoholListAPI(categoryId: firstCategory.categoryId)
+    }
+    
     private func setCategoryAPI() {
         let url = "https://puppy-mode.site/drinks/categories"
         
@@ -58,7 +76,10 @@ class AlcoholViewController: UIViewController {
             case .success(let data):
                 self.categories = data.result
                 self.alcoholView.alcoholCollectionView.reloadData()
-                case .failure(let error):
+                
+                self.selectFirstCategory()
+                
+            case .failure(let error):
                 print("\(error.localizedDescription)")
             }
         }
