@@ -66,7 +66,7 @@ class DrinkingRecordViewController: UIViewController {
             
             let intakeVC = IntakeViewController(
                 alcoholName: selectedItem.name,
-                alcoholImage: UIImage(named: selectedItem.image),
+                alcoholImage: selectedItem.image,
                 drinkCategoryId: selectedItem.drinkCategoryId,
                 drinkItemId: selectedItem.drinkItemId
             )
@@ -172,7 +172,7 @@ extension DrinkingRecordViewController: UITableViewDataSource, UITableViewDelega
         }
         
         let item = addedItems[indexPath.row]
-        cell.alcoholImageView.image = UIImage(named: "soju_bottle")
+        cell.alcoholImageView.sd_setImage(with: URL(string: item.alcoholImage), placeholderImage: UIImage(named: "placeholder"))
         cell.alcoholNameLabel.text = item.name
         cell.sliderValueLabel.text = "\(item.sliderValue) \(item.isBottleMode ? "병" : "잔")"
         

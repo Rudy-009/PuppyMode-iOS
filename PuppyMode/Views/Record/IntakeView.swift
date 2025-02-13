@@ -23,7 +23,6 @@ class IntakeView: UIView {
     
     let bottleImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "soju_bottle") // Replace with your image asset name
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
@@ -168,10 +167,6 @@ class IntakeView: UIView {
             $0.height.equalTo(60)
         }
         
-    }
-    
-    func configure(with image: UIImage?) {
-        bottleImageView.image = image // Set the passed image to the bottleImageView
     }
     
     // MARK: - Slider Action (슬라이더 값 변경 시 호출되는 함수)

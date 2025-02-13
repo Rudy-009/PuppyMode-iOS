@@ -7,6 +7,7 @@
 
 import UIKit
 import Alamofire
+import SDWebImage
 
 class AlcoholViewController: UIViewController {
     private let alcoholView = AlcoholView()
@@ -120,7 +121,7 @@ class AlcoholViewController: UIViewController {
 
             let intakeVC = IntakeViewController(
                 alcoholName: selectedItem.itemName,
-                alcoholImage: nil, // 필요한 경우 이미지도 전달
+                alcoholImage: selectedItem.imageUrl!, // 필요한 경우 이미지도 전달
                 drinkCategoryId: selectedItem.categoryId ?? 0,
                 drinkItemId: selectedItem.itemId
             )
@@ -186,6 +187,7 @@ extension AlcoholViewController: UITableViewDataSource, UITableViewDelegate {
         let item = alcoholItems[indexPath.row]
         cell.titleLabel.text = "\(item.itemName) \(item.volumeMl ?? 0)ml"
         cell.degreeLabel.text = "\(item.alcoholPercentage)도"
+        cell.alcoholImage.sd_setImage(with: URL(string: item.imageUrl ?? ""), placeholderImage: UIImage(named: "placeholder"))
         
         return cell
     }
