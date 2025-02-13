@@ -7,6 +7,7 @@
 
 import UIKit
 import Alamofire
+import SDWebImage
 
 class HangoverViewController: UIViewController {
     private let hangoverView = HangoverView()
@@ -125,6 +126,7 @@ extension HangoverViewController: UICollectionViewDataSource, UICollectionViewDe
 
         let hangover = hangoverList[indexPath.row]
         cell.hangoverLabel.text = hangover.hangoverName
+        cell.hangoverImage.sd_setImage(with: URL(string: hangover.imageUrl ?? ""), placeholderImage: UIImage(named: "placeholder"))
 
         let isSelected = selectedCells[indexPath.row]
         cell.isCellSelected = isSelected

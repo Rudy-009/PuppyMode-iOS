@@ -4,7 +4,6 @@ import KakaoSDKAuth
 import FirebaseCore
 import UserNotifications
 import Firebase
-import SDWebImageSVGNativeCoder
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -32,10 +31,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // 파이어베이스 Meesaging 설정
         Messaging.messaging().delegate = self
-        
-        // MARK: Add SVG Coder
-        let svgCoder = SDImageSVGNativeCoder.shared
-        SDImageCodersManager.shared.addCoder(svgCoder)
         
         return true
     }
