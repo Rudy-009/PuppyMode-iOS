@@ -291,7 +291,7 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
     
     // 이벤트 점 위치 조정
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventOffsetFor date: Date) -> CGPoint {
-        return CGPoint(x: 0, y: -3)
+        return CGPoint(x: 0, y: -7)
     }
     
     // 선택된 날짜 표시 색상
