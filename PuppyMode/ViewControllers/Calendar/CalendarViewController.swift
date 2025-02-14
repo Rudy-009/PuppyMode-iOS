@@ -273,8 +273,18 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let dateString = dateFormatter.string(from: date)
         
-        if drinkRecords[dateString] != nil {
-            return [.main]
+        if let record = drinkRecords[dateString] {
+            let status = record.status.trimmingCharacters(in: .whitespacesAndNewlines)
+            switch status {
+            case "술 예쁘게 마신 날":
+                return [UIColor.main]
+            case "술 힘들게 마신 날":
+                return [UIColor.orange]
+            case "강아지가 된 날":
+                return [UIColor.red]
+            default:
+                return nil
+            }
         }
         return nil
     }
