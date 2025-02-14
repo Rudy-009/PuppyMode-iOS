@@ -263,6 +263,7 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
         })
         
         self.calendarView.updateCalendarScope(to: .week)
+        calendarView.calendar.reloadData()
     }
     
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
@@ -275,6 +276,27 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
     
     // 이벤트 표시
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventDefaultColorsFor date: Date) -> [UIColor]? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateString = dateFormatter.string(from: date)
+        
+        if let record = drinkRecords[dateString] {
+            let status = record.status.trimmingCharacters(in: .whitespacesAndNewlines)
+            switch status {
+            case "술 예쁘게 마신 날":
+                return [UIColor.main]
+            case "술 힘들게 마신 날":
+                return [UIColor.orange]
+            case "강아지가 된 날":
+                return [UIColor.red]
+            default:
+                return nil
+            }
+        }
+        return nil
+    }
+    
+    func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventSelectionColorsFor date: Date) -> [UIColor]? {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let dateString = dateFormatter.string(from: date)
