@@ -88,10 +88,6 @@ class CalendarView: UIView {
         // 오늘 날짜 표시
         $0.appearance.todayColor = .none
         $0.appearance.titleTodayColor = .black
-        
-        // 이벤트
-        $0.appearance.eventDefaultColor = .main
-        $0.appearance.eventSelectionColor = .main
     }
     
     // 모달 배경

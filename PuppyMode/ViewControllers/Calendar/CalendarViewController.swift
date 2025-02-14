@@ -24,6 +24,12 @@ class CalendarViewController: UIViewController {
         fetchDrinkRecords(for: calendarView.calendar.currentPage)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        backButtonTapped() // 초기 상태로 되돌리기
+        fetchDrinkRecords(for: calendarView.calendar.currentPage) // 데이터 다시 가져오기
+    }
+    
     // MARK: - function
     private func setDelegate() {
         calendarView.calendar.delegate = self
@@ -102,12 +108,16 @@ class CalendarViewController: UIViewController {
             recordButton.layer.shadowOpacity = 1
             recordButton.layer.shadowRadius = 2
             recordButton.layer.shadowOffset = CGSize(width: 0, height: 4)
+            
+            recordButton.rightButton.isHidden = false
         } else {
             // 미입력 상태 - 원래대로 복구
             recordButton.circleView.layer.borderColor = UIColor(red: 0.873, green: 0.873, blue: 0.873, alpha: 1).cgColor
             recordButton.updateGradientColor(startColor: .white, endColor: UIColor(red: 0.781, green: 0.781, blue: 0.781, alpha: 1))
             
             recordButton.layer.shadowOpacity = 0
+            
+            recordButton.rightButton.isHidden = true
         }
     }
     
@@ -253,6 +263,7 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
         })
         
         self.calendarView.updateCalendarScope(to: .week)
+        calendarView.calendar.reloadData()
     }
     
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
@@ -269,15 +280,46 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let dateString = dateFormatter.string(from: date)
         
-        if drinkRecords[dateString] != nil {
-            return [.main]
+        if let record = drinkRecords[dateString] {
+            let status = record.status.trimmingCharacters(in: .whitespacesAndNewlines)
+            switch status {
+            case "술 예쁘게 마신 날":
+                return [UIColor.main]
+            case "술 힘들게 마신 날":
+                return [UIColor.orange]
+            case "강아지가 된 날":
+                return [UIColor.red]
+            default:
+                return nil
+            }
+        }
+        return nil
+    }
+    
+    func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventSelectionColorsFor date: Date) -> [UIColor]? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateString = dateFormatter.string(from: date)
+        
+        if let record = drinkRecords[dateString] {
+            let status = record.status.trimmingCharacters(in: .whitespacesAndNewlines)
+            switch status {
+            case "술 예쁘게 마신 날":
+                return [UIColor.main]
+            case "술 힘들게 마신 날":
+                return [UIColor.orange]
+            case "강아지가 된 날":
+                return [UIColor.red]
+            default:
+                return nil
+            }
         }
         return nil
     }
     
     // 이벤트 점 위치 조정
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventOffsetFor date: Date) -> CGPoint {
-        return CGPoint(x: 0, y: -3)
+        return CGPoint(x: 0, y: -7)
     }
     
     // 선택된 날짜 표시 색상
