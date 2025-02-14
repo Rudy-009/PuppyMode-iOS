@@ -401,13 +401,9 @@ extension DecoViewController: UICollectionViewDelegate {
         
         // 아이템 소유가 된 경우
         if selectedItem.isPurchased == true {
-            
             // 아이템 착용이 안된 경우
             if selectedItem.isWeared == false {
-                // 아이템 착용 확인
-                let alert = UIAlertController(title: nil, message: "아이템을 착용하시겠습니까?", preferredStyle: .alert)
-                
-                let wearAction = UIAlertAction(title: "확인", style: .default) { _ in
+
                     self.postWearItemToServer(categoryId: categoryId!, itemId: selectedItem.itemId)
                     
 //                    // 착용한 아이템에 대해 셀 색상 변경
@@ -415,28 +411,9 @@ extension DecoViewController: UICollectionViewDelegate {
 //                        self.updateCellUI(cell as! DecoItemViewCell, isPurchased: true, isWeared: false)
 //                    }
                 }
-                let cancelAction = UIAlertAction(title: "취소", style: .cancel)
-                
-                alert.addAction(wearAction)
-                alert.addAction(cancelAction)
-                
-                present(alert, animated: true, completion: nil)
-            }
-            
             // 아이템 착용이 된 경우
             if selectedItem.isWeared == true {
-                let alert = UIAlertController(title: nil, message: "착용한 아이템을 해제하시겠습니까?", preferredStyle: .alert)
-                
-                let wearAction = UIAlertAction(title: "확인", style: .default) { _ in
-                    self.postUnWearItemToServer(categoryId: categoryId!, itemId: selectedItem.itemId)
-
-                }
-                let cancelAction = UIAlertAction(title: "취소", style: .cancel)
-                
-                alert.addAction(wearAction)
-                alert.addAction(cancelAction)
-                
-                present(alert, animated: true, completion: nil)
+                self.postUnWearItemToServer(categoryId: categoryId!, itemId: selectedItem.itemId)
             }
         }
     }
