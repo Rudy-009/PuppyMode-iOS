@@ -24,6 +24,12 @@ class CalendarViewController: UIViewController {
         fetchDrinkRecords(for: calendarView.calendar.currentPage)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        backButtonTapped() // 초기 상태로 되돌리기
+        fetchDrinkRecords(for: calendarView.calendar.currentPage) // 데이터 다시 가져오기
+    }
+    
     // MARK: - function
     private func setDelegate() {
         calendarView.calendar.delegate = self
