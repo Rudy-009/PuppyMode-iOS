@@ -12,6 +12,8 @@ import Alamofire
 class CalendarViewController: UIViewController {
     private let calendarView = CalendarView()
     private var drinkRecords: [String: DrinkRecord] = [:] // 날짜별 상태 저장
+    private var selectedDate: Date?
+    private var selectedDrinkHistoryId: Int?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -157,6 +159,18 @@ class CalendarViewController: UIViewController {
         let detailVC = CalendarDetailViewController()
         detailVC.hidesBottomBarWhenPushed = true
         self.navigationController?.isNavigationBarHidden = true
+        
+        if let selectedDate = selectedDate {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy.MM.dd"
+            dateFormatter.locale = Locale(identifier: "ko_KR")
+            detailVC.calendarDetailView.dateLabel.text = dateFormatter.string(from: selectedDate)
+        }
+        
+        if let drinkHistoryId = selectedDrinkHistoryId {
+            detailVC.drinkHistoryId = drinkHistoryId
+        }
+        
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
 
@@ -165,17 +179,25 @@ class CalendarViewController: UIViewController {
 // MARK: - extension
 extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearance, FSCalendarDataSource {
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+        selectedDate = date
+
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy.MM.dd"
-        dateFormatter.locale = Locale(identifier: "ko_KR")
-        let formattedDate = dateFormatter.string(from: date)
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateString = dateFormatter.string(from: date)
+
+        // 선택한 날짜에 해당하는 음주 기록 ID 가져오기
+        if let record = drinkRecords[dateString] {
+            selectedDrinkHistoryId = record.drinkHistoryId
+        } else {
+            selectedDrinkHistoryId = nil
+        }
+
+        let displayFormatter = DateFormatter()
+        displayFormatter.dateFormat = "yyyy.MM.dd"
+        displayFormatter.locale = Locale(identifier: "ko_KR")
+        let formattedDate = displayFormatter.string(from: date)
         
         calendarView.dateView.dateLabel.text = formattedDate
-        
-        // 날짜에 해당하는 음주 기록 상태 가져오기
-        let dateString = DateFormatter().then {
-            $0.dateFormat = "yyyy-MM-dd"
-        }.string(from: date)
         
         if let record = drinkRecords[dateString] {
             let status = record.status.trimmingCharacters(in: .whitespacesAndNewlines)

@@ -26,7 +26,7 @@ class AlcoholView: UIView {
     // 주종 옵션 컬렉션뷰
     public let alcoholCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
         $0.scrollDirection = .horizontal
-        $0.estimatedItemSize = .init(width: 58, height: 58)
+        $0.estimatedItemSize = .init(width: 75, height: 46)
         $0.minimumLineSpacing = 25
     }).then {
         $0.backgroundColor = .clear
@@ -113,7 +113,7 @@ class AlcoholView: UIView {
         alcoholCollectionView.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(30)
             $0.horizontalEdges.equalToSuperview()
-            $0.height.equalTo(58)
+            $0.height.equalTo(46)
         }
         
         alcoholTableView.snp.makeConstraints {

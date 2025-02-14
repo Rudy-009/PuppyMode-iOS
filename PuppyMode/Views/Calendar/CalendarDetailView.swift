@@ -64,7 +64,7 @@ class CalendarDetailView: UIView {
         $0.font = UIFont(name: "NotoSansKR-Medium", size: 18)
     }
     
-    private let progressView = UIProgressView().then {
+    public let progressView = UIProgressView().then {
         $0.progressTintColor = .main
         $0.trackTintColor = UIColor(red: 0.975, green: 0.975, blue: 0.975, alpha: 1)
         
@@ -79,15 +79,6 @@ class CalendarDetailView: UIView {
         $0.progress = 0.3
     }
     
-    private let progressViewShadow = UIView().then {
-        $0.backgroundColor = .white
-        $0.layer.cornerRadius = 10.5
-        $0.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
-        $0.layer.shadowOpacity = 1
-        $0.layer.shadowRadius = 2
-        $0.layer.shadowOffset = CGSize(width: 0, height: 4)
-    }
-    
     // 안전주량
     private let safeLabel = UILabel().then {
         $0.text = "안전주량"
@@ -99,14 +90,12 @@ class CalendarDetailView: UIView {
         $0.image = .imgProgressPointer
     }
     
-    private let safeBottleLabel = UILabel().then {
-        $0.text = "1.5병"
+    public let safeBottleLabel = UILabel().then {
         $0.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.263, alpha: 0.6)
         $0.font = UIFont(name: "NotoSansKR-Medium", size: 14)
     }
     
-    private let safeGlassLabel = UILabel().then {
-        $0.text = "5잔"
+    public let safeGlassLabel = UILabel().then {
         $0.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.263, alpha: 0.6)
         $0.font = UIFont(name: "NotoSansKR-Medium", size: 14)
     }
@@ -122,14 +111,12 @@ class CalendarDetailView: UIView {
         $0.image = .imgProgressPointer
     }
     
-    private let deadBottleLabel = UILabel().then {
-        $0.text = "2.5병"
+    public let deadBottleLabel = UILabel().then {
         $0.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.263, alpha: 0.6)
         $0.font = UIFont(name: "NotoSansKR-Medium", size: 14)
     }
     
-    private let deadGlassLabel = UILabel().then {
-        $0.text = "16잔"
+    public let deadGlassLabel = UILabel().then {
         $0.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.263, alpha: 0.6)
         $0.font = UIFont(name: "NotoSansKR-Medium", size: 14)
     }
@@ -138,6 +125,7 @@ class CalendarDetailView: UIView {
     public let alcoholTableView = UITableView().then {
         $0.register(CalendarAlcoholTableViewCell.self, forCellReuseIdentifier: CalendarAlcoholTableViewCell.identifier)
         $0.showsVerticalScrollIndicator = false
+        $0.isScrollEnabled = false
         $0.separatorStyle = .none
     }
     
@@ -189,7 +177,7 @@ class CalendarDetailView: UIView {
     
     // 먹이 이미지
     public let feedImage = UIImageView().then {
-        $0.backgroundColor = .main
+        $0.backgroundColor = .clear
     }
     
     // MARK: - init
@@ -259,7 +247,7 @@ class CalendarDetailView: UIView {
         
         [
             intakeBackgroundView, backgroundLine,
-            intakeLabel, progressViewShadow, progressView,
+            intakeLabel, progressView,
             safeLabel, safePointImage, safeBottleLabel, safeGlassLabel,
             deadLabel, deadPointImage, deadBottleLabel, deadGlassLabel,
             alcoholTableView,
@@ -284,12 +272,6 @@ class CalendarDetailView: UIView {
         intakeLabel.snp.makeConstraints {
             $0.top.equalTo(intakeBackgroundView.snp.top).offset(34)
             $0.left.equalTo(intakeBackgroundView.snp.left).offset(21)
-        }
-        
-        progressViewShadow.snp.makeConstraints {
-            $0.top.equalTo(intakeLabel.snp.bottom).offset(33)
-            $0.horizontalEdges.equalTo(intakeBackgroundView).inset(14)
-            $0.height.equalTo(21)
         }
         
         progressView.snp.makeConstraints {
