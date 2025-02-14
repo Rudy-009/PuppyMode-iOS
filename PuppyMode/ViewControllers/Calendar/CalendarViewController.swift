@@ -102,12 +102,16 @@ class CalendarViewController: UIViewController {
             recordButton.layer.shadowOpacity = 1
             recordButton.layer.shadowRadius = 2
             recordButton.layer.shadowOffset = CGSize(width: 0, height: 4)
+            
+            recordButton.rightButton.isHidden = false
         } else {
             // 미입력 상태 - 원래대로 복구
             recordButton.circleView.layer.borderColor = UIColor(red: 0.873, green: 0.873, blue: 0.873, alpha: 1).cgColor
             recordButton.updateGradientColor(startColor: .white, endColor: UIColor(red: 0.781, green: 0.781, blue: 0.781, alpha: 1))
             
             recordButton.layer.shadowOpacity = 0
+            
+            recordButton.rightButton.isHidden = true
         }
     }
     
