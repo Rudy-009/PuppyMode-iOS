@@ -9,14 +9,12 @@ import UIKit
 
 class HomeCustomButtonView: UIButton {
     
-    lazy private var frameView = UIView().then {
-        $0.clipsToBounds = true
-        $0.layer.cornerRadius = 10
-        $0.layer.borderWidth = 1
-        $0.layer.borderColor = UIColor(red: 0.83, green: 0.83, blue: 0.83, alpha: 1).cgColor
-        $0.backgroundColor = .white
-        $0.isUserInteractionEnabled = false
+    lazy private var backgroundImage = UIImageView().then {
+        $0.image = .bottomButton
+        $0.contentMode = .scaleAspectFill
     }
+    
+    private lazy var labelFrame = UIView()
     
     lazy private var buttonTitleLabel = UILabel().then { label in
         label.font = UIFont(name: "NotoSansKR-Medium", size: 20)
@@ -35,23 +33,32 @@ class HomeCustomButtonView: UIButton {
     }
     
     private func addComponents() {
-        self.addSubview(frameView)
-        frameView.addSubview(buttonTitleLabel)
-        frameView.addSubview(buttonSubtitleLabel)
+        self.addSubview(backgroundImage)
         
-        // framView의 제약조건 수정
-        frameView.snp.makeConstraints { make in
+        backgroundImage.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
         
+        backgroundImage.addSubview(labelFrame)
+        
+        labelFrame.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().offset(-3)
+            make.leading.trailing.equalToSuperview().inset(10)
+            make.height.equalTo(backgroundImage.snp.height).multipliedBy(0.5)
+        }
+        
+        labelFrame.addSubview(buttonTitleLabel)
+        labelFrame.addSubview(buttonSubtitleLabel)
+        
         buttonTitleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalToSuperview().offset(27)
+            make.top.equalToSuperview()
         }
         
         buttonSubtitleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(buttonTitleLabel.snp.bottom).offset(10)
+            make.bottom.equalToSuperview()
         }
     }
     
@@ -70,4 +77,9 @@ class HomeCustomButtonView: UIButton {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
+
+import SwiftUI
+#Preview {
+    HomeViewController()
 }
