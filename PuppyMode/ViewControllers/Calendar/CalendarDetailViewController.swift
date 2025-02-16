@@ -196,8 +196,8 @@ extension CalendarDetailViewController: UITableViewDataSource, UITableViewDelega
                 return UITableViewCell()
             }
             let item = hangoverDetails[indexPath.row]
-            cell.hangoverLabel.text = item.imageUrl
-            cell.hangoverImage.sd_setImage(with: URL(string: item.hangoverName), placeholderImage: UIImage(named: "placeholder"))
+            cell.hangoverLabel.text = item.hangoverName
+            cell.hangoverImage.sd_setImage(with: URL(string: item.imageUrl), placeholderImage: UIImage(named: "placeholder"))
             return cell
         }
         return UITableViewCell()
