@@ -86,8 +86,8 @@ class CalendarView: UIView {
         $0.locale = Locale(identifier: "ko_KR")
         
         // 오늘 날짜 표시
-        $0.appearance.todayColor = .none
-        $0.appearance.titleTodayColor = .black
+        $0.appearance.todayColor = .main
+        $0.appearance.titleTodayColor = .white
     }
     
     // 모달 배경

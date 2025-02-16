@@ -90,16 +90,6 @@ class CalendarDetailView: UIView {
         $0.image = .imgProgressPointer
     }
     
-    public let safeBottleLabel = UILabel().then {
-        $0.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.263, alpha: 0.6)
-        $0.font = UIFont(name: "NotoSansKR-Medium", size: 14)
-    }
-    
-    public let safeGlassLabel = UILabel().then {
-        $0.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.263, alpha: 0.6)
-        $0.font = UIFont(name: "NotoSansKR-Medium", size: 14)
-    }
-    
     // 치사량
     private let deadLabel = UILabel().then {
         $0.text = "치사량"
@@ -109,16 +99,6 @@ class CalendarDetailView: UIView {
     
     private let deadPointImage = UIImageView().then {
         $0.image = .imgProgressPointer
-    }
-    
-    public let deadBottleLabel = UILabel().then {
-        $0.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.263, alpha: 0.6)
-        $0.font = UIFont(name: "NotoSansKR-Medium", size: 14)
-    }
-    
-    public let deadGlassLabel = UILabel().then {
-        $0.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.263, alpha: 0.6)
-        $0.font = UIFont(name: "NotoSansKR-Medium", size: 14)
     }
     
     // 테이블뷰
@@ -248,8 +228,8 @@ class CalendarDetailView: UIView {
         [
             intakeBackgroundView, backgroundLine,
             intakeLabel, progressView,
-            safeLabel, safePointImage, safeBottleLabel, safeGlassLabel,
-            deadLabel, deadPointImage, deadBottleLabel, deadGlassLabel,
+            safeLabel, safePointImage,
+            deadLabel, deadPointImage,
             alcoholTableView,
             hangoverBackgroundView, hangoverTitleLabel, hangoverTableView,
             feedBackgroundView, feedTitleLabel, feedLabel, feedImage
@@ -266,7 +246,7 @@ class CalendarDetailView: UIView {
         backgroundLine.snp.makeConstraints {
             $0.height.equalTo(1)
             $0.horizontalEdges.equalTo(intakeBackgroundView)
-            $0.top.equalTo(intakeBackgroundView.snp.top).offset(206)
+            $0.top.equalTo(intakeBackgroundView.snp.top).offset(170)
         }
         
         intakeLabel.snp.makeConstraints {
@@ -290,16 +270,6 @@ class CalendarDetailView: UIView {
             $0.centerY.equalTo(progressView)
         }
         
-        safeBottleLabel.snp.makeConstraints {
-            $0.top.equalTo(safePointImage.snp.bottom).offset(20)
-            $0.centerX.equalTo(safePointImage)
-        }
-        
-        safeGlassLabel.snp.makeConstraints {
-            $0.top.equalTo(safeBottleLabel.snp.bottom)
-            $0.centerX.equalTo(safePointImage)
-        }
-        
         deadLabel.snp.makeConstraints {
             $0.centerY.equalTo(intakeLabel)
             $0.right.equalTo(intakeBackgroundView.snp.right).offset(-11)
@@ -308,16 +278,6 @@ class CalendarDetailView: UIView {
         deadPointImage.snp.makeConstraints {
             $0.centerX.equalTo(deadLabel)
             $0.centerY.equalTo(progressView)
-        }
-        
-        deadBottleLabel.snp.makeConstraints {
-            $0.top.equalTo(deadPointImage.snp.bottom).offset(20)
-            $0.centerX.equalTo(deadPointImage)
-        }
-        
-        deadGlassLabel.snp.makeConstraints {
-            $0.top.equalTo(deadBottleLabel.snp.bottom)
-            $0.centerX.equalTo(deadPointImage)
         }
         
         alcoholTableView.snp.makeConstraints {

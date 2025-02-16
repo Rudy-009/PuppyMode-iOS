@@ -74,6 +74,7 @@ class CalendarViewController: UIViewController {
         let attributedString = NSMutableAttributedString(string: title)
         
         let recordButton = calendarView.dateView.recordButton
+        let appointmentButton = calendarView.dateView.appointmentButton
         let defaultFont: UIFont
         let defaultColor: UIColor
 
@@ -104,6 +105,9 @@ class CalendarViewController: UIViewController {
             recordButton.circleView.layer.borderColor = borderColor.cgColor
             recordButton.updateGradientColor(startColor: .white, endColor: gradientEndColor)
             
+            appointmentButton.circleView.layer.borderColor = borderColor.cgColor
+            appointmentButton.updateGradientColor(startColor: .white, endColor: gradientEndColor)
+            
             recordButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
             recordButton.layer.shadowOpacity = 1
             recordButton.layer.shadowRadius = 2
@@ -114,6 +118,9 @@ class CalendarViewController: UIViewController {
             // 미입력 상태 - 원래대로 복구
             recordButton.circleView.layer.borderColor = UIColor(red: 0.873, green: 0.873, blue: 0.873, alpha: 1).cgColor
             recordButton.updateGradientColor(startColor: .white, endColor: UIColor(red: 0.781, green: 0.781, blue: 0.781, alpha: 1))
+            
+            appointmentButton.circleView.layer.borderColor = UIColor(red: 0.873, green: 0.873, blue: 0.873, alpha: 1).cgColor
+            appointmentButton.updateGradientColor(startColor: .white, endColor: UIColor(red: 0.781, green: 0.781, blue: 0.781, alpha: 1))
             
             recordButton.layer.shadowOpacity = 0
             
@@ -221,6 +228,7 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
                                    highlightColor: UIColor.main,
                                    borderColor: UIColor(red: 0.79, green: 0.85, blue: 0.83, alpha: 1),
                                    gradientEndColor: .mainMedium)
+                calendarView.dateView.backView.backgroundColor = .mainLight
                 
             case "술 힘들게 마신 날":
                 updateRecordButton(status: status,
@@ -229,6 +237,7 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
                                    highlightColor: UIColor.orange,
                                    borderColor: UIColor(red: 0.94, green: 0.84, blue: 0.69, alpha: 1),
                                    gradientEndColor: .orangeMedium)
+                calendarView.dateView.backView.backgroundColor = .orangeLight
                 
             case "강아지가 된 날":
                 updateRecordButton(status: status,
@@ -237,13 +246,16 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
                                    highlightColor: UIColor.red,
                                    borderColor: UIColor(red: 0.95, green: 0.8, blue: 0.8, alpha: 1),
                                    gradientEndColor: .redMedium)
+                calendarView.dateView.backView.backgroundColor = .redLight
                 
             default:
                 updateRecordButton(status: nil, title: "미입력", highlightText: nil, highlightColor: nil, borderColor: nil, gradientEndColor: nil)
+                calendarView.dateView.backView.backgroundColor = .white
             }
         } else {
             calendarView.dateView.dayLabel.text = "건강 챙긴 날"
             updateRecordButton(status: nil, title: "미입력", highlightText: nil, highlightColor: nil, borderColor: nil, gradientEndColor: nil)
+            calendarView.dateView.backView.backgroundColor = .white
         }
 
         UIView.animate(withDuration: 0.3, animations: {

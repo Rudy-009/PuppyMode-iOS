@@ -86,19 +86,8 @@ class CalendarDetailViewController: UIViewController {
         let safetyValue = result.drinkItems.first?.safetyValue ?? 0
         let maxValue = result.drinkItems.first?.maxValue ?? 0
         
-        let safetyBottles = safetyValue / 360
-        let safetyGlasses = safetyValue / 50
-        
-        let maxBottles = maxValue / 360
-        let maxGlasses = maxValue / 50
-        
         let progress = min(Float(drinkAmount) / Float(maxValue), 1.0)
         calendarDetailView.progressView.progress = progress
-        
-        calendarDetailView.safeBottleLabel.text = "\(safetyBottles)병"
-        calendarDetailView.safeGlassLabel.text = "\(safetyGlasses)잔"
-        calendarDetailView.deadBottleLabel.text = "\(maxBottles)병"
-        calendarDetailView.deadGlassLabel.text = "\(maxGlasses)잔"
     }
     
     private func updateTableViewHeight() {
@@ -196,8 +185,8 @@ extension CalendarDetailViewController: UITableViewDataSource, UITableViewDelega
                 return UITableViewCell()
             }
             let item = hangoverDetails[indexPath.row]
-            cell.hangoverLabel.text = item.imageUrl
-            cell.hangoverImage.sd_setImage(with: URL(string: item.hangoverName), placeholderImage: UIImage(named: "placeholder"))
+            cell.hangoverLabel.text = item.hangoverName
+            cell.hangoverImage.sd_setImage(with: URL(string: item.imageUrl), placeholderImage: UIImage(named: "placeholder"))
             return cell
         }
         return UITableViewCell()
