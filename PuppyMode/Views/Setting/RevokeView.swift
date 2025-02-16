@@ -34,8 +34,7 @@ class RevokeView: UIView {
     }
     
     private lazy var characterImage = UIImageView().then { image in
-        image.image = .babyWelshCorgi
-        image.contentMode = .scaleAspectFit
+        image.contentMode = .scaleAspectFill
     }
     
     public lazy var revokeButton = UIButton().then { btn in
@@ -68,7 +67,7 @@ class RevokeView: UIView {
         
         popButton.snp.makeConstraints { make in
             make.centerY.equalTo(titlaLabel.snp.centerY)
-            make.leading.equalToSuperview().offset(37)
+            make.leading.equalToSuperview().offset(22)
             make.width.equalTo(39)
             make.height.equalTo(60)
         }
@@ -89,7 +88,7 @@ class RevokeView: UIView {
         }
         
         subMessageLabel.snp.makeConstraints { make in
-            make.bottom.leading.equalToSuperview()
+            make.bottom.leading.trailing.equalToSuperview()
         }
         
         self.addSubview(revokeButton)
@@ -106,13 +105,13 @@ class RevokeView: UIView {
             make.trailing.equalToSuperview().inset(20)
             make.bottom.equalTo(revokeButton.snp.top).offset(-30)
             make.width.equalTo(200)
-            make.height.equalTo(200)
+            make.height.equalTo(300)
         }
         
     }
     
     public func configure(puppy: PuppyInfoResult) {
-        subMessageLabel.text = puppy.puppyName + "이는 이제 볼 수 없을지도 몰라요.."
+        subMessageLabel.text = String.sliceText(string: puppy.puppyName, max: 13) + "이는 이제 볼 수 없을지도 몰라요.."
         characterImage.load(url: URL(string: puppy.imageUrl!)!)
     }
 }

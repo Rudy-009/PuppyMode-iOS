@@ -11,16 +11,16 @@ struct LoginResponse: Codable {
     let isSuccess: Bool
     let code: String
     let message: String
-    let result: KakaoLoginResult
+    let result: LoginResult
 }
 
-struct KakaoLoginResult: Codable {
+struct LoginResult: Codable {
     let accessToken: String
-    let refreshToken: String
-    let userInfo: KakaoUserInfo
+    let refreshToken: String?
+    let userInfo: UserInfo
 }
 
-struct KakaoUserInfo: Codable {
+struct UserInfo: Codable {
     let username: String
     let isNewUser: Bool
 }
