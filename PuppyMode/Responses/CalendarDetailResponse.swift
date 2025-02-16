@@ -17,7 +17,7 @@ struct CalendarDetailResponse: Codable {
 struct CalendarDetail: Codable {
     let drinkHistoryId: Int
     let drinkDate: String
-    let drinkAmount: Int
+    let drinkAmount: Double
     let drinkItems: [DrinkItem]
     let feed: Feed?
     let hangoverItems: [HangoverItem]?
@@ -26,9 +26,9 @@ struct CalendarDetail: Codable {
 struct DrinkItem: Codable {
     let itemName: String
     let unit: String
-    let value: Int
-    let safetyValue: Int
-    let maxValue: Int
+    let value: Double
+    let safetyValue: Int?
+    let maxValue: Double
 }
 
 struct Feed: Codable {
