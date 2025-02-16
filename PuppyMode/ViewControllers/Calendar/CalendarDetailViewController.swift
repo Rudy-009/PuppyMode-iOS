@@ -39,7 +39,7 @@ class CalendarDetailViewController: UIViewController {
         let url = "https://puppy-mode.site/calendar/daily?drinkHistoryId=\(drinkHistoryId ?? 0)"
         print(drinkHistoryId)
         
-        guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+        guard let jwt = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else {
             print("JWT Token not found")
             return
         }

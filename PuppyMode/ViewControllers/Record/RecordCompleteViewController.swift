@@ -94,7 +94,7 @@ class RecordCompleteViewController: UIViewController {
     private func setFeedAPI() {
         let url = "https://puppy-mode.site/drinks/feed"
         
-        guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+        guard let jwt = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else {
             print("JWT Token not found")
             return
         }
