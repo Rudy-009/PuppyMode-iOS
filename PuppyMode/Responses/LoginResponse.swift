@@ -11,18 +11,33 @@ struct LoginResponse: Codable {
     let isSuccess: Bool
     let code: String
     let message: String
-    let result: LoginResult
+    let result: KakaoLoginResult
 }
 
-struct LoginResult: Codable {
-    let jwt: String
-    let userInfo: UserInfo
+struct KakaoLoginResult: Codable {
+    let accessToken: String
+    let refreshToken: String
+    let userInfo: KakaoUserInfo
 }
 
-struct UserInfo: Codable {
+struct KakaoUserInfo: Codable {
     let username: String
     let isNewUser: Bool
 }
+
+//{
+//  "isSuccess": true,
+//  "code": "string",
+//  "message": "string",
+//  "result": {
+//    "accessToken": "string",
+//    "refreshToken": "string",
+//    "userInfo": {
+//      "username": "string",
+//      "isNewUser": true
+//    }
+//  }
+//}
 
 struct RevokeResponse: Codable {
     let isSuccess: Bool
