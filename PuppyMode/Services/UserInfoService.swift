@@ -10,12 +10,12 @@ import Alamofire
 class UserInfoService {
     
     static func addUserInfoToKeychainService(userInfo: LoginResult) -> Bool {
-        return  KeychainService.add(key: UserInfoKey.jwt.rawValue, value: userInfo.jwt) &&
+        return  KeychainService.add(key: UserInfoKey.accessToken.rawValue, value: userInfo.accessToken) &&
                 KeychainService.add(key: UserInfoKey.username.rawValue, value: userInfo.userInfo.username)
     }
     
     static func deleteAllUserInfoFromKeychainService() -> Bool {
-        return  KeychainService.delete(key: UserInfoKey.jwt.rawValue) &&
+        return  KeychainService.delete(key: UserInfoKey.accessToken.rawValue) &&
                 KeychainService.delete(key: UserInfoKey.username.rawValue)
     }
     
@@ -26,7 +26,7 @@ class UserInfoService {
     
     @MainActor
     static func getUserInfo() async throws -> UserInfoResponse? {
-        guard let fcm = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+        guard let fcm = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else {
             return nil
         }
         

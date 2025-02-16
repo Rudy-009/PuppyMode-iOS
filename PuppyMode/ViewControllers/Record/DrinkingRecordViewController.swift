@@ -107,7 +107,7 @@ class DrinkingRecordViewController: UIViewController {
             "alcoholTolerance": alcoholTolerance
         ]
         
-        guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+        guard let jwt = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else {
             print("JWT Token not found")
             return
         }
