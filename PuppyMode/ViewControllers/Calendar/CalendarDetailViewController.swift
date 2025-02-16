@@ -37,7 +37,7 @@ class CalendarDetailViewController: UIViewController {
     
     private func fetchCalendarDetails() {
         let url = "https://puppy-mode.site/calendar/daily?drinkHistoryId=\(drinkHistoryId ?? 0)"
-        print(drinkHistoryId)
+        print(drinkHistoryId!)
         
         guard let jwt = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else {
             print("JWT Token not found")
@@ -49,15 +49,24 @@ class CalendarDetailViewController: UIViewController {
             "Authorization": "Bearer \(jwt)"
         ]
         
-        AF.request(url, method: .get, headers: headers).responseDecodable(of: CalendarDetailResponse.self) { response in
+        AF.request(url, method: .get, headers: headers).responseData { response in
             switch response.result {
             case .success(let data):
-                if let result = data.result.first {
-                    self.drinkDetails = result.drinkItems
-                    self.hangoverDetails = result.hangoverItems ?? []
-                    self.feed = result.feed
-                    DispatchQueue.main.async {
-                        self.updateUI(with: result)
+                do {
+                    let decoder = JSONDecoder()
+                    let result = try decoder.decode(CalendarDetailResponse.self, from: data)
+                    if let firstResult = result.result.first {
+                        self.drinkDetails = firstResult.drinkItems
+                        self.hangoverDetails = firstResult.hangoverItems ?? []
+                        self.feed = firstResult.feed
+                        DispatchQueue.main.async {
+                            self.updateUI(with: firstResult)
+                        }
+                    }
+                } catch let decodingError {
+                    print("JSON 디코딩 실패: \(decodingError)")
+                    if let jsonString = String(data: data, encoding: .utf8) {
+                        print("응답 데이터: \(jsonString)")
                     }
                 }
             case .failure(let error):
@@ -177,8 +186,13 @@ extension CalendarDetailViewController: UITableViewDataSource, UITableViewDelega
                 return UITableViewCell()
             }
             let item = drinkDetails[indexPath.row]
+
+            let isInteger = floor(item.value) == item.value
+            let formattedValue = isInteger ? String(format: "%.0f", item.value) : String(format: "%.1f", item.value)
+
             cell.alcoholLabel.text = "\(item.itemName)"
-            cell.intakeLabel.text = "\(item.value)\(item.unit)"
+            cell.intakeLabel.text = "\(formattedValue)\(item.unit)"
+            
             return cell
         } else if tableView == calendarDetailView.hangoverTableView {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: CalendarHangoverTableViewCell.identifier, for: indexPath) as? CalendarHangoverTableViewCell else {

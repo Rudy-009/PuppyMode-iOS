@@ -51,6 +51,12 @@ class CalendarDateCustomButton: UIView {
         $0.isHidden = true
     }
     
+    // 추가
+    public let plusButton = UIImageView().then {
+        $0.image = .iconRecordPlus
+        $0.isHidden = true
+    }
+    
     // MARK: - init
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -79,7 +85,8 @@ class CalendarDateCustomButton: UIView {
     private func setView() {
         [
             backView, circleView,
-            titleLabel, rightButton
+            titleLabel,
+            rightButton, plusButton
         ].forEach {
             addSubview($0)
         }
@@ -102,6 +109,11 @@ class CalendarDateCustomButton: UIView {
         rightButton.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.right.equalToSuperview().offset(-27)
+        }
+        
+        plusButton.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.right.equalToSuperview().offset(-40)
         }
     }
 }

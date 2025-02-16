@@ -17,6 +17,8 @@ class CalendarViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.isNavigationBarHidden = true
+
         view = calendarView
         
         setDelegate()
@@ -173,6 +175,20 @@ class CalendarViewController: UIViewController {
     
     @objc
     private func recordButtonTapped() {
+        // 어제 & 기록X
+        let today = Date()
+        let calendar = Calendar.current
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        if let selectedDate = selectedDate, let yesterday = calendar.date(byAdding: .day, value: -1, to: today), dateFormatter.string(from: selectedDate) == dateFormatter.string(from: yesterday), selectedDrinkHistoryId == nil {
+            let hangoverVC = HangoverViewController()
+            hangoverVC.hidesBottomBarWhenPushed = true
+            self.navigationController?.pushViewController(hangoverVC, animated: true)
+            
+            return
+        }
+        
+        // 기록O
         let detailVC = CalendarDetailViewController()
         detailVC.hidesBottomBarWhenPushed = true
         self.navigationController?.isNavigationBarHidden = true
@@ -219,6 +235,7 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
         if let record = drinkRecords[dateString] {
             let status = record.status.trimmingCharacters(in: .whitespacesAndNewlines)
             calendarView.dateView.dayLabel.text = status
+            calendarView.dateView.recordButton.plusButton.isHidden = true
 
             switch status {
             case "술 예쁘게 마신 날":
@@ -253,8 +270,26 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
                 calendarView.dateView.backView.backgroundColor = .white
             }
         } else {
-            calendarView.dateView.dayLabel.text = "건강 챙긴 날"
-            updateRecordButton(status: nil, title: "미입력", highlightText: nil, highlightColor: nil, borderColor: nil, gradientEndColor: nil)
+            let today = Date()
+            let calendar = Calendar.current
+            
+            if let yesterday = calendar.date(byAdding: .day, value: -1, to: today), dateString == dateFormatter.string(from: yesterday) {
+                calendarView.dateView.dayLabel.text = "건강 챙긴 날"
+                updateRecordButton(status: "no-record yesterday",
+                                   title: "",
+                                   highlightText: "",
+                                   highlightColor: UIColor.main,
+                                   borderColor: UIColor(red: 0.79, green: 0.85, blue: 0.83, alpha: 1),
+                                   gradientEndColor: .mainMedium)
+                calendarView.dateView.backView.backgroundColor = .mainLight
+                calendarView.dateView.recordButton.plusButton.isHidden = false
+                calendarView.dateView.recordButton.rightButton.isHidden = true
+            } else {
+                calendarView.dateView.dayLabel.text = "건강 챙기는 날"
+                updateRecordButton(status: nil, title: "미입력", highlightText: nil, highlightColor: nil, borderColor: nil, gradientEndColor: nil)
+                calendarView.dateView.recordButton.plusButton.isHidden = true
+            }
+            
             calendarView.dateView.backView.backgroundColor = .white
         }
 
