@@ -106,7 +106,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
 extension HomeViewController {
     
     func getPupptInfo() {
-        guard let fcm = KeychainService.get(key: UserInfoKey.jwt.rawValue) else { return }
+        guard let fcm = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else { return }
         
         AF.request( K.String.puppymodeLink + "/puppies",
                     headers: [
@@ -252,7 +252,7 @@ extension HomeViewController {
     private func rompingToServer() {
         let headers: HTTPHeaders = [
             "accept": "*/*",
-            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.accessToken.rawValue)!)"
         ]
         
         AF.request(K.String.puppymodeLink + "/puppies/play",
@@ -337,7 +337,7 @@ extension HomeViewController {
 extension HomeViewController {
     // 가장 가까운 약속 ID 확인 API 호출
     private func checkClosestAppointment(completion: @escaping (Int?) -> Void) {
-        let authToken = KeychainService.get(key: UserInfoKey.jwt.rawValue) ?? ""
+        let authToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue) ?? ""
         
         let headers: HTTPHeaders = [
             "Content-Type": "application/json",
@@ -393,7 +393,7 @@ extension HomeViewController {
     
     // 가장 가까운 SCHEDULED 상태의 약속  조회하기 API
     private func checkNearestScheduledAppointment(completion: @escaping (Int?) -> Void) {
-        guard let authToken = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+        guard let authToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else {
             print("인증 토큰을 가져올 수 없습니다.")
             completion(nil)
             return
@@ -438,7 +438,7 @@ extension HomeViewController {
         
         print("위치 정보를 가져올 수 없습니다.")
         
-        let fcmToken = KeychainService.get(key: UserInfoKey.jwt.rawValue) ?? ""
+        let fcmToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue) ?? ""
         
         let headers: HTTPHeaders = [
             "Content-Type": "application/json",

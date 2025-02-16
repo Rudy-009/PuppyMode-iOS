@@ -44,13 +44,13 @@ extension RevokeViewController {
         print("Revoke Button Pressed")
         
         let kakaoAccessToken = KeychainService.get(key:  KakaoAPIKey.kakaoAccessToken.rawValue ) ?? "none"
-        let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue)
+        let accessToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue)
         
         AF.request(K.String.puppymodeLink + "/withdraw",
                    method: .delete,
                    parameters: ["accessToken": kakaoAccessToken],
                    headers: ["accept": "*/*",
-                             "Authorization": "Bearer \(jwt!)"]).responseDecodable(of: RevokeResponse.self) { response in
+                             "Authorization": "Bearer \(accessToken!)"]).responseDecodable(of: RevokeResponse.self) { response in
             switch response.result {
             case .success(let response):
                 print("success: \(response)")

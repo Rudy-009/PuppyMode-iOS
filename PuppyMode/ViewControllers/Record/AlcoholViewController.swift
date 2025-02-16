@@ -61,7 +61,7 @@ class AlcoholViewController: UIViewController {
     private func setCategoryAPI() {
         let url = "https://puppy-mode.site/drinks/categories"
         
-        guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+        guard let jwt = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else {
             print("JWT Token not found")
             return
         }
@@ -88,7 +88,7 @@ class AlcoholViewController: UIViewController {
     private func setAlcoholListAPI(categoryId: Int) {
         let url = "https://puppy-mode.site/drinks/categories/\(categoryId)"
         
-        guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+        guard let jwt = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else {
             print("JWT Token not found")
             return
         }

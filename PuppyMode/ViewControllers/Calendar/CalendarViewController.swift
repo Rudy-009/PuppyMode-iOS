@@ -43,7 +43,7 @@ class CalendarViewController: UIViewController {
         
         let url = "https://puppy-mode.site/calendar?month=\(monthString)"
         
-        guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+        guard let jwt = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else {
             print("JWT Token not found")
             return
         }

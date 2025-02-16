@@ -193,7 +193,7 @@ class DrinkingInfoViewController: UIViewController, UICollectionViewDelegate {
     
     // 안전주량, 치사량 연동 Api
     private func fetchDrinkCapacity(drinkItemId: Int) {
-        guard let authToken = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+        guard let authToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else {
             print("인증 토큰을 가져올 수 없습니다.")
             return
         }

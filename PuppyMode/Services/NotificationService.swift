@@ -11,7 +11,7 @@ class NotificationService {
     
     static func sendNotification(body: NotificationContent) {
         
-        guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+        guard let jwt = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else {
             print("JWT Token Not Found in Keychain Service")
             return
         }
