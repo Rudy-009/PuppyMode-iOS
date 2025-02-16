@@ -8,16 +8,16 @@
 import UIKit
 import KakaoSDKTalk
 
-class SocialViewController: UIViewController {
+class RankingViewController: UIViewController {
     
-    private var socialView = SocialView()
+    private var rankingView = RankingView()
     private var rankDataToShow: [RankUserInfo] = RankModel.globalRankData
     private var throttleWorkItem: DispatchWorkItem?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(red: 251/255, green: 251/255, blue: 251/255, alpha: 1)
-        self.view = socialView
+        self.view = rankingView
         setupTableView()
         setupAction()
         requestToCallFriendsInfo()
@@ -36,8 +36,8 @@ class SocialViewController: UIViewController {
     }
     
     private func setupTableView() {
-        socialView.rankingTableView.delegate = self
-        socialView.rankingTableView.dataSource = self
+        rankingView.rankingTableView.delegate = self
+        rankingView.rankingTableView.dataSource = self
     }
     
     // Global & Friend 데이터 요청 fetchGlobalRankData(), fetchFriendRankData()
@@ -52,11 +52,9 @@ class SocialViewController: UIViewController {
     //
     private func fetchData() {
         rankDataToShow = RankModel.currentState == .global ? RankModel.globalRankData : RankModel.friendsRankData
-        if let myCell = RankModel.myGlobalRank {
-            socialView.myRankView.configure(rankCell: myCell)
-            socialView.myRankView.markMyRank()
-        }
-        socialView.rankingTableView.reloadData()
+        rankingView.myRankView.configure(rankCell: RankModel.myGlobalRank!)
+        rankingView.myRankView.markMyRank()
+        rankingView.rankingTableView.reloadData()
     }
     
     // 친구 불러오기 허락 요청
@@ -68,7 +66,7 @@ class SocialViewController: UIViewController {
                 SocialService.fetchFriendRankData {
                     DispatchQueue.main.async {
                         self.rankDataToShow = RankModel.friendsRankData
-                        self.socialView.rankingTableView.reloadData()
+                        self.rankingView.rankingTableView.reloadData()
                     }
                 }
             }
@@ -76,7 +74,7 @@ class SocialViewController: UIViewController {
     }
     
     private func setupAction() {
-        socialView.segmentView.addTarget(self, action: #selector(changeDataToShow(segment:)), for: .valueChanged)
+        rankingView.segmentView.addTarget(self, action: #selector(changeDataToShow(segment:)), for: .valueChanged)
     }
     
     @objc
@@ -84,23 +82,20 @@ class SocialViewController: UIViewController {
         if segment.selectedSegmentIndex == 0 {
             RankModel.currentState = .global
             rankDataToShow = RankModel.globalRankData
-            socialView.addMyRankView()
+            rankingView.myRankView.configure(rankCell: RankModel.myGlobalRank!)
         } else {
             RankModel.currentState = .friends
             rankDataToShow = RankModel.friendsRankData
             requestToCallFriendsInfo()
-            socialView.removeMyRankView()
+            rankingView.myRankView.configure(rankCell: RankModel.myRankInFriends!)
         }
-        if let myCell = RankModel.myGlobalRank {
-            socialView.myRankView.configure(rankCell: RankModel.myGlobalRank!)
-            socialView.myRankView.markMyRank()
-        }
-        socialView.rankingTableView.reloadData()
+        rankingView.myRankView.markMyRank()
+        rankingView.rankingTableView.reloadData()
     }
     
 }
 
-extension SocialViewController: UITableViewDelegate, UITableViewDataSource {
+extension RankingViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return rankDataToShow.count
@@ -156,7 +151,7 @@ extension SocialViewController: UITableViewDelegate, UITableViewDataSource {
                 case .friends:
                     SocialService.fetchFriendRankData()
                 }
-                self?.socialView.rankingTableView.reloadData()
+                self?.rankingView.rankingTableView.reloadData()
             }
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: throttleWorkItem!)

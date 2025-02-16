@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SocialView: UIView {
+class RankingView: UIView {
     let attributes: [NSAttributedString.Key: Any] = [ .foregroundColor :  UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)] // Set text color to blue
     
     private lazy var rankingIcon = UIImageView().then {
@@ -52,6 +52,7 @@ class SocialView: UIView {
         super.init(frame: frame)
         self.backgroundColor = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
         addComponents()
+        myRankView.markMyRank()
     }
     
     required init?(coder: NSCoder) {
@@ -92,25 +93,6 @@ class SocialView: UIView {
             make.top.equalTo(myRankView.snp.bottom)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
-        }
-    }
-    
-    public func addMyRankView() {
-        
-        myRankView.isHidden = false
-        
-        rankingTableView.snp.remakeConstraints { make in
-            make.top.equalTo(myRankView.snp.bottom)
-            make.leading.trailing.bottom.equalToSuperview()
-        }
-    }
-    
-    public func removeMyRankView() {
-        myRankView.isHidden = true
-        
-        rankingTableView.snp.remakeConstraints { make in
-            make.top.equalTo(segmentView.snp.bottom).offset(10)
-            make.leading.trailing.bottom.equalToSuperview()
         }
     }
 }
