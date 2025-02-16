@@ -36,7 +36,7 @@ extension SettingViewController {
     func setToggle() {
         let headers: HTTPHeaders = [
             "accept": "*/*",
-            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.accessToken.rawValue)!)"
         ]
         
         AF.request(K.String.puppymodeLink + "/users/notifications",
@@ -63,7 +63,7 @@ extension SettingViewController {
         
         let headers: HTTPHeaders = [
             "accept": "*/*",
-            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)",
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.accessToken.rawValue)!)",
             "Content-Type": "application/json"
         ]
         
@@ -122,7 +122,7 @@ extension SettingViewController {
     }
     
     private func getPupptInfo() {
-        guard let fcm = KeychainService.get(key: UserInfoKey.jwt.rawValue) else { return }
+        guard let fcm = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else { return }
         
         AF.request( K.String.puppymodeLink + "/puppies",
                     headers: [

@@ -8,7 +8,7 @@
 import Foundation
 
 enum UserInfoKey: String {
-    case jwt, userId, username, email
+    case accessToken, refreshToken, userId, username, email
 }
 
 enum KakaoAPIKey: String {
@@ -19,7 +19,9 @@ enum KakaoAPIKey: String {
 }
 
 enum AppleAPIKey: String {
-    case appleUserID = "AppleUserID"
+    case appleUserID
+    case appleIdentityToken
+    case appleAuthorizationToken
 }
 
 enum FCMTokenKey : String {

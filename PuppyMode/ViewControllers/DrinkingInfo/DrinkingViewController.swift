@@ -163,7 +163,7 @@ class DrinkingViewController: UIViewController {
     // MARK: Connect Api
     // 술 약속 및 음주 상태 조회하기 API
     private func checkDrinkingStatus() {
-        let authToken = KeychainService.get(key: UserInfoKey.jwt.rawValue) ?? ""
+        let authToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue) ?? ""
         
         let headers: HTTPHeaders = [
             "Content-Type": "application/json",
@@ -206,7 +206,7 @@ class DrinkingViewController: UIViewController {
     
     // 술 약속 미루기 API
     private func sendRescheduleRequest(appointmentId: Int, dateTime: String) {
-        guard let authToken = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+        guard let authToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else {
             print("인증 토큰을 가져올 수 없습니다.")
             return
         }
@@ -260,7 +260,7 @@ class DrinkingViewController: UIViewController {
     @objc private func didTapEndButton() {
         print("End button tapped!")
         
-        guard let authToken = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+        guard let authToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else {
             print("인증 토큰을 가져올 수 없습니다.")
             return
         }

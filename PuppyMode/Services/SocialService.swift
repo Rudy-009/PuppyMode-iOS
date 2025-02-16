@@ -18,7 +18,7 @@ class SocialService {
     
     static func fetchGlobalRankData(completion: (() -> Void)? = nil) {
         guard !isFetchingGlobalRankData else { return }
-        guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else { return }
+        guard let jwt = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else { return }
         
         isFetchingGlobalRankData = true
         AF.request(
@@ -48,7 +48,7 @@ class SocialService {
     
     static func fetchFriendRankData(completion: (() -> Void)? = nil) {
         guard !isFetchingFriendRankData else { return }
-        guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue),
+        guard let jwt = KeychainService.get(key: UserInfoKey.accessToken.rawValue),
               let kakaoAccessToken = KeychainService.get(key: KakaoAPIKey.kakaoAccessToken.rawValue) else { return }
         
         isFetchingFriendRankData = true
@@ -88,7 +88,7 @@ class SocialService {
         // 5. global은 본인 내용도 업데이트 되어야함
         
         guard !isFetchingGlobalRankData else { return }
-        guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else { return }
+        guard let jwt = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else { return }
         guard let kakaoAccessToken = KeychainService.get(key: KakaoAPIKey.kakaoAccessToken.rawValue) else { return }
         
         isFetchingGlobalRankData = true
