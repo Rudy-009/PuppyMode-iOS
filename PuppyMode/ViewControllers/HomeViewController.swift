@@ -11,8 +11,12 @@ import Alamofire
 
 class HomeViewController: UIViewController, CLLocationManagerDelegate {
     
+    private var animationImages: [String] = []
+    private var currentIndex = 0
+    private var animationTimer: Timer?
+    
     private var timer: Timer?
-    private var remainingTime: Int = 1800 // 30분 (초 단위)
+    private var remainingTime: Int = 1 // 24시간 = 86400 (초 단위)
     public var coinAlermButton = AlermView()
     
     private let locationManager = CLLocationManager()
@@ -279,8 +283,63 @@ extension HomeViewController {
     
     
     private func showDogAnimation() {
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.accessToken.rawValue)!)"
+        ]
         
+        let parameter =  PuppyAnimationParameter(animationType: "PLAYING")
+        
+        AF.request(K.String.puppymodeLink + "/puppies/animations/frames",
+                   method: .get,
+                   parameters: parameter,
+                   headers: headers)
+        .responseDecodable(of: PuppyAnimationResponse.self) { [weak self] response in
+            
+            guard let self = self else { return }
+            
+            switch response.result {
+            case .success(let response) :
+                if response.isSuccess {
+                    print("애니메이션 프레임 조회 성공")
+                    
+                    self.animationImages = response.result.imageUrls
+                    self.startAnimation() // 애니메이션 시작
+                    
+                } else {
+                    print("애니메이션 프레임 조회 API Error: \(response.message)")
+                }
+            case .failure(let error) :
+                print("애니메이션 프레임 조회 Network Error: \(error.localizedDescription)")
+            }
+        }
+
     }
+    
+    private func startAnimation() {
+        guard !animationImages.isEmpty else { return }
+        
+        var index = 0
+        var repeatCount = 0
+        var maxRepeatCount = 2
+        
+        let timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] timer in
+            guard let self = self else { return }
+            
+            self.homeView.puppyImageButton.setImageFromURL(animationImages[index]) // 공통 함수 사용
+            index = (index + 1) % animationImages.count
+            
+            repeatCount += 1
+            if repeatCount >= maxRepeatCount * 2 { // (두 개의 이미지를 번갈아 바꾸므로 *2)
+                timer.invalidate() // 애니메이션 종료
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    self.getPupptInfo()
+                }
+            }
+        }
+    }
+       
     
     private func showPointAlert() {
         // 알림 버튼 위치 설정
@@ -294,7 +353,7 @@ extension HomeViewController {
             make.height.equalTo(59)
         }
         
-        // 알림 버튼 10초 후에 사라지게 설정
+        // 알림 버튼 1초 후에 사라지게 설정
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.coinAlermButton.removeFromSuperview()
         }
@@ -304,7 +363,7 @@ extension HomeViewController {
         homeView.rompingButton.isEnabled = false
         homeView.rompingButton.alpha = 0.5
         homeView.countdownLabel.alpha = 1
-        homeView.countdownLabel.text = "30:00"
+        homeView.countdownLabel.text = "23:59:59"
         
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
     }
@@ -312,9 +371,19 @@ extension HomeViewController {
     @objc private func updateTimer() {
         if remainingTime > 0 {
             remainingTime -= 1
-            let minutes = remainingTime / 60
+            let hours = remainingTime / 3600
+            let minutes = (remainingTime % 3600) / 60
             let seconds = remainingTime % 60
-            homeView.countdownLabel.text = String(format: "%02d:%02d", minutes, seconds)
+            
+            // 시간이 0일 경우 분:초만 표시
+            if hours > 0 {
+                homeView.countdownLabel.text = String(format: "%02d:%02d:%02d", hours, minutes, seconds)
+                homeView.countdownLabel.font = UIFont(name: "NotoSansKR-Bold", size: 12)!
+
+            } else {
+                homeView.countdownLabel.text = String(format: "%02d:%02d", minutes, seconds)
+                homeView.countdownLabel.font = UIFont(name: "NotoSansKR-Bold", size: 14)!
+            }
         } else {
             resetButton()
         }
