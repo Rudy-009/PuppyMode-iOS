@@ -153,3 +153,24 @@ struct NearestScheduledAppointmentResult: Codable {
     let address: String
     let status: String
 }
+
+struct DeleteAppointmentResponse: Codable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+}
+
+struct UpdateAppointmentResponse: Codable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: UpdateAppointmentResult?
+}
+
+struct UpdateAppointmentResult: Codable {
+    let appointmentId: Int
+    let updatedTime: String
+    let address: String
+    let locationName: String
+    let appointmentStatus: String
+}
