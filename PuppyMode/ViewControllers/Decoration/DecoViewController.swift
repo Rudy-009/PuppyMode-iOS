@@ -389,6 +389,7 @@ extension DecoViewController: UICollectionViewDelegate {
             
             let purchaseAction = UIAlertAction(title: "구매", style: .default) { _ in
                 self.postPurchaseItemToServer(categoryId: categoryId!, itemId: selectedItem.itemId)
+                self.fetchPointFromServer()
             }
             let cancelAction = UIAlertAction(title: "취소", style: .cancel)
             
