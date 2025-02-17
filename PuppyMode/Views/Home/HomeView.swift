@@ -177,7 +177,7 @@ extension HomeView {
         
         topButtonStack.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(topButtonSuperViewSpacing)
-            make.top.equalTo(self.safeAreaLayoutGuide).offset(52)
+            make.top.equalTo(self.safeAreaLayoutGuide).offset(62)
             make.height.equalTo(topRectangleHeight)
         }
         
@@ -233,7 +233,7 @@ extension HomeView {
         puppyImageButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(superViewSpacing)
             make.height.equalToSuperview().multipliedBy(0.25)
-            make.top.equalTo(topButtonStack.snp.bottom).offset(41)
+            make.top.equalTo(topButtonStack.snp.bottom).offset(51)
         }
         
         self.addSubview(puppyNameLabel)
@@ -255,7 +255,7 @@ extension HomeView {
         puppyDashboardFrame.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.top.equalTo(puppyNameLabel.snp.bottom).offset(19)
-            make.height.equalToSuperview().multipliedBy(0.30)
+            make.height.equalToSuperview().multipliedBy(0.3)
         }
         
         dogInfoLabel.snp.makeConstraints { make in

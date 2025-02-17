@@ -40,7 +40,7 @@ class HangoverViewController: UIViewController {
     private func setAPI() {
         let url = "https://puppy-mode.site/drinks/hangover"
         
-        guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+        guard let jwt = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else {
             print("JWT Token not found")
             return
         }

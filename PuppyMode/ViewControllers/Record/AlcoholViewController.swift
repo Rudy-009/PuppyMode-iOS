@@ -40,10 +40,28 @@ class AlcoholViewController: UIViewController {
         alcoholView.nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
     }
     
+    private func selectFirstCategory() {
+        guard !categories.isEmpty else { return }
+
+        let firstIndexPath = IndexPath(item: 0, section: 0)
+        selectedCategoryIndex = firstIndexPath
+        alcoholView.alcoholCollectionView.selectItem(at: firstIndexPath, animated: false, scrollPosition: [])
+
+        DispatchQueue.main.async {
+            if let cell = self.alcoholView.alcoholCollectionView.cellForItem(at: firstIndexPath) as? AlcoholKindCollectionViewCell {
+                cell.backView.backgroundColor = .main
+                cell.backView.layer.borderColor = UIColor.main.cgColor
+            }
+        }
+
+        let firstCategory = categories[0]
+        setAlcoholListAPI(categoryId: firstCategory.categoryId)
+    }
+    
     private func setCategoryAPI() {
         let url = "https://puppy-mode.site/drinks/categories"
         
-        guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+        guard let jwt = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else {
             print("JWT Token not found")
             return
         }
@@ -58,7 +76,10 @@ class AlcoholViewController: UIViewController {
             case .success(let data):
                 self.categories = data.result
                 self.alcoholView.alcoholCollectionView.reloadData()
-                case .failure(let error):
+                
+                self.selectFirstCategory()
+                
+            case .failure(let error):
                 print("\(error.localizedDescription)")
             }
         }
@@ -67,7 +88,7 @@ class AlcoholViewController: UIViewController {
     private func setAlcoholListAPI(categoryId: Int) {
         let url = "https://puppy-mode.site/drinks/categories/\(categoryId)"
         
-        guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+        guard let jwt = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else {
             print("JWT Token not found")
             return
         }
@@ -156,14 +177,14 @@ extension AlcoholViewController: UICollectionViewDataSource, UICollectionViewDel
         // 이전에 선택된 셀 초기화
         if let previousIndex = selectedCategoryIndex,
            let previousCell = collectionView.cellForItem(at: previousIndex) as? AlcoholKindCollectionViewCell {
-            previousCell.backView.backgroundColor = .clear
-            previousCell.backView.layer.borderColor = UIColor.clear.cgColor
+            previousCell.backView.backgroundColor = .white
+            previousCell.backView.layer.borderColor = UIColor(red: 0.95, green: 0.96, blue: 0.96, alpha: 1).cgColor
         }
 
         // 현재 선택된 셀 변경
         guard let cell = collectionView.cellForItem(at: indexPath) as? AlcoholKindCollectionViewCell else { return }
         cell.backView.backgroundColor = .main
-        cell.backView.layer.borderColor = UIColor(red: 0.563, green: 0.563, blue: 0.563, alpha: 1).cgColor
+        cell.backView.layer.borderColor = UIColor.main.cgColor
 
         // 현재 선택된 인덱스 저장
         selectedCategoryIndex = indexPath

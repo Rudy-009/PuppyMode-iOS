@@ -277,7 +277,7 @@ class AppointmentModalViewController: UIViewController, AddressSearchDelegate {
         ]
 
         // 헤더 설정
-        let authToken = KeychainService.get(key: UserInfoKey.jwt.rawValue) ?? ""
+        let authToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue) ?? ""
         let headers: HTTPHeaders = [
             "Content-Type": "application/json",
             "Authorization": "Bearer \(authToken)"

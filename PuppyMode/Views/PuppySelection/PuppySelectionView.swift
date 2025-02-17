@@ -200,7 +200,7 @@ extension PuppySelectionView {
     private func fetchPuppy() {
         let headers: HTTPHeaders = [
             "accept": "*/*",
-            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.accessToken.rawValue)!)"
         ]
         
         AF.request(K.String.puppymodeLink + "/puppies",
@@ -238,7 +238,7 @@ extension PuppySelectionView {
     //    private func deletePuppy() {
     //        let headers: HTTPHeaders = [
     //            "accept": "*/*",
-    //            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+    //            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.accessToken.rawValue)!)"
     //        ]
     //
     //        AF.request(K.String.puppymodeLink + "/puppies",

@@ -140,7 +140,7 @@ class DecoViewController: UIViewController {
     private func fetchCategoriesFromServer() {
         let headers: HTTPHeaders = [
             "accept": "*/*",
-            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.accessToken.rawValue)!)"
         ]
         
         AF.request(K.String.puppymodeLink + "/puppies/categories",
@@ -166,7 +166,7 @@ class DecoViewController: UIViewController {
     private func fetchItemsFromServer(categoryId: Int) {
         let headers: HTTPHeaders = [
             "accept": "*/*",
-            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.accessToken.rawValue)!)"
         ]
         
         // 카테고리 ID로 아이템 리스트 조회
@@ -193,7 +193,7 @@ class DecoViewController: UIViewController {
     private func fetchPointFromServer() {
         let headers: HTTPHeaders = [
             "accept": "*/*",
-            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.accessToken.rawValue)!)"
         ]
         AF.request(K.String.puppymodeLink + "/puppies/points",
                    method: .get,
@@ -219,7 +219,7 @@ class DecoViewController: UIViewController {
 
     // 강아지 정보 조회 - 이름, 레벨, 이미지 url 저장
     private func fetchPuppyInfoFromServer() {
-        guard let fcm = KeychainService.get(key: UserInfoKey.jwt.rawValue) else { return }
+        guard let fcm = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else { return }
         
         AF.request( K.String.puppymodeLink + "/puppies",
                     headers: [
@@ -244,7 +244,7 @@ class DecoViewController: UIViewController {
     
     // 착용한 아이템 목록 조회 - 아이템 목록에 따라 이미지 띄우는거 보여주도록 수정
     private func fetchEquippedItemsFromServer() {
-        guard let fcm = KeychainService.get(key: UserInfoKey.jwt.rawValue) else { return }
+        guard let fcm = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else { return }
         
         AF.request( K.String.puppymodeLink + "/puppies/items/equip",
                     headers: [
@@ -288,7 +288,7 @@ class DecoViewController: UIViewController {
     private func fetchOwnedItemsFromServer() {
         let headers: HTTPHeaders = [
             "accept": "*/*",
-            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.accessToken.rawValue)!)"
         ]
         let urlString = K.String.puppymodeLink + "/puppies/items"
         
@@ -426,7 +426,7 @@ extension DecoViewController {
     private func postPurchaseItemToServer(categoryId: Int, itemId: Int) {
         let headers: HTTPHeaders = [
             "accept": "*/*",
-            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.accessToken.rawValue)!)"
         ]
         let urlString = K.String.puppymodeLink + "/puppies/\(categoryId)/items/\(itemId)"
         
@@ -552,7 +552,7 @@ extension DecoViewController {
     private func postWearItemToServer(categoryId: Int, itemId: Int) {
         let headers: HTTPHeaders = [
             "accept": "*/*",
-            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.accessToken.rawValue)!)"
         ]
         let urlString = K.String.puppymodeLink + "/puppies/\(categoryId)/items/\(itemId)/equip"
         
@@ -595,7 +595,7 @@ extension DecoViewController {
     private func postUnWearItemToServer(categoryId: Int, itemId: Int) {
         let headers: HTTPHeaders = [
             "accept": "*/*",
-            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)"
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.accessToken.rawValue)!)"
         ]
         let urlString = K.String.puppymodeLink + "/puppies/\(categoryId)/items/\(itemId)/unequip"
         

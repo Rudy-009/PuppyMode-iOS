@@ -12,14 +12,24 @@ import Alamofire
 class CalendarViewController: UIViewController {
     private let calendarView = CalendarView()
     private var drinkRecords: [String: DrinkRecord] = [:] // 날짜별 상태 저장
+    private var selectedDate: Date?
+    private var selectedDrinkHistoryId: Int?
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.isNavigationBarHidden = true
+
         view = calendarView
         
         setDelegate()
         setAction()
         fetchDrinkRecords(for: calendarView.calendar.currentPage)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        backButtonTapped() // 초기 상태로 되돌리기
+        fetchDrinkRecords(for: calendarView.calendar.currentPage) // 데이터 다시 가져오기
     }
     
     // MARK: - function
@@ -35,7 +45,7 @@ class CalendarViewController: UIViewController {
         
         let url = "https://puppy-mode.site/calendar?month=\(monthString)"
         
-        guard let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue) else {
+        guard let jwt = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else {
             print("JWT Token not found")
             return
         }
@@ -66,6 +76,7 @@ class CalendarViewController: UIViewController {
         let attributedString = NSMutableAttributedString(string: title)
         
         let recordButton = calendarView.dateView.recordButton
+        let appointmentButton = calendarView.dateView.appointmentButton
         let defaultFont: UIFont
         let defaultColor: UIColor
 
@@ -96,16 +107,26 @@ class CalendarViewController: UIViewController {
             recordButton.circleView.layer.borderColor = borderColor.cgColor
             recordButton.updateGradientColor(startColor: .white, endColor: gradientEndColor)
             
+            appointmentButton.circleView.layer.borderColor = borderColor.cgColor
+            appointmentButton.updateGradientColor(startColor: .white, endColor: gradientEndColor)
+            
             recordButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
             recordButton.layer.shadowOpacity = 1
             recordButton.layer.shadowRadius = 2
             recordButton.layer.shadowOffset = CGSize(width: 0, height: 4)
+            
+            recordButton.rightButton.isHidden = false
         } else {
             // 미입력 상태 - 원래대로 복구
             recordButton.circleView.layer.borderColor = UIColor(red: 0.873, green: 0.873, blue: 0.873, alpha: 1).cgColor
             recordButton.updateGradientColor(startColor: .white, endColor: UIColor(red: 0.781, green: 0.781, blue: 0.781, alpha: 1))
             
+            appointmentButton.circleView.layer.borderColor = UIColor(red: 0.873, green: 0.873, blue: 0.873, alpha: 1).cgColor
+            appointmentButton.updateGradientColor(startColor: .white, endColor: UIColor(red: 0.781, green: 0.781, blue: 0.781, alpha: 1))
+            
             recordButton.layer.shadowOpacity = 0
+            
+            recordButton.rightButton.isHidden = true
         }
     }
     
@@ -154,9 +175,35 @@ class CalendarViewController: UIViewController {
     
     @objc
     private func recordButtonTapped() {
+        // 어제 & 기록X
+        let today = Date()
+        let calendar = Calendar.current
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        if let selectedDate = selectedDate, let yesterday = calendar.date(byAdding: .day, value: -1, to: today), dateFormatter.string(from: selectedDate) == dateFormatter.string(from: yesterday), selectedDrinkHistoryId == nil {
+            let hangoverVC = HangoverViewController()
+            hangoverVC.hidesBottomBarWhenPushed = true
+            self.navigationController?.pushViewController(hangoverVC, animated: true)
+            
+            return
+        }
+        
+        // 기록O
         let detailVC = CalendarDetailViewController()
         detailVC.hidesBottomBarWhenPushed = true
         self.navigationController?.isNavigationBarHidden = true
+        
+        if let selectedDate = selectedDate {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy.MM.dd"
+            dateFormatter.locale = Locale(identifier: "ko_KR")
+            detailVC.calendarDetailView.dateLabel.text = dateFormatter.string(from: selectedDate)
+        }
+        
+        if let drinkHistoryId = selectedDrinkHistoryId {
+            detailVC.drinkHistoryId = drinkHistoryId
+        }
+        
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
 
@@ -165,21 +212,30 @@ class CalendarViewController: UIViewController {
 // MARK: - extension
 extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearance, FSCalendarDataSource {
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+        selectedDate = date
+
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy.MM.dd"
-        dateFormatter.locale = Locale(identifier: "ko_KR")
-        let formattedDate = dateFormatter.string(from: date)
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateString = dateFormatter.string(from: date)
+
+        // 선택한 날짜에 해당하는 음주 기록 ID 가져오기
+        if let record = drinkRecords[dateString] {
+            selectedDrinkHistoryId = record.drinkHistoryId
+        } else {
+            selectedDrinkHistoryId = nil
+        }
+
+        let displayFormatter = DateFormatter()
+        displayFormatter.dateFormat = "yyyy.MM.dd"
+        displayFormatter.locale = Locale(identifier: "ko_KR")
+        let formattedDate = displayFormatter.string(from: date)
         
         calendarView.dateView.dateLabel.text = formattedDate
-        
-        // 날짜에 해당하는 음주 기록 상태 가져오기
-        let dateString = DateFormatter().then {
-            $0.dateFormat = "yyyy-MM-dd"
-        }.string(from: date)
         
         if let record = drinkRecords[dateString] {
             let status = record.status.trimmingCharacters(in: .whitespacesAndNewlines)
             calendarView.dateView.dayLabel.text = status
+            calendarView.dateView.recordButton.plusButton.isHidden = true
 
             switch status {
             case "술 예쁘게 마신 날":
@@ -189,6 +245,7 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
                                    highlightColor: UIColor.main,
                                    borderColor: UIColor(red: 0.79, green: 0.85, blue: 0.83, alpha: 1),
                                    gradientEndColor: .mainMedium)
+                calendarView.dateView.backView.backgroundColor = .mainLight
                 
             case "술 힘들게 마신 날":
                 updateRecordButton(status: status,
@@ -197,6 +254,7 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
                                    highlightColor: UIColor.orange,
                                    borderColor: UIColor(red: 0.94, green: 0.84, blue: 0.69, alpha: 1),
                                    gradientEndColor: .orangeMedium)
+                calendarView.dateView.backView.backgroundColor = .orangeLight
                 
             case "강아지가 된 날":
                 updateRecordButton(status: status,
@@ -205,13 +263,34 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
                                    highlightColor: UIColor.red,
                                    borderColor: UIColor(red: 0.95, green: 0.8, blue: 0.8, alpha: 1),
                                    gradientEndColor: .redMedium)
+                calendarView.dateView.backView.backgroundColor = .redLight
                 
             default:
                 updateRecordButton(status: nil, title: "미입력", highlightText: nil, highlightColor: nil, borderColor: nil, gradientEndColor: nil)
+                calendarView.dateView.backView.backgroundColor = .white
             }
         } else {
-            calendarView.dateView.dayLabel.text = "건강 챙긴 날"
-            updateRecordButton(status: nil, title: "미입력", highlightText: nil, highlightColor: nil, borderColor: nil, gradientEndColor: nil)
+            let today = Date()
+            let calendar = Calendar.current
+            
+            if let yesterday = calendar.date(byAdding: .day, value: -1, to: today), dateString == dateFormatter.string(from: yesterday) {
+                calendarView.dateView.dayLabel.text = "건강 챙긴 날"
+                updateRecordButton(status: "no-record yesterday",
+                                   title: "",
+                                   highlightText: "",
+                                   highlightColor: UIColor.main,
+                                   borderColor: UIColor(red: 0.79, green: 0.85, blue: 0.83, alpha: 1),
+                                   gradientEndColor: .mainMedium)
+                calendarView.dateView.backView.backgroundColor = .mainLight
+                calendarView.dateView.recordButton.plusButton.isHidden = false
+                calendarView.dateView.recordButton.rightButton.isHidden = true
+            } else {
+                calendarView.dateView.dayLabel.text = "건강 챙기는 날"
+                updateRecordButton(status: nil, title: "미입력", highlightText: nil, highlightColor: nil, borderColor: nil, gradientEndColor: nil)
+                calendarView.dateView.recordButton.plusButton.isHidden = true
+            }
+            
+            calendarView.dateView.backView.backgroundColor = .white
         }
 
         UIView.animate(withDuration: 0.3, animations: {
@@ -231,6 +310,7 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
         })
         
         self.calendarView.updateCalendarScope(to: .week)
+        calendarView.calendar.reloadData()
     }
     
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
@@ -247,15 +327,46 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let dateString = dateFormatter.string(from: date)
         
-        if drinkRecords[dateString] != nil {
-            return [.main]
+        if let record = drinkRecords[dateString] {
+            let status = record.status.trimmingCharacters(in: .whitespacesAndNewlines)
+            switch status {
+            case "술 예쁘게 마신 날":
+                return [UIColor.main]
+            case "술 힘들게 마신 날":
+                return [UIColor.orange]
+            case "강아지가 된 날":
+                return [UIColor.red]
+            default:
+                return nil
+            }
+        }
+        return nil
+    }
+    
+    func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventSelectionColorsFor date: Date) -> [UIColor]? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateString = dateFormatter.string(from: date)
+        
+        if let record = drinkRecords[dateString] {
+            let status = record.status.trimmingCharacters(in: .whitespacesAndNewlines)
+            switch status {
+            case "술 예쁘게 마신 날":
+                return [UIColor.main]
+            case "술 힘들게 마신 날":
+                return [UIColor.orange]
+            case "강아지가 된 날":
+                return [UIColor.red]
+            default:
+                return nil
+            }
         }
         return nil
     }
     
     // 이벤트 점 위치 조정
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventOffsetFor date: Date) -> CGPoint {
-        return CGPoint(x: 0, y: -3)
+        return CGPoint(x: 0, y: -7)
     }
     
     // 선택된 날짜 표시 색상
