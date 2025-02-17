@@ -78,7 +78,7 @@ class HomeView: UIView {
     
     //MARK: Puppy Image & Name
     lazy public var puppyImageButton = UIButton().then { button in
-        button.imageView?.contentMode = .scaleAspectFill
+        button.imageView?.contentMode = .scaleAspectFit
         button.tintColor = .clear
     }
     
