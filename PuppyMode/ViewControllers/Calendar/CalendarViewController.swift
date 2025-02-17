@@ -285,8 +285,13 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
                 calendarView.dateView.recordButton.plusButton.isHidden = false
                 calendarView.dateView.recordButton.rightButton.isHidden = true
             } else {
-                calendarView.dateView.dayLabel.text = "건강 챙기는 날"
-                updateRecordButton(status: nil, title: "미입력", highlightText: nil, highlightColor: nil, borderColor: nil, gradientEndColor: nil)
+                if date < calendar.date(byAdding: .day, value: -1, to: today)!, selectedDrinkHistoryId == nil {
+                    calendarView.dateView.dayLabel.text = "건강 챙긴 날"
+                    updateRecordButton(status: nil, title: "미입력", highlightText: nil, highlightColor: nil, borderColor: nil, gradientEndColor: nil)
+                } else {
+                    calendarView.dateView.dayLabel.text = "건강 챙기는 날"
+                    updateRecordButton(status: nil, title: "", highlightText: nil, highlightColor: nil, borderColor: nil, gradientEndColor: nil)
+                }
                 calendarView.dateView.recordButton.plusButton.isHidden = true
             }
             
