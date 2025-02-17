@@ -28,6 +28,7 @@ class RankingTableViewCell: UITableViewCell {
         $0.contentMode = .scaleAspectFill
         $0.image = .rankCellDefaultProfile
         $0.layer.cornerRadius = 21
+        $0.backgroundColor = .white
         $0.clipsToBounds = true
     }
     
