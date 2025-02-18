@@ -188,6 +188,14 @@ extension AlcoholViewController: UICollectionViewDataSource, UICollectionViewDel
 
         // 현재 선택된 인덱스 저장
         selectedCategoryIndex = indexPath
+        
+        // 기존에 선택된 테이블뷰 셀 초기화
+        if let previousIndexPath = selectedIndexPath,
+           let previousCell = alcoholView.alcoholTableView.cellForRow(at: previousIndexPath) as? AlcoholDetailTableViewCell {
+            previousCell.backView.layer.borderWidth = 1
+            previousCell.backView.layer.borderColor = UIColor(red: 0.953, green: 0.957, blue: 0.965, alpha: 1).cgColor
+        }
+        selectedIndexPath = nil
 
         // API 호출
         let selectedCategory = categories[indexPath.row]
