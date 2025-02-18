@@ -87,7 +87,7 @@ class RankingView: UIView {
         
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(safeAreaLayoutGuide.snp.top).offset(30)
+            make.top.equalToSuperview().offset(85)
         }
         
         segmentView.snp.makeConstraints { make in
