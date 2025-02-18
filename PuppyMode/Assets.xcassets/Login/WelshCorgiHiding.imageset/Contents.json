@@ -1,0 +1,15 @@
+{
+  "images" : [
+    {
+      "filename" : "Login Breed Animation 1.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "localizable" : true
+  }
+}

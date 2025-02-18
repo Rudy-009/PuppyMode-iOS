@@ -15,14 +15,16 @@ class CollectionTableViewCell: UITableViewCell {
     public lazy var collectionImageView = UIImageView().then { imageView in
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        imageView.backgroundColor = UIColor(hex: "#D9D9D9")
+        imageView.backgroundColor = .clear
+        imageView.layer.borderColor = UIColor(hex: "#D9D9D9").cgColor
+        imageView.layer.borderWidth = 1
     }
     
     private lazy var stackView = UIStackView().then { stackView in
         stackView.axis = .vertical
         stackView.spacing = 1
     }
-
+    
     public lazy var titleLabel = UILabel().then { label in
         label.textColor = .black
         label.textAlignment = .left
@@ -58,7 +60,7 @@ class CollectionTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-
+        
         self.addComponents()
     }
     
@@ -67,8 +69,8 @@ class CollectionTableViewCell: UITableViewCell {
         
         collectionImageView.layer.cornerRadius = collectionImageView.frame.width / 2
     }
-
-        
+    
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
         self.addComponents()
@@ -77,7 +79,7 @@ class CollectionTableViewCell: UITableViewCell {
     private func addComponents() {
         self.addSubview(collectionImageView)
         self.addSubview(stackView)
-
+        
         collectionImageView.snp.makeConstraints { make in
             make.width.height.equalTo(64)
             make.top.equalToSuperview().offset(3)
@@ -92,14 +94,14 @@ class CollectionTableViewCell: UITableViewCell {
         
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(subtitleLabel)
-
+        
         self.addSubview(progressLabel)
         self.addSubview(progressBar)
         
         progressBar.snp.makeConstraints { make in
             make.top.equalTo(stackView.snp.bottom).offset(10)
             make.leading.equalTo(stackView)
-            make.width.equalTo(251)
+            make.width.equalTo(241)
             make.height.equalTo(10)
         }
         
@@ -120,5 +122,13 @@ class CollectionTableViewCell: UITableViewCell {
     
     func configureSeparator(isLastCell: Bool) {
         separatorView.isHidden = isLastCell
+    }
+    
+    func configure(imageView: UIImage?, title: String, subtitle: String, currentNum: Int, requiredNum: Int) {
+        collectionImageView.image = imageView
+        titleLabel.text = title
+        subtitleLabel.text = subtitle
+        progressBar.setProgress(Float(currentNum)/Float(requiredNum), animated: false)
+        progressLabel.text = "\(currentNum)/\(requiredNum)"
     }
 }

@@ -19,51 +19,39 @@ class KakaoLoginService {
     static func kakaoLoginWithAccount() {
         UserApi.shared.loginWithKakaoAccount {(oauthToken, error) in
             if let error = error {
-                print(error)
+                print("UserApi.shared.loginWithKakaoAccount failed: ", error)
             } else {
                 self.saveKakaoUserID()
                 if let kakaoAccessToekn = oauthToken?.accessToken, let kakaoRefreshToken = oauthToken?.refreshToken {
+                    print("kakaoAccessToken \(kakaoAccessToekn)")
+                    print("kakaoRefreshToken \(kakaoRefreshToken)")
                     _ = saveKakaoToken(accessToken: kakaoAccessToekn, refreshToken: kakaoRefreshToken)
-                    self.fetchKakaoUserInfo(with: kakaoAccessToekn)
+                    self.fetchKakaoUserInfo(with: kakaoAccessToekn, and: kakaoRefreshToken)
                 }
             }
         }
     }
     
-    static func saveKakaoUserID() {
-        UserApi.shared.me {(user, error) in
-            if let error = error {
-                print(error)
-            } else {
-                guard let kakaoUserId = user?.id else { return }
-                if KeychainService.add(key: KakaoAPIKey.kakaoUserID.rawValue, value: "\(kakaoUserId)") {
-                    print("kakaoUserId \(kakaoUserId)")
-                }
-            }
-        }
-    }
-    
-    static func fetchKakaoUserInfo(with kakaoAccessToken: String) {
+    static func fetchKakaoUserInfo(with kakaoAccessToken: String, and kakaoRefreshToken: String) {
         let fcm = KeychainService.get(key: FCMTokenKey.fcm.rawValue) ?? "none"
+        print("FCM: \(fcm)")
         
         AF.request(K.String.puppymodeLink + "/auth/kakao/login",
                    method: .get,
                    parameters: ["accessToken": kakaoAccessToken,
+                                "refreshToken": kakaoRefreshToken,
                                 "FCMToken": fcm],
                    headers: ["accept": "*/*"])
         .responseDecodable(of: LoginResponse.self) { response in
             switch response.result {
             case .success(let loginResponse):
                 if UserInfoService.addUserInfoToKeychainService(userInfo: loginResponse.result) {
-                    if let jwt = KeychainService.get(key: UserInfoKey.jwt.rawValue ) {
-                        print("JWT: \(jwt)")
-                        // print("Kakao Access Token: \(kakaoAccessToken)")
+                    if let accessToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue ) {
+                        print("AccessToken: \(accessToken)")
                     }
                     if loginResponse.result.userInfo.isNewUser {
-                        // print("새로운 회원")
                         RootViewControllerService.toPuppySelectionViewController()
                     } else {
-                        // print("기존 회원")
                         RootViewControllerService.toBaseViewController()
                     }
                 }
@@ -80,7 +68,21 @@ class KakaoLoginService {
     
     static func deleteAllKakaoToken() -> Bool {
         return  KeychainService.delete(key: KakaoAPIKey.kakaoAccessToken.rawValue) &&
-                KeychainService.delete(key: KakaoAPIKey.kakaoRefreshToken.rawValue)
+                KeychainService.delete(key: KakaoAPIKey.kakaoRefreshToken.rawValue) &&
+                KeychainService.delete(key: KakaoAPIKey.kakaoUserID.rawValue)
+    }
+    
+    static func saveKakaoUserID() {
+        UserApi.shared.me {(user, error) in
+            if let error = error {
+                print(error)
+            } else {
+                guard let kakaoUserId = user?.id else { return }
+                if KeychainService.add(key: KakaoAPIKey.kakaoUserID.rawValue, value: "\(kakaoUserId)") {
+                    print("kakaoUserId \(kakaoUserId)")
+                }
+            }
+        }
     }
     
 }

@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import SVGKit
 
 class DecoView: UIView {
     
@@ -14,19 +15,17 @@ class DecoView: UIView {
     var onTagSelected: ((String) -> Void)?
     public var itemButtons: [UIButton] = []
     
-    public lazy var imageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        return imageView
-    }()
-    
     //MARK: Puppy Image & Name
     lazy public var puppyImageButton = UIButton().then { button in
-        button.setImage(UIImage(named: "HomeCharacterDefaultImage"), for: .normal)
+        button.setImage(UIImage(named: "비숑_level1"), for: .normal)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.imageView?.contentMode = .center
+        button.imageView?.clipsToBounds = false
+        button.imageView?.translatesAutoresizingMaskIntoConstraints = false
+        
     }
     
-    lazy private var puppyNameLabel = UILabel().then { label in
+    lazy public var puppyNameLabel = UILabel().then { label in
         label.font = UIFont(name: "NotoSansKR-Regular", size: 20)
         label.text = "이름"
     }
@@ -44,7 +43,7 @@ class DecoView: UIView {
     }
     
     
-    public lazy var itemButtonsScrollView: UIScrollView = {
+    public lazy var categoryButtonsScrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.showsHorizontalScrollIndicator = false
@@ -54,7 +53,7 @@ class DecoView: UIView {
         return scrollView
     }()
     
-    public lazy var itemButtonsStackView: UIStackView = {
+    public lazy var categoryButtonsStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
@@ -87,8 +86,9 @@ class DecoView: UIView {
         puppyImageButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(247)
-            make.top.equalTo(self.safeAreaLayoutGuide).offset(36)
+            make.top.equalTo(self.safeAreaLayoutGuide).offset(100)
         }
+
         
         self.addSubview(puppyNameLabel)
         puppyNameLabel.snp.makeConstraints { make in
@@ -111,17 +111,17 @@ class DecoView: UIView {
         }
         
           
-        backgroundView.addSubview(itemButtonsScrollView)
-        itemButtonsScrollView.snp.makeConstraints { make in
+        backgroundView.addSubview(categoryButtonsScrollView)
+        categoryButtonsScrollView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.top.equalToSuperview().offset(16)
             make.height.equalTo(32)
         }
         
-        itemButtonsScrollView.addSubview(itemButtonsStackView)
-        itemButtonsStackView.snp.makeConstraints { make in
+        categoryButtonsScrollView.addSubview(categoryButtonsStackView)
+        categoryButtonsStackView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
-            make.height.equalToSuperview() 
+            make.height.equalToSuperview()
         }
         
         createButtons()
@@ -130,8 +130,8 @@ class DecoView: UIView {
     
     
     private func createButtons() {
-        var num = 0
-        for tag in itemKey.String.tags {
+        var num = 1
+        for tag in itemKey.tags {
             let button = UIButton(type: .system)
             button.backgroundColor = .clear
             button.setTitle(tag, for: .normal)
@@ -140,14 +140,15 @@ class DecoView: UIView {
             button.tintColor = .lightGray
             button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 21, bottom: 8, right: 21)
             button.tag = num
+
             num += 1
             itemButtons.append(button)
-            itemButtonsStackView.addArrangedSubview(button)
+            categoryButtonsStackView.addArrangedSubview(button)
         }
     }
     
     public func forEachButton(_ action: (UIButton) -> Void) {
-        itemButtonsStackView.arrangedSubviews.compactMap { $0 as? UIButton }.forEach(action)
+        categoryButtonsStackView.arrangedSubviews.compactMap { $0 as? UIButton }.forEach(action)
     }
     
 }

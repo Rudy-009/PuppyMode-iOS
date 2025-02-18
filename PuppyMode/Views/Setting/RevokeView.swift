@@ -9,18 +9,13 @@ import UIKit
 
 class RevokeView: UIView {
     
-    public var characterName = "000"
-    
     private lazy var titlaLabel = UILabel().then { label in
         label.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)
         label.font = UIFont(name: "Pretendard-SemiBold", size: 20)
         label.text = "탈퇴하기"
     }
     
-    public lazy var popButton = UIButton().then { btn in
-        btn.setImage(UIImage(named: "back"), for: .normal)
-        btn.contentMode = .scaleAspectFit
-    }
+    public lazy var popButton = PopButton()
     
     private lazy var messageFrame = UIView().then { frame in
     }
@@ -31,15 +26,15 @@ class RevokeView: UIView {
         label.text = "정말 떠나시나요?"
     }
     
-    private lazy var characterImage = UIImageView().then { image in
-        image.image = UIImage(named: "CryingDog")
-        image.contentMode = .scaleAspectFit
-    }
-    
     private lazy var subMessageLabel = UILabel().then { label in
         label.textColor = UIColor(red: 0.541, green: 0.541, blue: 0.557, alpha: 1)
         label.font = UIFont(name: "NotoSansKR-Medium", size: 18)
-        label.text = "\(characterName)이는 이제 볼 수 없을지도 몰라요.."
+        label.numberOfLines = 2
+        label.text = "000 이는 이제 볼 수 없을지도 몰라요.."
+    }
+    
+    private lazy var characterImage = UIImageView().then { image in
+        image.contentMode = .scaleAspectFill
     }
     
     public lazy var revokeButton = UIButton().then { btn in
@@ -72,14 +67,13 @@ class RevokeView: UIView {
         
         popButton.snp.makeConstraints { make in
             make.centerY.equalTo(titlaLabel.snp.centerY)
-            make.leading.equalToSuperview().offset(37)
-            make.width.equalTo(13)
-            make.height.equalTo(20)
+            make.leading.equalToSuperview().offset(22)
+            make.width.equalTo(39)
+            make.height.equalTo(60)
         }
         
         self.addSubview(messageFrame)
         messageFrame.addSubview(mainMessageLabel)
-        messageFrame.addSubview(characterImage)
         messageFrame.addSubview(subMessageLabel)
         
         messageFrame.snp.makeConstraints { make in
@@ -93,15 +87,8 @@ class RevokeView: UIView {
             make.top.equalToSuperview().offset(18)
         }
         
-        characterImage.snp.makeConstraints { make in
-            make.leading.equalTo(mainMessageLabel.snp.trailing).offset(8)
-            make.top.equalToSuperview()
-            make.width.equalTo(44)
-            make.height.equalTo(58)
-        }
-        
         subMessageLabel.snp.makeConstraints { make in
-            make.bottom.leading.equalToSuperview()
+            make.bottom.leading.trailing.equalToSuperview()
         }
         
         self.addSubview(revokeButton)
@@ -111,7 +98,21 @@ class RevokeView: UIView {
             make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).inset(48)
             make.height.equalTo(46)
         }
+
+        self.addSubview(characterImage)
         
+        characterImage.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(20)
+            make.bottom.equalTo(revokeButton.snp.top).offset(-30)
+            make.width.equalTo(200)
+            make.height.equalTo(300)
+        }
+        
+    }
+    
+    public func configure(puppy: PuppyInfoResult) {
+        subMessageLabel.text = String.sliceText(string: puppy.puppyName, max: 13) + "(이)를 이제 볼 수 없을지도 몰라요.."
+        characterImage.load(url: URL(string: puppy.imageUrl!)!)
     }
 }
 

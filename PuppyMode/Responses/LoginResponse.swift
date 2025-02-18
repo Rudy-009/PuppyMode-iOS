@@ -15,16 +15,29 @@ struct LoginResponse: Codable {
 }
 
 struct LoginResult: Codable {
-    let jwt: String
+    let accessToken: String
+    let refreshToken: String?
     let userInfo: UserInfo
 }
 
 struct UserInfo: Codable {
-    let userId: Int
     let username: String
-    let email: String
     let isNewUser: Bool
 }
+
+//{
+//  "isSuccess": true,
+//  "code": "string",
+//  "message": "string",
+//  "result": {
+//    "accessToken": "string",
+//    "refreshToken": "string",
+//    "userInfo": {
+//      "username": "string",
+//      "isNewUser": true
+//    }
+//  }
+//}
 
 struct RevokeResponse: Codable {
     let isSuccess: Bool

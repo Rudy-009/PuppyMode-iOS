@@ -9,12 +9,18 @@ import UIKit
 import FSCalendar
 import Then
 import SnapKit
+import ToosieSlide
 
 class CalendarView: UIView {
     // MARK: - view
+    // 뒤로가기 버튼
+    public let backButton = UIButton().then {
+        $0.setImage(.iconBack, for: .normal)
+        $0.isHidden = true
+    }
+    
     // 년도
-    private let yearLabel = UILabel().then {
-        $0.text = "0000"
+    public let yearLabel = UILabel().then {
         $0.font = UIFont(name: "Roboto-Medium", size: 20)
     }
     
@@ -22,20 +28,43 @@ class CalendarView: UIView {
     public let changeButton = UIButton().then {
         $0.setImage(.iconChangeCalendar, for: .normal)
 
-        
         // 내부 이미지 크기 조절
         $0.contentVerticalAlignment = .fill
         $0.contentHorizontalAlignment = .fill
     }
     
     // 월
-    private let monthLabel = UILabel().then {
-        $0.text = "Month"
+    public let monthLabel = UILabel().then {
         $0.font = UIFont(name: "NotoSansKR-Medium", size: 35)
     }
     
+    // 날짜 타이틀 스택뷰
+    private let dateTitleStackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.spacing = 5
+        $0.distribution = .fillEqually
+        $0.alignment = .center
+    }
+    
+    public let afterYearLabel = UILabel().then {
+        $0.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)
+        $0.font = UIFont(name: "NotoSansKR-Bold", size: 20)
+        $0.isHidden = true
+    }
+    
+    public let afterMonthLabel = UILabel().then {
+        $0.textColor = UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)
+        $0.font = UIFont(name: "NotoSansKR-Bold", size: 20)
+        $0.isHidden = true
+    }
+    
+    public let afterChangeButton = UIButton().then {
+        $0.setImage(.iconChangeCalenderAfter, for: .normal)
+        $0.isHidden = true
+    }
+    
     // 캘린더
-    private let calendar = FSCalendar().then {
+    public let calendar = FSCalendar().then {
         // 배경
         $0.backgroundColor = .clear
         
@@ -58,10 +87,17 @@ class CalendarView: UIView {
         
         // 오늘 날짜 표시
         $0.appearance.todayColor = .main
+        $0.appearance.titleTodayColor = .white
     }
     
-    // 블러 배경
-    public let blurBackgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .light)).then {
+    // 모달 배경
+    public let modalBackgroundView = UIView().then {
+        $0.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.6)
+        $0.isHidden = true
+    }
+    
+    // 날짜 개요
+    public let dateView = CalendarDateView().then {
         $0.isHidden = true
     }
     
@@ -80,14 +116,16 @@ class CalendarView: UIView {
     }
     
     // MARK: - function
-    private func updateMonthLabel(for date: Date) {
+    public func updateMonthLabel(for date: Date) {
         let yearFormatter = DateFormatter()
         yearFormatter.dateFormat = "yyyy"
         yearLabel.text = yearFormatter.string(from: date)
+        afterYearLabel.text = yearFormatter.string(from: date)
         
         let monthFormatter = DateFormatter()
         monthFormatter.dateFormat = "M월"
         monthLabel.text = monthFormatter.string(from: date)
+        afterMonthLabel.text = monthFormatter.string(from: date)
     }
     
     public func updateCalendar(for year: Int, month: Int) {
@@ -99,15 +137,55 @@ class CalendarView: UIView {
         }
     }
     
+    public func updateCalendarScope(to scope: FSCalendarScope) {
+        calendar.scope = scope
+        calendar.snp.remakeConstraints {
+            $0.top.equalTo(safeAreaLayoutGuide).offset(215)
+            $0.horizontalEdges.equalToSuperview().inset(15)
+            $0.height.equalTo(scope == .month ? 310 : 130)
+        }
+        
+        UIView.animate(withDuration: 0.3) {
+            self.layoutIfNeeded()
+        }
+    }
+
+    
+    private func setStackView() {
+        [ afterYearLabel, afterMonthLabel ].forEach { dateTitleStackView.addArrangedSubview($0) }
+    }
+    
     private func setView() {
+        setStackView()
+        
         [
+            backButton,
+            dateTitleStackView, afterChangeButton,
             yearLabel,
             changeButton,
             monthLabel,
             calendar,
-            blurBackgroundView
+            dateView,
+            modalBackgroundView
         ].forEach {
             addSubview($0)
+        }
+        
+        backButton.snp.makeConstraints {
+            $0.centerY.equalTo(dateTitleStackView)
+            $0.left.equalToSuperview().offset(30)
+            $0.width.equalTo(13)
+            $0.height.equalTo(20)
+        }
+        
+        dateTitleStackView.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalToSuperview().offset(90)
+        }
+        
+        afterChangeButton.snp.makeConstraints {
+            $0.centerY.equalTo(dateTitleStackView)
+            $0.left.equalTo(dateTitleStackView.snp.right).offset(-5)
         }
         
         yearLabel.snp.makeConstraints {
@@ -127,12 +205,18 @@ class CalendarView: UIView {
         }
         
         calendar.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide).offset(210)
+            $0.top.equalTo(safeAreaLayoutGuide).offset(215)
             $0.horizontalEdges.equalToSuperview().inset(15)
-            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-150)
+            $0.height.equalTo(310)
         }
         
-        blurBackgroundView.snp.makeConstraints {
+        dateView.snp.makeConstraints {
+            $0.top.equalTo(calendar.snp.bottom).offset(30)
+            $0.horizontalEdges.equalToSuperview()
+            $0.height.equalTo(600)
+        }
+        
+        modalBackgroundView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
     }

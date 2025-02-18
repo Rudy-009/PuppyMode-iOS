@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import Then
+import Kingfisher
 
 class RankingTableViewCell: UITableViewCell {
     
@@ -24,9 +25,10 @@ class RankingTableViewCell: UITableViewCell {
     }
     
     private lazy var profileImage = UIImageView().then {
-        $0.contentMode = .scaleAspectFit
+        $0.contentMode = .scaleAspectFill
         $0.image = .rankCellDefaultProfile
         $0.layer.cornerRadius = 21
+        $0.backgroundColor = .white
         $0.clipsToBounds = true
     }
     
@@ -51,21 +53,29 @@ class RankingTableViewCell: UITableViewCell {
         addComponents()
     }
     
-    public func configure(index: Int, rankCell: RankCell) {
-        rankLabel.text = String(index + 1)
-        userNameLabel.text = rankCell.name
-        characterInfoLabel.text = "\(rankCell.characterName), Level\(rankCell.characterLevel)"
+    public func configure(rankCell: RankUserInfo, isMe: Bool) {
+        rankLabel.text = String(rankCell.rank)
+        
+        profileImage.image = .rankCellDefaultProfile
+        profileImage.kf.setImage(with: rankCell.imageUrl)
+        
+        userNameLabel.text = String.sliceText(string: rankCell.username, max: 14)
+        characterInfoLabel.text = String.sliceText(string: rankCell.puppyName ?? rankCell.levelName, max: 10) + ", Level\(rankCell.level) \(rankCell.levelName)"
         self.backgroundColor = .white
         
         trophyImageView.removeFromSuperview() // 기존 트로피 이미지 제거
         
-        if index < 3 {
-            addTrophyComponent(rank: Rank(rawValue: index + 1) ?? .first)
+        if rankCell.rank < 4 {
+            addTrophyComponent(rank: Rank(rawValue: rankCell.rank) ?? .first)
         }
         
-        if rankCell.name == "Me" {
+        if isMe {
             self.backgroundColor = UIColor(red: 0.451, green: 0.784, blue: 0.694, alpha: 1)
         }
+    }
+    
+    public func markMyRank() {
+        self.backgroundColor = UIColor(red: 0.451, green: 0.784, blue: 0.694, alpha: 1)
     }
     
     private func addComponents() {
@@ -89,7 +99,7 @@ class RankingTableViewCell: UITableViewCell {
         
         profileImage.snp.makeConstraints { make in
             make.leading.equalTo(rankLabel.snp.trailing)
-            make.centerY.equalToSuperview()
+            make.centerY.equalToSuperview().offset(5)
             make.height.width.equalTo(42)
         }
         
@@ -149,8 +159,4 @@ enum Rank: Int {
     case first = 1
     case second = 2
     case third = 3
-}
-
-#Preview{
-    SocialViewController()
 }

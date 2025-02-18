@@ -12,12 +12,14 @@ import Alamofire
 class SettingViewController: UIViewController {
     
     private lazy var settingView = SettingView()
+    private var revokeViewController = RevokeViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor(red: 251/255, green: 251/255, blue: 251/255, alpha: 1)
         self.view = settingView
         defineButtonActions()
+        getPupptInfo()
     }
 }
 
@@ -34,7 +36,7 @@ extension SettingViewController {
     func setToggle() {
         let headers: HTTPHeaders = [
             "accept": "*/*",
-            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue))"
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.accessToken.rawValue)!)"
         ]
         
         AF.request(K.String.puppymodeLink + "/users/notifications",
@@ -61,7 +63,7 @@ extension SettingViewController {
         
         let headers: HTTPHeaders = [
             "accept": "*/*",
-            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.jwt.rawValue)!)",
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.accessToken.rawValue)!)",
             "Content-Type": "application/json"
         ]
         
@@ -82,7 +84,7 @@ extension SettingViewController {
     
     @objc
     private func termsOfServiceButtonPressed() {
-        let viewControllerToPresent = SettingPopoverViewController()
+        let viewControllerToPresent = PolicyOrTermPopoverViewController()
         viewControllerToPresent.configurePopoverView(title: "이용약관", content: K.String.policy)
         viewControllerToPresent.modalPresentationStyle = .overFullScreen
         viewControllerToPresent.modalTransitionStyle = .crossDissolve
@@ -91,7 +93,7 @@ extension SettingViewController {
     
     @objc
     private func privacyPolicyButtonPressed() {
-        let viewControllerToPresent = SettingPopoverViewController()
+        let viewControllerToPresent = PolicyOrTermPopoverViewController()
         viewControllerToPresent.configurePopoverView(title: "개인정보 처리 방침", content: K.String.policy)
         viewControllerToPresent.modalPresentationStyle = .overFullScreen
         viewControllerToPresent.modalTransitionStyle = .crossDissolve
@@ -100,28 +102,42 @@ extension SettingViewController {
     
     @objc
     private func revokeButtonPressed() {
-        let viewControllerToPresent = RevokeViewController()
+        let viewControllerToPresent = revokeViewController
         viewControllerToPresent.modalPresentationStyle = .fullScreen
         present(viewControllerToPresent,animated: true)
     }
     
     @objc
     private func logoutButtonPressed() {
-        UserApi.shared.logout {(error) in
-            if let error = error {
-                print(error)
-            }
-            else {
-                self.changeRootToLoginViewController()
-                print("logout() success.")
-            }
-        }
+        let viewControllerToPresent = LogoutCheckViewController()
+        viewControllerToPresent.modalPresentationStyle = .overFullScreen
+        viewControllerToPresent.modalTransitionStyle = .crossDissolve
+        present(viewControllerToPresent, animated: true, completion: nil)
     }
     
     private func changeRootToLoginViewController() {
         let baseViewController = LoginViewController()
         let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
         sceneDelegate?.changeRootViewController(baseViewController, animated: false)
+    }
+    
+    private func getPupptInfo() {
+        guard let fcm = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else { return }
+        
+        AF.request( K.String.puppymodeLink + "/puppies",
+                    headers: [
+                        "accept": "*/*",
+                        "Authorization": "Bearer " + fcm
+                    ])
+        .responseDecodable(of: PuppyInfoResponse.self) { response in
+            switch response.result {
+            case .success(let response):
+                self.revokeViewController.setPuppyInfo(puppy: response.result)
+            case .failure(let error):
+                // 강아지 정보 불러오기에 실패했습니다. 라는 알림 띄우기? (다시시도)
+                print("/puppies error", error)
+            }
+        }
     }
 }
 

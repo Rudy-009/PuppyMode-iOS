@@ -63,7 +63,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     // 백그라운드에서 푸시 알림을 탭했을 때 실행
     func application(_ application: UIApplication,
                      didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        print("APNS token: \(deviceToken)")
+        // print("APNS token: \(deviceToken)")
         Messaging.messaging().apnsToken = deviceToken
     }
     
@@ -77,7 +77,7 @@ extension AppDelegate: MessagingDelegate {
     // 파이어베이스 MessagingDelegate 설정
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         
-        if let fcm = KeychainService.get(key: FCMTokenKey.fcm.rawValue) {
+        if let _ = KeychainService.get(key: FCMTokenKey.fcm.rawValue) {
             // print("Token already saved \(fcm)")
             return
         }
