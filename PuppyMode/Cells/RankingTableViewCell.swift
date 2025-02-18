@@ -70,12 +70,12 @@ class RankingTableViewCell: UITableViewCell {
         }
         
         if isMe {
-            self.backgroundColor = UIColor(red: 0.451, green: 0.784, blue: 0.694, alpha: 1)
+            self.backgroundColor = UIColor(red: 0.451, green: 0.784, blue: 0.694, alpha: 0.5)
         }
     }
     
     public func markMyRank() {
-        self.backgroundColor = UIColor(red: 0.451, green: 0.784, blue: 0.694, alpha: 1)
+        self.backgroundColor = UIColor(red: 0.451, green: 0.784, blue: 0.694, alpha: 0.5)
     }
     
     private func addComponents() {
