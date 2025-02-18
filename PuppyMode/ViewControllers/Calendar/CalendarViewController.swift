@@ -14,6 +14,7 @@ class CalendarViewController: UIViewController {
     private var drinkRecords: [String: DrinkRecord] = [:] // 날짜별 상태 저장
     private var selectedDate: Date?
     private var selectedDrinkHistoryId: Int?
+    private var selectedAppointmentId: Int?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -213,17 +214,23 @@ class CalendarViewController: UIViewController {
 extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearance, FSCalendarDataSource {
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         selectedDate = date
+        let calendar = Calendar.current
+        let now = Date()
+        let today = calendar.startOfDay(for: now)
 
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let dateString = dateFormatter.string(from: date)
 
-        // 선택한 날짜에 해당하는 음주 기록 ID 가져오기
+        // 선택한 날짜에 해당하는 음주 기록 ID / 술 약속 ID 가져오기
         if let record = drinkRecords[dateString] {
             selectedDrinkHistoryId = record.drinkHistoryId
+            selectedAppointmentId = record.appointmentId
         } else {
             selectedDrinkHistoryId = nil
+            selectedAppointmentId = nil
         }
+        print("history: \(selectedDrinkHistoryId), appointment: \(selectedAppointmentId)")
 
         let displayFormatter = DateFormatter()
         displayFormatter.dateFormat = "yyyy.MM.dd"
@@ -232,6 +239,7 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
         
         calendarView.dateView.dateLabel.text = formattedDate
         
+        // 음주 기록
         if let record = drinkRecords[dateString] {
             let status = record.status.trimmingCharacters(in: .whitespacesAndNewlines)
             calendarView.dateView.dayLabel.text = status
@@ -270,9 +278,6 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
                 calendarView.dateView.backView.backgroundColor = .white
             }
         } else {
-            let today = Date()
-            let calendar = Calendar.current
-            
             if let yesterday = calendar.date(byAdding: .day, value: -1, to: today), dateString == dateFormatter.string(from: yesterday) {
                 calendarView.dateView.dayLabel.text = "건강 챙긴 날"
                 updateRecordButton(status: "no-record yesterday",
@@ -296,6 +301,25 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
             }
             
             calendarView.dateView.backView.backgroundColor = .white
+        }
+        
+        // 술 약속
+        if selectedAppointmentId == nil {
+            if date >= today {
+                calendarView.dateView.appointmentButton.titleLabel.isHidden = true
+                calendarView.dateView.appointmentButton.plusButton.isHidden = false
+                calendarView.dateView.appointmentButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+                calendarView.dateView.appointmentButton.layer.shadowOpacity = 1
+                calendarView.dateView.appointmentButton.layer.shadowRadius = 2
+                calendarView.dateView.appointmentButton.layer.shadowOffset = CGSize(width: 0, height: 4)
+            } else {
+                calendarView.dateView.appointmentButton.titleLabel.isHidden = false
+                calendarView.dateView.appointmentButton.plusButton.isHidden = true
+                calendarView.dateView.appointmentButton.layer.shadowOpacity = 0
+            }
+        } else {
+            calendarView.dateView.appointmentButton.titleLabel.isHidden = false
+            calendarView.dateView.appointmentButton.plusButton.isHidden = true
         }
 
         UIView.animate(withDuration: 0.3, animations: {
