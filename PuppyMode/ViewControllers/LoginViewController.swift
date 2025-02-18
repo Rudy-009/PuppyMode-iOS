@@ -72,10 +72,12 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
             if let authorizationCode = appleIDCredential.authorizationCode,
                let identityToken = appleIDCredential.identityToken,
                let fullName = appleIDCredential.fullName {
-                print("authorizationCode \(String(data: authorizationCode, encoding: .utf8))")
-                print("identityToken \(String(data: identityToken, encoding: .utf8))")
+                print("authorizationCode \(String(data: authorizationCode, encoding: .utf8)!)")
+                print("identityToken \(String(data: identityToken, encoding: .utf8)!)")
                 let givenName = fullName.givenName ?? "No given name"
                 let familyName = fullName.familyName ?? "No family name"
+                print(givenName)
+                print(familyName)
             }
             
         default:

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SocialView: UIView {
+class RankingView: UIView {
     let attributes: [NSAttributedString.Key: Any] = [ .foregroundColor :  UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1)] // Set text color to blue
     
     private lazy var rankingIcon = UIImageView().then {
@@ -48,17 +48,31 @@ class SocialView: UIView {
         $0.register( RankingTableViewCell.self, forCellReuseIdentifier: RankingTableViewCell.identifier)
     }
     
+    private lazy var cryingDogImageView = UIImageView().then {
+        $0.image = .cryingDog
+        $0.contentMode = .scaleAspectFit
+    }
+    
+    private lazy var failedLabel = UILabel().then {
+        $0.text = "친구 목록을 불러올 수 없어요."
+        $0.textColor = .black
+        $0.font = UIFont(name: "NotoSansKR-Medium", size: 18)
+        $0.textAlignment = .center
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
-        addComponents()
+        addTableComponents()
+        addFetchFailedComponents()
+        hideFailedFetchFriendView()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func addComponents() {
+    private func addTableComponents() {
         self.addSubview(rankingIcon)
         self.addSubview(titleLabel)
         self.addSubview(segmentView)
@@ -95,22 +109,31 @@ class SocialView: UIView {
         }
     }
     
-    public func addMyRankView() {
+    private func addFetchFailedComponents() {
+        self.addSubview(cryingDogImageView)
+        self.addSubview(failedLabel)
         
-        myRankView.isHidden = false
-        
-        rankingTableView.snp.remakeConstraints { make in
-            make.top.equalTo(myRankView.snp.bottom)
-            make.leading.trailing.bottom.equalToSuperview()
+        cryingDogImageView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalTo(96)
+            make.height.equalTo(128)
         }
+        
+        failedLabel.snp.makeConstraints { make in
+            make.centerX.equalTo(cryingDogImageView.snp.centerX)
+            make.top.equalTo(cryingDogImageView.snp.bottom).offset(15)
+        }
+
     }
     
-    public func removeMyRankView() {
-        myRankView.isHidden = true
-        
-        rankingTableView.snp.remakeConstraints { make in
-            make.top.equalTo(segmentView.snp.bottom).offset(10)
-            make.leading.trailing.bottom.equalToSuperview()
-        }
+    public func showFailedFetchFriendView() {
+        cryingDogImageView.isHidden = false
+        failedLabel.isHidden = false
     }
+    
+    public func hideFailedFetchFriendView() {
+        cryingDogImageView.isHidden = true
+        failedLabel.isHidden = true
+    }
+    
 }

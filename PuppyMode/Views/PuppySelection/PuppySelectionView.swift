@@ -62,7 +62,7 @@ class PuppySelectionView: UIView {
         self.fetchPuppy()
     }
         
-    public  func showDimAndActiveAnimation(_ sender: PuppyCardButtonView) {
+    public func showDimAndActiveAnimation(_ sender: PuppyCardButtonView) {
         // 화면 크기 계산
         let screenWidth = self.bounds.width
         let screenHeight = self.bounds.height

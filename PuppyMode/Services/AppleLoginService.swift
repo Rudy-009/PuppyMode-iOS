@@ -22,35 +22,41 @@ class AppleLoginService {
             let fullName = appleIDCredential.fullName
             guard let fcm = KeychainService.get(key: FCMTokenKey.fcm.rawValue ) else { return }
             
-            print(" authorizationCode: \(String(describing: authorizationCode))")
-            print(" identityToken: \(String(describing: identityToken))")
-            print(" fullName: \(String(describing: fullName)))")
+            print("authorizationCode: \(String(describing: authorizationCode))")
+            print("identityToken: \(String(describing: identityToken))")
+            print("fullName: \(String(describing: fullName)))")
             
             
-            AF.request(K.String.puppymodeLink + "/auth/apple/login",
-                       method: .get,
-                       parameters: ["authorizationCode": authorizationCode,
-                                    "identityToken": identityToken,
-                                    "username": fullName,
-                                    "fcmToken": fcm],
-                       headers: ["accept": "*/*"])
-            .responseDecodable(of: LoginResponse.self) { response in
-                switch response.result {
-                case .success(let loginResponse):
-                    if UserInfoService.addUserInfoToKeychainService(userInfo: loginResponse.result) {
-                        if let accessToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue ) {
-                            print("AccessToken: \(accessToken)")
-                        }
-                        if loginResponse.result.userInfo.isNewUser {
-                            RootViewControllerService.toPuppySelectionViewController()
-                        } else {
-                            RootViewControllerService.toBaseViewController()
-                        }
-                    }
-                case .failure(let error):
-                    print("Error LoginResponse \(K.String.puppymodeLink)/auth/kakao/login: \(error)")
-                }
-            }
+//            AF.request(K.String.puppymodeLink + "/auth/apple/login",
+//                       method: .get,
+//                       parameters: ["authorizationCode": authorizationCode,
+//                                    "identityToken": identityToken,
+//                                    "user": [
+//                                        "name" : [
+//                                            "firstName": fullName?.familyName,
+//                                            "lastName": fullName?.givenName
+//                                                 ]
+//                                            ],
+//                                    "fcmToken": fcm,
+//                                    "username": (fullName?.familyName)! + (fullName?.givenName)!],
+//                       headers: ["accept": "*/*"])
+//            .responseDecodable(of: LoginResponse.self) { response in
+//                switch response.result {
+//                case .success(let loginResponse):
+//                    if UserInfoService.addUserInfoToKeychainService(userInfo: loginResponse.result) {
+//                        if let accessToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue ) {
+//                            print("AccessToken: \(accessToken)")
+//                        }
+//                        if loginResponse.result.userInfo.isNewUser {
+//                            RootViewControllerService.toPuppySelectionViewController()
+//                        } else {
+//                            RootViewControllerService.toBaseViewController()
+//                        }
+//                    }
+//                case .failure(let error):
+//                    print("Error LoginResponse \(K.String.puppymodeLink)/auth/kakao/login: \(error)")
+//                }
+//            }
             
         case let passwordCredential as ASPasswordCredential:
             // iCloud Keychain credential. (AppleID & Password)

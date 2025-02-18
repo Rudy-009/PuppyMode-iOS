@@ -25,7 +25,7 @@ class BaseViewController: UITabBarController {
     }()
     
     private let socialVC: UINavigationController = {
-        let socialViewController = SocialViewController()
+        let socialViewController = RankingViewController()
         return UINavigationController(rootViewController: socialViewController)
     }()
     

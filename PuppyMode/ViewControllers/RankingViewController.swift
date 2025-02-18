@@ -8,16 +8,17 @@
 import UIKit
 import KakaoSDKTalk
 
-class SocialViewController: UIViewController {
+class RankingViewController: UIViewController {
     
-    private var socialView = SocialView()
+    private var rankingView = RankingView()
     private var rankDataToShow: [RankUserInfo] = RankModel.globalRankData
     private var throttleWorkItem: DispatchWorkItem?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(red: 251/255, green: 251/255, blue: 251/255, alpha: 1)
-        self.view = socialView
+        self.view = rankingView
+        rankingView.hideFailedFetchFriendView()
         setupTableView()
         setupAction()
         requestToCallFriendsInfo()
@@ -36,8 +37,8 @@ class SocialViewController: UIViewController {
     }
     
     private func setupTableView() {
-        socialView.rankingTableView.delegate = self
-        socialView.rankingTableView.dataSource = self
+        rankingView.rankingTableView.delegate = self
+        rankingView.rankingTableView.dataSource = self
     }
     
     // Global & Friend 데이터 요청 fetchGlobalRankData(), fetchFriendRankData()
@@ -52,23 +53,27 @@ class SocialViewController: UIViewController {
     //
     private func fetchData() {
         rankDataToShow = RankModel.currentState == .global ? RankModel.globalRankData : RankModel.friendsRankData
-        if let myCell = RankModel.myGlobalRank {
-            socialView.myRankView.configure(rankCell: myCell)
-            socialView.myRankView.markMyRank()
-        }
-        socialView.rankingTableView.reloadData()
+        rankingView.myRankView.configure(rankCell: RankModel.myGlobalRank!, isMe: true)
+        rankingView.rankingTableView.reloadData()
     }
     
     // 친구 불러오기 허락 요청
     private func requestToCallFriendsInfo() {
         TalkApi.shared.friends { (friends, error) in
             if let _ = error {
-                
+                if self.rankingView.segmentView.selectedSegmentIndex == 1 {
+                    self.rankingView.showFailedFetchFriendView()
+                }
             } else {
+                self.rankingView.hideFailedFetchFriendView()
                 SocialService.fetchFriendRankData {
                     DispatchQueue.main.async {
                         self.rankDataToShow = RankModel.friendsRankData
-                        self.socialView.rankingTableView.reloadData()
+                        self.rankingView.rankingTableView.reloadData()
+                        if let myData = RankModel.myRankInFriends {
+                            self.rankingView.myRankView.isHidden = false
+                            self.rankingView.myRankView.configure(rankCell: myData, isMe: true)
+                        }
                     }
                 }
             }
@@ -76,31 +81,36 @@ class SocialViewController: UIViewController {
     }
     
     private func setupAction() {
-        socialView.segmentView.addTarget(self, action: #selector(changeDataToShow(segment:)), for: .valueChanged)
+        rankingView.segmentView.addTarget(self, action: #selector(changeDataToShow(segment:)), for: .valueChanged)
     }
     
     @objc
     private func changeDataToShow(segment: UISegmentedControl) {
         if segment.selectedSegmentIndex == 0 {
+            self.rankingView.hideFailedFetchFriendView()
             RankModel.currentState = .global
             rankDataToShow = RankModel.globalRankData
-            socialView.addMyRankView()
+            if let myData = RankModel.myGlobalRank {
+                rankingView.myRankView.isHidden = false
+                rankingView.myRankView.configure(rankCell: myData, isMe: true)
+            }
         } else {
             RankModel.currentState = .friends
             rankDataToShow = RankModel.friendsRankData
             requestToCallFriendsInfo()
-            socialView.removeMyRankView()
+            if let myData = RankModel.myRankInFriends {
+                rankingView.myRankView.isHidden = false
+                rankingView.myRankView.configure(rankCell: myData, isMe: true)
+            } else {
+                rankingView.myRankView.isHidden = true
+            }
         }
-        if let myCell = RankModel.myGlobalRank {
-            socialView.myRankView.configure(rankCell: RankModel.myGlobalRank!)
-            socialView.myRankView.markMyRank()
-        }
-        socialView.rankingTableView.reloadData()
+        rankingView.rankingTableView.reloadData()
     }
     
 }
 
-extension SocialViewController: UITableViewDelegate, UITableViewDataSource {
+extension RankingViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return rankDataToShow.count
@@ -115,7 +125,7 @@ extension SocialViewController: UITableViewDelegate, UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.configure(rankCell: data)
+        cell.configure(rankCell: data, isMe: false)
         
         if indexPath.row < 3 { // Trophy 이미지 추가
             cell.addTrophyComponent(rank: Rank(rawValue: indexPath.row + 1) ?? Rank.first)
@@ -156,7 +166,7 @@ extension SocialViewController: UITableViewDelegate, UITableViewDataSource {
                 case .friends:
                     SocialService.fetchFriendRankData()
                 }
-                self?.socialView.rankingTableView.reloadData()
+                self?.rankingView.rankingTableView.reloadData()
             }
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: throttleWorkItem!)

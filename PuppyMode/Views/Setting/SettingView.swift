@@ -37,7 +37,10 @@ class SettingView: UIView {
     public lazy var revokeButton = ArrowSettingButton()
     
     //Logout
-    public lazy var logoutButton = ArrowSettingButton()
+    public lazy var logoutButton = UIButton().then {
+        $0.setImage(.logout, for: .normal)
+        $0.imageView?.contentMode = .scaleAspectFit
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -52,16 +55,26 @@ class SettingView: UIView {
     private func addComponents() {
         self.addSubview(titleLabel)
         self.addSubview(stackView)
+        self.addSubview(logoutButton)
         stackView.addArrangedSubview(alarmSettingView)
         stackView.addArrangedSubview(termsOfServiceButton)
         stackView.addArrangedSubview(PrivacyPolicyButton)
         stackView.addArrangedSubview(appVersionView)
         stackView.addArrangedSubview(revokeButton)
-        stackView.addArrangedSubview(logoutButton)
         
         titleLabel.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.top.equalTo(safeAreaLayoutGuide.snp.top).offset(30)
+        }
+        
+        logoutButton.snp.makeConstraints { make in
+            make.centerY.equalTo(titleLabel.snp.centerY)
+            make.trailing.equalToSuperview().inset(16)
+            make.height.width.equalTo(50)
+        }
+        
+        logoutButton.imageView?.snp.makeConstraints { make in
+            make.edges.equalToSuperview().inset(10)
         }
         
         stackView.snp.makeConstraints {
@@ -74,8 +87,6 @@ class SettingView: UIView {
         PrivacyPolicyButton.setTitle(for: "개인정보 처리 동의")
         
         revokeButton.setTitle(for: "탈퇴하기")
-        
-        logoutButton.setTitle(for: "로그아웃")
         
     }
 }
