@@ -195,7 +195,7 @@ class IntakeView: UIView {
     }
     
     private func updateAddButtonState() {
-        let sliderValue = Int(slider.value)
+        let sliderValue = slider.value
         addButton.alpha = sliderValue > 0 ? 1.0 : 0.5
         addButton.isEnabled = sliderValue > 0
     }
