@@ -18,6 +18,7 @@ class RankingViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor(red: 251/255, green: 251/255, blue: 251/255, alpha: 1)
         self.view = rankingView
+        rankingView.hideFailedFetchFriendView()
         setupTableView()
         setupAction()
         requestToCallFriendsInfo()
@@ -52,8 +53,7 @@ class RankingViewController: UIViewController {
     //
     private func fetchData() {
         rankDataToShow = RankModel.currentState == .global ? RankModel.globalRankData : RankModel.friendsRankData
-        rankingView.myRankView.configure(rankCell: RankModel.myGlobalRank!)
-        rankingView.myRankView.markMyRank()
+        rankingView.myRankView.configure(rankCell: RankModel.myGlobalRank!, isMe: true)
         rankingView.rankingTableView.reloadData()
     }
     
@@ -61,12 +61,19 @@ class RankingViewController: UIViewController {
     private func requestToCallFriendsInfo() {
         TalkApi.shared.friends { (friends, error) in
             if let _ = error {
-                
+                if self.rankingView.segmentView.selectedSegmentIndex == 1 {
+                    self.rankingView.showFailedFetchFriendView()
+                }
             } else {
+                self.rankingView.hideFailedFetchFriendView()
                 SocialService.fetchFriendRankData {
                     DispatchQueue.main.async {
                         self.rankDataToShow = RankModel.friendsRankData
                         self.rankingView.rankingTableView.reloadData()
+                        if let myData = RankModel.myRankInFriends {
+                            self.rankingView.myRankView.isHidden = false
+                            self.rankingView.myRankView.configure(rankCell: myData, isMe: true)
+                        }
                     }
                 }
             }
@@ -80,16 +87,24 @@ class RankingViewController: UIViewController {
     @objc
     private func changeDataToShow(segment: UISegmentedControl) {
         if segment.selectedSegmentIndex == 0 {
+            self.rankingView.hideFailedFetchFriendView()
             RankModel.currentState = .global
             rankDataToShow = RankModel.globalRankData
-            rankingView.myRankView.configure(rankCell: RankModel.myGlobalRank!)
+            if let myData = RankModel.myGlobalRank {
+                rankingView.myRankView.isHidden = false
+                rankingView.myRankView.configure(rankCell: myData, isMe: true)
+            }
         } else {
             RankModel.currentState = .friends
             rankDataToShow = RankModel.friendsRankData
             requestToCallFriendsInfo()
-            rankingView.myRankView.configure(rankCell: RankModel.myRankInFriends!)
+            if let myData = RankModel.myRankInFriends {
+                rankingView.myRankView.isHidden = false
+                rankingView.myRankView.configure(rankCell: myData, isMe: true)
+            } else {
+                rankingView.myRankView.isHidden = true
+            }
         }
-        rankingView.myRankView.markMyRank()
         rankingView.rankingTableView.reloadData()
     }
     
@@ -110,7 +125,7 @@ extension RankingViewController: UITableViewDelegate, UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.configure(rankCell: data)
+        cell.configure(rankCell: data, isMe: false)
         
         if indexPath.row < 3 { // Trophy 이미지 추가
             cell.addTrophyComponent(rank: Rank(rawValue: indexPath.row + 1) ?? Rank.first)

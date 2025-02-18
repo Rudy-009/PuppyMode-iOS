@@ -48,18 +48,31 @@ class RankingView: UIView {
         $0.register( RankingTableViewCell.self, forCellReuseIdentifier: RankingTableViewCell.identifier)
     }
     
+    private lazy var cryingDogImageView = UIImageView().then {
+        $0.image = .cryingDog
+        $0.contentMode = .scaleAspectFit
+    }
+    
+    private lazy var failedLabel = UILabel().then {
+        $0.text = "친구 목록을 불러올 수 없어요."
+        $0.textColor = .black
+        $0.font = UIFont(name: "NotoSansKR-Medium", size: 18)
+        $0.textAlignment = .center
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = UIColor(red: 0.983, green: 0.983, blue: 0.983, alpha: 1)
-        addComponents()
-        myRankView.markMyRank()
+        addTableComponents()
+        addFetchFailedComponents()
+        hideFailedFetchFriendView()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func addComponents() {
+    private func addTableComponents() {
         self.addSubview(rankingIcon)
         self.addSubview(titleLabel)
         self.addSubview(segmentView)
@@ -95,4 +108,32 @@ class RankingView: UIView {
             make.bottom.equalToSuperview()
         }
     }
+    
+    private func addFetchFailedComponents() {
+        self.addSubview(cryingDogImageView)
+        self.addSubview(failedLabel)
+        
+        cryingDogImageView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalTo(96)
+            make.height.equalTo(128)
+        }
+        
+        failedLabel.snp.makeConstraints { make in
+            make.centerX.equalTo(cryingDogImageView.snp.centerX)
+            make.top.equalTo(cryingDogImageView.snp.bottom).offset(15)
+        }
+
+    }
+    
+    public func showFailedFetchFriendView() {
+        cryingDogImageView.isHidden = false
+        failedLabel.isHidden = false
+    }
+    
+    public func hideFailedFetchFriendView() {
+        cryingDogImageView.isHidden = true
+        failedLabel.isHidden = true
+    }
+    
 }

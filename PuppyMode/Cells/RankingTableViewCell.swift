@@ -53,7 +53,7 @@ class RankingTableViewCell: UITableViewCell {
         addComponents()
     }
     
-    public func configure(rankCell: RankUserInfo) {
+    public func configure(rankCell: RankUserInfo, isMe: Bool) {
         rankLabel.text = String(rankCell.rank)
         
         profileImage.image = .rankCellDefaultProfile
@@ -67,6 +67,10 @@ class RankingTableViewCell: UITableViewCell {
         
         if rankCell.rank < 4 {
             addTrophyComponent(rank: Rank(rawValue: rankCell.rank) ?? .first)
+        }
+        
+        if isMe {
+            self.backgroundColor = UIColor(red: 0.451, green: 0.784, blue: 0.694, alpha: 1)
         }
     }
     
@@ -95,7 +99,7 @@ class RankingTableViewCell: UITableViewCell {
         
         profileImage.snp.makeConstraints { make in
             make.leading.equalTo(rankLabel.snp.trailing)
-            make.centerY.equalToSuperview()
+            make.centerY.equalToSuperview().offset(5)
             make.height.width.equalTo(42)
         }
         
