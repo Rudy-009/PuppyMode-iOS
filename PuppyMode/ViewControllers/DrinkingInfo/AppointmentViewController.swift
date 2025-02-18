@@ -324,6 +324,7 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
         let backgroundView = UIView()
         backgroundView.backgroundColor = UIColor.black.withAlphaComponent(0.5) // 반투명 검은색
         backgroundView.alpha = 0 // 초기 상태: 투명
+        backgroundView.tag = 9999 // 태그 설정 (배경 식별용)
         self.view.addSubview(backgroundView)
         
         backgroundView.snp.makeConstraints { make in
@@ -332,6 +333,8 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
         
         // 모달 창 생성
         let modalView = DeleteConfirmationModalView()
+        modalView.tag = 8888 // 태그 설정 (모달 식별용)
+        
         modalView.confirmButton.addTarget(self, action: #selector(didTapConfirmDelete(_:)), for: .touchUpInside)
         modalView.cancelButton.addTarget(self, action: #selector(didTapCancelDelete), for: .touchUpInside)
         
@@ -349,17 +352,25 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
         }
     }
     
-    // 삭제 모달 확인 처리
     @objc private func didTapConfirmDelete(_ sender: UIButton) {
         guard let appointmentId = selectedAppointmentId else { return }
         
         print("삭제 확인 버튼 클릭됨")
         
-        // API 호출 후 모달 닫기
+        // API 호출
         deleteAppointment(appointmentId: appointmentId)
         
-        closeModal(sender.superview)
+        // 모달 창과 배경 뷰 찾기
+        guard let modalView = self.view.viewWithTag(8888), // 모달 창 태그로 찾기
+              let backgroundView = self.view.viewWithTag(9999) else {
+            print("모달 창 또는 배경 뷰를 찾을 수 없습니다.")
+            return
+        }
         
+        // 모달 닫기
+        closeModal(modalView, backgroundView: backgroundView)
+        
+        // 약속 목록 갱신
         fetchAppointments(for: inputDate)
     }
     
@@ -367,22 +378,23 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
     @objc private func didTapCancelDelete() {
         print("삭제 취소 버튼 클릭됨")
         
-        closeModal(self.view.subviews.last) // 마지막에 추가된 모달 닫기
+        guard let modalView = self.view.viewWithTag(8888), // 모달 창 찾기
+              let backgroundView = self.view.viewWithTag(9999) else {
+            print("모달 또는 배경 뷰를 찾을 수 없습니다.")
+            return
+        }
+        
+        closeModal(modalView, backgroundView: backgroundView)
     }
     
-    // 삭제 모달 페이드 아웃 처리 함수
-    private func closeModal(_ modalView: UIView?) {
-        guard let modalView = modalView else { return }
-        
-        // 배경 뷰 찾기 (모달 바로 아래에 있는 뷰가 배경 뷰임)
-        if let backgroundView = self.view.subviews.first(where: { $0.backgroundColor == UIColor.black.withAlphaComponent(0.5) }) {
-            UIView.animate(withDuration: 0.3, animations: {
-                backgroundView.alpha = 0 // 배경 투명하게
-                modalView.alpha = 0 // 모달 투명하게
-            }) { _ in
-                backgroundView.removeFromSuperview() // 배경 제거
-                modalView.removeFromSuperview() // 모달 제거
-            }
+    // 삭제 모달 닫기 처리 함수
+    private func closeModal(_ modalView: UIView, backgroundView: UIView) {
+        UIView.animate(withDuration: 0.3, animations: {
+            backgroundView.alpha = 0 // 배경 투명하게
+            modalView.alpha = 0 // 모달 투명하게
+        }) { _ in
+            backgroundView.removeFromSuperview() // 배경 제거
+            modalView.removeFromSuperview() // 모달 제거
         }
     }
     
@@ -475,13 +487,14 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
             // UI 업데이트
             appointmentView.timeButton.setTitle(formatTime(from: appointment.dateTime), for: .normal)
             appointmentView.addressButton.setTitle(appointment.address, for: .normal)
+            appointmentView.detailAddressTextField.text = appointment.locationName
             
             // 삭제 버튼 표시
             appointmentView.deleteAppointmentButton.isHidden = false
             
             originalDateTime = appointment.dateTime
             originalAddress = appointment.address
-            originalLocationName = "한신무학"
+            originalLocationName = appointment.locationName
         } else {
             print("해당 날짜의 약속이 없습니다.")
             updateUIForNoAppointment()
@@ -510,6 +523,7 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
     private func updateUIForNoAppointment() {
         appointmentView.timeButton.setTitle("시간을 선택해주세요", for: .normal)
         appointmentView.addressButton.setTitle("장소를 선택해주세요", for: .normal)
+        appointmentView.detailAddressTextField.text = ""
         
         // 삭제 버튼 숨기기
         appointmentView.deleteAppointmentButton.isHidden = true

@@ -51,6 +51,7 @@ struct Appointment: Codable {
     let appointmentId: Int
     let dateTime: String // 날짜 및 시간 (ISO8601 형식)
     let address: String
+    let locationName: String
     let status: String   // scheduled, completed 등 상태 값
 }
 
