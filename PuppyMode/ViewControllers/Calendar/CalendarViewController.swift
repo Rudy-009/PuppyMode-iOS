@@ -287,6 +287,7 @@ class CalendarViewController: UIViewController {
         let todayString = dateFormatter.string(from: today)
         
         updateStatus(dateString: todayString, status: drinkRecords[todayString]?.status)
+        calendar(self.calendarView.calendar, didSelect: today, at: .current)
     }
 
 }
