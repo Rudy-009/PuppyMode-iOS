@@ -607,6 +607,7 @@ extension HomeViewController {
                     DispatchQueue.main.async {
                         if decodedResponse.code == "SUCCESS_START_DRINKING_APPOINTMENT" {
                             print("술 약속 시작 성공!")
+                            self.sendNotificationForAppointment() // 술 약속 시작 푸시 알림
                             self.ongoingAppointmentId = appointmentId
                             
                             self.homeView.addDrinkingHistoryButton.setTitleLabel(to: "술 마시는 중")
@@ -627,7 +628,40 @@ extension HomeViewController {
             }
         }
     }
-
+    
+    
+    private func sendNotificationForAppointment() {
+        guard let authToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else {
+            print("인증 토큰을 가져올 수 없습니다.")
+            return
+        }
+        
+        let headers: HTTPHeaders = [
+            "Content-Type": "application/json",
+            "Authorization": "Bearer \(authToken)"
+        ]
+        
+        let url = "\(K.String.puppymodeLink)/fcm/notifications/appointments"
+        
+        AF.request(url,
+                   method: .post,
+                   headers: headers)
+        .response { response in
+            print("FCM 알림 응답 상태 코드:", response.response?.statusCode ?? "상태 코드를 가져올 수 없습니다.")
+            
+            if let data = response.data, !data.isEmpty {
+                do {
+                    if let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                        print("FCM 알림 응답 데이터:", jsonResponse)
+                    }
+                } catch {
+                    print("FCM 응답 디코딩 실패:", error.localizedDescription)
+                }
+            } else {
+                print("FCM 서버로부터 빈 응답을 받았습니다.")
+            }
+        }
+    }
 }
 
 import SwiftUI

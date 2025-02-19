@@ -184,18 +184,18 @@ class DrinkingInfoViewController: UIViewController, UICollectionViewDelegate {
         ]
         
         // URL에 쿼리 파라미터 추가
-        let url = "\(K.String.puppymodeLink)/drinks/capacity"
-        let parameters: [String: Any] = [
-            "drinkItemId": 4
-        ]
+        // let url = "\(K.String.puppymodeLink)/drinks/capacity"
+//        let parameters: [String: Any] = [
+//            "drinkItemId": 4
+//        ]
+        
+        let url = "\(K.String.puppymodeLink)/drinks/capacity?drinkItemId=\(drinkItemId)"
         
         print("drinkItemId In APIAPIAPI:", drinkItemId)
-        print("parameters In APIAPIAPI:", parameters)
+        //print("parameters In APIAPIAPI:", parameters)
         
         AF.request(url,
                    method: .get,
-                   parameters: parameters, // 쿼리 파라미터 추가
-                   encoding: URLEncoding.default, // URL 인코딩 사용
                    headers: headers)
             .responseDecodable(of: DrinkCapacityResponse.self) { response in
                 switch response.result {
