@@ -11,7 +11,6 @@ import Alamofire
 
 class HomeViewController: UIViewController, CLLocationManagerDelegate {
     
-    private var animationImages: [String] = []
     private var currentIndex = 0
     private var animationTimer: Timer?
     
@@ -50,6 +49,10 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
             // 필요한 추가 작업 수행 가능
             print("가장 가까운 예약된 술 약속 ID:", appointmentId)
         }
+        
+        // 먹이주기 성공 이벤트를 감지
+        NotificationCenter.default.addObserver(self, selector: #selector(handleFeedNotification), name: .feed, object: nil)
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -166,7 +169,7 @@ extension HomeViewController {
         rompingToServer()
         
         // 강아지 애니메이션 효과
-        showDogAnimation()
+        showDogAnimation(animationType: "PLAYING")
         
         // 포인트 휙득 알림 표시 (10P)
         showPointAlert()
@@ -282,13 +285,13 @@ extension HomeViewController {
     }
     
     
-    private func showDogAnimation() {
+    @objc private func showDogAnimation(animationType: String) {
         let headers: HTTPHeaders = [
             "accept": "*/*",
             "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.accessToken.rawValue)!)"
         ]
         
-        let parameter =  PuppyAnimationParameter(animationType: "PLAYING")
+        let parameter =  PuppyAnimationParameter(animationType: animationType)
         
         AF.request(K.String.puppymodeLink + "/puppies/animations/frames",
                    method: .get,
@@ -303,8 +306,8 @@ extension HomeViewController {
                 if response.isSuccess {
                     print("애니메이션 프레임 조회 성공")
                     
-                    self.animationImages = response.result.imageUrls
-                    self.startAnimation() // 애니메이션 시작
+                    let animationImages = response.result.imageUrls
+                    self.startAnimation(animationImages: animationImages) // 애니메이션 시작
                     
                 } else {
                     print("애니메이션 프레임 조회 API Error: \(response.message)")
@@ -316,7 +319,7 @@ extension HomeViewController {
 
     }
     
-    private func startAnimation() {
+    @objc private func startAnimation(animationImages: [String] = []) {
         guard !animationImages.isEmpty else { return }
         
         var index = 0
@@ -399,6 +402,16 @@ extension HomeViewController {
         homeView.rompingButton.alpha = 1
         
     }
+    
+    @objc private func handleFeedNotification(_ notification: Notification) {
+        guard let animationType = notification.userInfo?["animationType"] as? String else {
+            print("❌ animationType이 없습니다!")
+            return
+        }
+
+        showDogAnimation(animationType: animationType) // 기존 함수 호출!
+    }
+
 }
 
 
