@@ -11,10 +11,10 @@ struct StartAppointmentResponse: Codable {
     let isSuccess: Bool
     let code: String
     let message: String
-    let result: AppointmentResult?
+    let result: StartAppointmentResult?
 }
 
-struct AppointmentResult: Codable {
+struct StartAppointmentResult: Codable {
     let appointmentId: Int
     let address: String
     let locationName: String
@@ -174,4 +174,20 @@ struct UpdateAppointmentResult: Codable {
     let address: String
     let locationName: String
     let appointmentStatus: String
+}
+
+struct AppointmentStatusResponse: Codable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: AppointmentStatusResult?
+}
+
+struct AppointmentStatusResult: Codable {
+    let appointmentId: Int
+    let isDrinking: Bool
+    let appointmentStatus: String
+    let puppyName: String
+    let drinkingHours: Int
+    let drinkingImageUrls: [String]
 }

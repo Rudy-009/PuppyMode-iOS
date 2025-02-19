@@ -34,31 +34,24 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
         
         setupLocationManager()
         self.defineButtonActions()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        getPupptInfo()
         
-        // 가장 가까운 예약된 술 약속 확인
+        // 홈 화면에 접속할 떄 마다 가장 가까운 예약된 술 약속 확인 && 음주 중인지 검증
         checkNearestScheduledAppointment { appointmentId in
             guard let appointmentId = appointmentId else {
                 print("오늘 날짜의 예약된 술 약속이 없습니다.")
                 return
             }
-            
-            print("술 약속 시작 엔트리")
-            // 약속 시작 API 호출
-            self.startAppointment(appointmentId: appointmentId)
+
+            // 술 약속 시작 API 호출
+            self.checkAppointmentStatus(appointmentId: appointmentId)
             
             // 필요한 추가 작업 수행 가능
             print("가장 가까운 예약된 술 약속 ID:", appointmentId)
-        }
-        
-        // 먹이주기 성공 이벤트를 감지
-        NotificationCenter.default.addObserver(self, selector: #selector(handleFeedNotification), name: .feed, object: nil)
-
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        Task {
-            await getPupptInfo()
         }
     }
     
@@ -413,62 +406,6 @@ extension HomeViewController {
 
 // MARK: - 음주 중인지 아닌지 체크
 extension HomeViewController {
-    // 가장 가까운 약속 ID 확인 API 호출
-    private func checkClosestAppointment(completion: @escaping (Int?) -> Void) {
-        let authToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue) ?? ""
-        
-        let headers: HTTPHeaders = [
-            "Content-Type": "application/json",
-            "Authorization": "Bearer \(authToken)"
-        ]
-        
-        AF.request(K.String.puppymodeLink + "/appointments",
-                   method: .get,
-                   headers: headers)
-            .responseDecodable(of: GetAppointmentsResponse.self) { response in
-                switch response.result {
-                case .success(let data):
-                    if data.code == "SUCCESS_GET_APPOINTMENTS" {
-                        print("술 약속 조회 성공!")
-                        
-                        // 가장 가까운 약속 ID 추출 및 반환
-                        if let closestAppointmentId = self.getClosestScheduledAppointment(from: data.result?.appointments ?? []) {
-                            print("가장 가까운 약속 ID:", closestAppointmentId)
-                            completion(closestAppointmentId)
-                        } else {
-                            print("현재 예정된 약속이 없습니다.")
-                            completion(nil)
-                        }
-                    } else {
-                        print("응답 코드가 SUCCESS_GET_APPOINTMENTS가 아닙니다.")
-                        completion(nil)
-                    }
-                case .failure(let error):
-                    print("API 요청 실패:", error.localizedDescription)
-                    completion(nil)
-                }
-            }
-    }
-
-    
-    // 가장 가까운 scheduled 상태의 약속 ID 추출 함수
-    private func getClosestScheduledAppointment(from appointments: [Appointment]) -> Int? {
-        let currentDate = Date()
-        
-        // scheduled 상태의 약속만 필터링
-        let scheduledAppointments = appointments.filter { $0.status.lowercased() == "scheduled" }
-        
-        // 가장 가까운 날짜 및 시간의 약속 찾기
-        let closestAppointment = scheduledAppointments.min(by: { appointment1, appointment2 in
-            guard let date1 = appointment1.dateTime.toDate(format: "yyyy-MM-dd'T'HH:mm:ss"),
-                  let date2 = appointment2.dateTime.toDate(format: "yyyy-MM-dd'T'HH:mm:ss") else { return false }
-            
-            return abs(date1.timeIntervalSince(currentDate)) < abs(date2.timeIntervalSince(currentDate))
-        })
-        
-        return closestAppointment?.appointmentId
-    }
-    
     // 가장 가까운 SCHEDULED 상태의 약속  조회하기 API
     private func checkNearestScheduledAppointment(completion: @escaping (Int?) -> Void) {
         guard let authToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else {
@@ -507,48 +444,43 @@ extension HomeViewController {
             }
     }
     
-    // 술 약속 시작하기 API --> 시작 성공 시 버튼 기능 변경, 시작 실패 시 주량 기록으로 유지
-    private func startAppointment(appointmentId: Int) {
-        guard let latitude = currentLatitude, let longitude = currentLongitude else {
-            print("위치 정보를 가져올 수 없습니다.")
+    // 음주 중 상태 조회하기 API --> ONGOING 시 버튼 기능 변경, 아닐 시 주량 기록으로 유지
+    private func checkAppointmentStatus(appointmentId: Int) {
+        guard let authToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else {
+            print("인증 토큰을 가져올 수 없습니다.")
             return
         }
         
-        print("위치 정보를 가져올 수 없습니다.")
-        
-        let fcmToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue) ?? ""
-        
         let headers: HTTPHeaders = [
             "Content-Type": "application/json",
-            "Authorization": "Bearer \(fcmToken)"
+            "Authorization": "Bearer \(authToken)"
         ]
         
-        let parameters: [String: Any] = [
-            "latitude": latitude,
-            "longitude": longitude
-        ]
-        
-        let url = "\(K.String.puppymodeLink)/appointments/\(appointmentId)/start"
+        let url = "\(K.String.puppymodeLink)/appointments/\(appointmentId)/status"
         
         AF.request(url,
-                   method: .post,
-                   parameters: parameters,
-                   encoding: JSONEncoding.default,
+                   method: .get,
                    headers: headers)
-            .responseDecodable(of: StartAppointmentResponse.self) { response in
+            .responseDecodable(of: AppointmentStatusResponse.self) { response in
                 switch response.result {
                 case .success(let data):
-                    if data.code == "SUCCESS_START_APPOINTMENT" {
-                        print("술 약속 시작 성공!")
+                    if data.code == "SUCCESS_GET_APPOINTMENT_STATUS" {
+                        print("약속 상태 조회 성공:", data.result?.appointmentStatus ?? "상태 없음")
                         
-                        DispatchQueue.main.async {
-                            self.homeView.addDrinkingHistoryButton.setTitleLabel(to: "술 마시는 중...")
-                            self.homeView.addDrinkingHistoryButton.setSubTitleLabel(to: "")
+                        if data.result?.appointmentStatus == "ONGOING" {
+                            // ONGOING 상태인 경우
+                            print("ONGOING 상태입니다.")
+                            DispatchQueue.main.async {
+                                self.homeView.addDrinkingHistoryButton.setTitleLabel(to: "술 마시는 중")
+                                self.homeView.addDrinkingHistoryButton.setSubTitleLabel(to: "...")
+                            }
+                        } else {
+                            // ONGOING이 아닌 경우 startAppointment 호출
+                            print("ONGOING 상태가 아닙니다.")
+                            self.startAppointment(appointmentId: appointmentId)
                         }
-                        
                     } else {
-                        print("응답 코드가 SUCCESS_START_APPOINTMENT가 아닙니다.")
-                        
+                        print("응답 코드가 SUCCESS_GET_APPOINTMENT_STATUS가 아닙니다.")
                         DispatchQueue.main.async {
                             self.homeView.addDrinkingHistoryButton.setTitleLabel(to: "음주 기록")
                             self.homeView.addDrinkingHistoryButton.setSubTitleLabel(to: "술 마셨어요")
@@ -558,6 +490,68 @@ extension HomeViewController {
                     print("API 요청 실패:", error.localizedDescription)
                 }
             }
+    }
+    
+    // 술 약속 시작하기 API --> 시작 성공 시 버튼 기능 변경, 시작 실패 시 주량 기록으로 유지
+    private func startAppointment(appointmentId: Int) {
+        guard let latitude = currentLatitude, let longitude = currentLongitude else {
+            print("위치 정보를 가져올 수 없습니다.")
+            return
+        }
+        
+        let accessToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue) ?? ""
+        
+        let headers: HTTPHeaders = [
+            "Content-Type": "application/json",
+            "Authorization": "Bearer \(accessToken)"
+        ]
+        
+        let parameters: [String: Any] = [
+            "latitude": Double(String(format: "%.6f", abs(latitude))) ?? 0.0,
+            "longitude": Double(String(format: "%.6f", abs(longitude))) ?? 0.0
+        ]
+        
+        print("appointmentId: ", appointmentId)
+        
+        let url = "\(K.String.puppymodeLink)/appointments/\(appointmentId)/start"
+        
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: parameters, options: [])
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                print("요청 데이터 (JSON):", jsonString)
+            }
+        } catch {
+            print("JSON 변환 실패:", error.localizedDescription)
+        }
+        
+        AF.request(url,
+                   method: .patch,
+                   parameters: parameters,
+                   encoding: JSONEncoding.default,
+                   headers: headers)
+        .response { response in
+            print("응답 상태 코드:", response.response?.statusCode ?? "상태 코드를 가져올 수 없습니다.")
+            if let data = response.data, !data.isEmpty {
+                do {
+                    let decodedResponse = try JSONDecoder().decode(StartAppointmentResponse.self, from: data)
+                    DispatchQueue.main.async {
+                        if decodedResponse.code == "SUCCESS_START_APPOINTMENT" {
+                            print("술 약속 시작 성공!")
+                            self.homeView.addDrinkingHistoryButton.setTitleLabel(to: "술 마시는 중")
+                            self.homeView.addDrinkingHistoryButton.setSubTitleLabel(to: "...")
+                        } else {
+                            print("응답 코드가 SUCCESS_START_APPOINTMENT가 아닙니다.")
+                            self.homeView.addDrinkingHistoryButton.setTitleLabel(to: "음주 기록")
+                            self.homeView.addDrinkingHistoryButton.setSubTitleLabel(to: "술 마셨어요")
+                        }
+                    }
+                } catch {
+                    print("디코딩 실패:", error.localizedDescription)
+                }
+            } else {
+                print("서버로부터 빈 응답을 받았습니다.")
+            }
+        }
     }
 
 }

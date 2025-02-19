@@ -41,6 +41,14 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
         appointmentView.dateLabel.text = inputDate
         
         fetchAppointments(for: inputDate)
+        
+        appointmentView.detailAddressTextField.delegate = self
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        updateMakeAppointmentButtonVisibility(selectedAppointmentId: selectedAppointmentId)
     }
     
     // 네비게이션 바 설정
@@ -92,25 +100,17 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
         appointmentView.timeButton.addTarget(self, action: #selector(didTapTimeButton), for: .touchUpInside)
         appointmentView.addressButton.addTarget(self, action: #selector(didTapAddressButton), for: .touchUpInside)
         appointmentView.deleteAppointmentButton.addTarget(self, action: #selector(didTapDeleteAppointmentButton), for: .touchUpInside)
+        appointmentView.makeAppointmentButton.addTarget(self, action: #selector(didMakeAppointmentButton), for: .touchUpInside)
+        
+        appointmentView.timeButton.addTarget(self, action: #selector(updateMakeAppointmentButton), for: .valueChanged)
+        appointmentView.addressButton.addTarget(self, action: #selector(updateMakeAppointmentButton), for: .valueChanged)
+        
     }
     
     // MARK: - Button Actions
     
     // 뒤로가기 버튼 동작 처리
     @objc private func didTapBackButton() {
-        if selectedAppointmentId == nil {
-            // 해당 날짜의 약속이 없으면 술 약속 생성 기능 실행
-            print("해당 날짜의 약속이 없습니다. 술 약속 생성 API를 호출합니다.")
-            didTapCreateAppointmentButton()
-        } else if hasDataChanged() {
-            // 데이터가 변경된 경우 수정 API 호출
-            print("데이터가 변경되었습니다. 수정 API를 호출합니다.")
-            updateAppointment()
-        } else {
-            // 데이터가 변경되지 않은 경우
-            print("데이터가 변경되지 않았습니다.")
-        }
-        
         if let navigationController = self.navigationController {
             // 네비게이션 스택에서 이전 화면으로 이동
             navigationController.popViewController(animated: true)
@@ -192,6 +192,43 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
         }
     }
     
+    // 술 약속 입력 완료 버튼 가시성 처리 함수
+    private func updateMakeAppointmentButtonVisibility(selectedAppointmentId: Int?) {
+        // selectedAppointmentId가 있는 경우 항상 버튼을 표시
+        if let _ = selectedAppointmentId {
+            appointmentView.makeAppointmentButton.isHidden = false
+            return
+        }
+        
+        // 조건: 시간, 장소, 상세주소가 모두 입력된 경우에만 버튼 표시
+        let isTimeSelected = appointmentView.timeButton.title(for: .normal) != "시간을 선택해주세요"
+        let isAddressSelected = appointmentView.addressButton.title(for: .normal) != "장소를 선택해주세요"
+        let isDetailAddressFilled = !(appointmentView.detailAddressTextField.text?.isEmpty ?? true)
+        
+        appointmentView.makeAppointmentButton.isHidden = !(isTimeSelected && isAddressSelected && isDetailAddressFilled)
+    }
+    
+    // 입력 완료 가시성 실행 함수
+    @objc private func updateMakeAppointmentButton() {
+        updateMakeAppointmentButtonVisibility(selectedAppointmentId: selectedAppointmentId)
+    }
+    
+    // 술 약속 입력 완료 버튼 동작 처리
+    @objc private func didMakeAppointmentButton() {
+        if selectedAppointmentId == nil {
+            // 해당 날짜의 약속이 없으면 술 약속 생성 기능 실행
+            print("해당 날짜의 약속이 없습니다. 술 약속 생성 API를 호출합니다.")
+            didTapCreateAppointmentButton()
+        } else if hasDataChanged() {
+            // 데이터가 변경된 경우 수정 API 호출
+            print("데이터가 변경되었습니다. 수정 API를 호출합니다.")
+            updateAppointment()
+        } else {
+            // 데이터가 변경되지 않은 경우
+            print("데이터가 변경되지 않았습니다.")
+        }
+    }
+    
     // 술 약속 생성 처리
     @objc private func didTapCreateAppointmentButton() {
         print("술 약속 생성 버튼 클릭됨")
@@ -209,7 +246,6 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
             return
         }
         
-        // Geocoding을 통해 위도와 경도를 가져옴
         getCoordinates(for: address) { [weak self] coordinate in
             guard let self = self else { return }
             
@@ -260,6 +296,11 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
             case .success(let data):
                 if data.code == "SUCCESS_POST_APPOINTMENT" {
                     print("술 약속 생성 성공:", data.result)
+                    self.showAlert(title: "약속 생성", message:
+                            """
+                            술 약속 생성에 성공하였습니다!
+                            """)
+                    self.fetchAppointments(for: self.inputDate)
                 } else {
                     print("술 약속 생성 실패:", data.message)
                     self.showAlert(title: "실패", message:
@@ -464,6 +505,7 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
                 case .success(let data):
                     print("약속 조회 성공:", data)
                     self.handleAppointments(data.result, for: inputDate)
+                    self.updateMakeAppointmentButtonVisibility(selectedAppointmentId: self.selectedAppointmentId)
                 case .failure(let error):
                     print("API 요청 실패:", error.localizedDescription)
                     self.showAlert(title: "오류", message: "네트워크 오류가 발생했습니다. 다시 시도해주세요.")
@@ -706,5 +748,11 @@ class DeleteConfirmationModalView: UIView {
             make.height.equalTo(44)
             make.bottom.equalToSuperview().offset(-32).priority(.medium)
         }
+    }
+}
+
+extension AppointmentViewController: UITextFieldDelegate {
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        updateMakeAppointmentButtonVisibility(selectedAppointmentId: selectedAppointmentId)
     }
 }
