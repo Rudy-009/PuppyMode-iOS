@@ -257,6 +257,19 @@ class CalendarViewController: UIViewController {
         
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
+    
+    @objc
+    private func appointmentButtonTapped() {
+        let displayFormatter = DateFormatter()
+        displayFormatter.dateFormat = "yyyy.MM.dd"
+        displayFormatter.locale = Locale(identifier: "ko_KR")
+        let displayDate = displayFormatter.string(from: selectedDate!)
+        
+        let appointmentVC = AppointmentViewController(inputDate: displayDate)
+        appointmentVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.isNavigationBarHidden = true
+        self.navigationController?.pushViewController(appointmentVC, animated: true)
+    }
 
 }
 
@@ -328,15 +341,20 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
                 appointmentButton.plusButton.isHidden = true
                 appointmentButton.titleLabel.isHidden = false
                 appointmentButton.layer.shadowOpacity = 0
+                appointmentButton.backView.isUserInteractionEnabled = false
             } else {
                 appointmentButton.plusButton.isHidden = false
                 appointmentButton.titleLabel.isHidden = true
                 makeShadow(button: appointmentButton)
+                appointmentButton.backView.isUserInteractionEnabled = true
+                appointmentButton.backView.addTarget(self, action: #selector(appointmentButtonTapped), for: .touchUpInside)
             }
         } else {
             print("약속 있음")
             appointmentButton.plusButton.isHidden = true
             appointmentButton.titleLabel.isHidden = false
+            appointmentButton.backView.isUserInteractionEnabled = true
+            appointmentButton.backView.addTarget(self, action: #selector(appointmentButtonTapped), for: .touchUpInside)
         }
 
         UIView.animate(withDuration: 0.3, animations: {
