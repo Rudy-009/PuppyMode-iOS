@@ -102,8 +102,8 @@ class RevokeView: UIView {
         self.addSubview(characterImage)
         
         characterImage.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(20)
-            make.bottom.equalTo(revokeButton.snp.top).offset(-30)
+            make.trailing.equalToSuperview()
+            make.bottom.equalTo(revokeButton.snp.top)
             make.width.equalTo(200)
             make.height.equalTo(300)
         }
