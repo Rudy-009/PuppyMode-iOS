@@ -169,7 +169,7 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
         appointmentView.addressButton.setTitleColor(.black, for: .normal)
     }
     
-    // 주소로 위도, 경도를 구하는 함수
+    // 주소로 위도, 경도를 구하는 함수 (CLGeocoder, 글로벌 지오코더)
     private func getCoordinates(for address: String, completion: @escaping (CLLocationCoordinate2D?) -> Void) {
         let geocoder = CLGeocoder()
         
@@ -192,6 +192,57 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
         }
     }
     
+    // 네이버 MAP API 지오코더 이용
+    private func getCoordinatesUsingNaver(for address: String, completion: @escaping (CLLocationCoordinate2D?) -> Void) {
+        let clientId = "--" // 발급받은 Naver Client ID 입력.
+        let clientSecret = "--" // 발급받은 Naver Client Secret 입력.
+        let urlString = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=\(address.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"
+        
+        guard let url = URL(string: urlString) else {
+            print("유효하지 않은 URL입니다.")
+            completion(nil)
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.addValue(clientId, forHTTPHeaderField: "X-NCP-APIGW-API-KEY-ID")
+        request.addValue(clientSecret, forHTTPHeaderField: "X-NCP-APIGW-API-KEY")
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Naver Maps API 요청 실패: \(error.localizedDescription)")
+                completion(nil)
+                return
+            }
+            
+            guard let data = data else {
+                print("응답 데이터가 없습니다.")
+                completion(nil)
+                return
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                let naverResponse = try decoder.decode(NaverGeocodeResponse.self, from: data)
+                
+                if let firstResult = naverResponse.addresses.first,
+                   let latitude = Double(firstResult.y),
+                   let longitude = Double(firstResult.x) {
+                    let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+                    completion(coordinate)
+                } else {
+                    print("결과를 찾을 수 없습니다.")
+                    completion(nil)
+                }
+            } catch {
+                print("JSON 디코딩 실패: \(error.localizedDescription)")
+                completion(nil)
+            }
+        }
+        
+        task.resume()
+    }
+
     // 술 약속 입력 완료 버튼 가시성 처리 함수
     private func updateMakeAppointmentButtonVisibility(selectedAppointmentId: Int?) {
         // selectedAppointmentId가 있는 경우 항상 버튼을 표시
@@ -235,25 +286,33 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
         
         // 입력 데이터 가져오기
         guard let dateTime = appointmentView.timeButton.title(for: .normal), !dateTime.isEmpty else {
+            print("날짜와 시간이 입력되지 않았습니다.")
             return
         }
         
         guard let address = appointmentView.addressButton.title(for: .normal), !address.isEmpty else {
+            print("주소가 입력되지 않았습니다.")
             return
         }
         
         guard let detailAddress = appointmentView.detailAddressTextField.text, !detailAddress.isEmpty else {
+            print("상세 주소가 입력되지 않았습니다.")
             return
         }
         
+        // Naver API를 사용하여 주소로부터 좌표 가져오기
         getCoordinates(for: address) { [weak self] coordinate in
             guard let self = self else { return }
             
             guard let coordinate = coordinate else {
                 print("위치 정보를 가져올 수 없습니다.")
-                self.showAlert(title: "오류", message: "주소에 해당하는 위치 정보를 가져올 수 없습니다.")
+                DispatchQueue.main.async {
+                    self.showAlert(title: "오류", message: "주소에 해당하는 위치 정보를 가져올 수 없습니다.")
+                }
                 return
             }
+            
+            print("네이버 지오코드 적용")
             
             // API 요청 데이터 생성
             let parameters: [String: Any] = [
@@ -267,7 +326,9 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
             print("request parameters:", parameters)
             
             // API 호출
-            self.createAppointment(parameters: parameters)
+            DispatchQueue.main.async {
+                self.createAppointment(parameters: parameters)
+            }
         }
     }
     

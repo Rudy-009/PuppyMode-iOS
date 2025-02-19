@@ -70,6 +70,10 @@ class HomeCustomButtonView: UIButton {
         buttonSubtitleLabel.text = title
     }
     
+    public func setBackgroundColor(to color: UIColor) {
+        backgroundImage.backgroundColor = color
+    }
+    
     func getTitleLabel() -> String? {
         return buttonTitleLabel.text
     }
