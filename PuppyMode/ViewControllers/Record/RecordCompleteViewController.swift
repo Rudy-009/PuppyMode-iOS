@@ -108,7 +108,10 @@ class RecordCompleteViewController: UIViewController {
             switch response.result {
             case .success(let data):
                 print("✅ 먹이 주기 성공: \(data)")
+                
                 DispatchQueue.main.async {
+                    // 먹이 주기 성공 후 notification을 보내기
+                    NotificationCenter.default.post(name: .feed, object: nil, userInfo: ["animationType": "FEEDING"])
                     self.navigationController?.popToRootViewController(animated: true)
                 }
             case .failure(let error):
@@ -122,4 +125,8 @@ class RecordCompleteViewController: UIViewController {
         print("먹이주러 가기 버튼이 눌렸습니다.")
         setFeedAPI()
     }
+}
+
+extension Notification.Name {
+    static let feed = Notification.Name("feed")
 }
