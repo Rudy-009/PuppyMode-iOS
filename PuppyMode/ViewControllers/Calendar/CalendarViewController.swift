@@ -187,6 +187,7 @@ class CalendarViewController: UIViewController {
         calendarView.changeButton.addTarget(self, action: #selector(changeButtonTapped), for: .touchUpInside)
         calendarView.afterChangeButton.addTarget(self, action: #selector(changeButtonTapped), for: .touchUpInside)
         calendarView.dateView.recordButton.backView.addTarget(self, action: #selector(recordButtonTapped), for: .touchUpInside)
+        calendarView.todayButton.addTarget(self, action: #selector(todayButtonTapped), for: .touchUpInside)
     }
     
     @objc
@@ -199,6 +200,7 @@ class CalendarViewController: UIViewController {
         self.calendarView.afterYearLabel.isHidden = true
         self.calendarView.afterMonthLabel.isHidden = true
         self.calendarView.afterChangeButton.isHidden = true
+        self.calendarView.todayButton.isHidden = true
         
         self.calendarView.dateView.isHidden = true
         
@@ -269,6 +271,22 @@ class CalendarViewController: UIViewController {
         appointmentVC.hidesBottomBarWhenPushed = true
         self.navigationController?.isNavigationBarHidden = true
         self.navigationController?.pushViewController(appointmentVC, animated: true)
+    }
+    
+    @objc
+    private func todayButtonTapped() {
+        let today = Date()
+        calendarView.calendar.setCurrentPage(today, animated: true)
+        calendarView.calendar.select(today)
+        selectedDate = today
+        
+        // 상태 업데이트
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        let todayString = dateFormatter.string(from: today)
+        
+        updateStatus(dateString: todayString, status: drinkRecords[todayString]?.status)
     }
 
 }
@@ -366,6 +384,7 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
             self.calendarView.afterYearLabel.isHidden = false
             self.calendarView.afterMonthLabel.isHidden = false
             self.calendarView.afterChangeButton.isHidden = false
+            self.calendarView.todayButton.isHidden = false
             
             self.calendarView.dateView.isHidden = false
             
