@@ -74,6 +74,14 @@ class HomeCustomButtonView: UIButton {
         backgroundImage.backgroundColor = color
     }
     
+    public func setBackgroundImage(to image: UIImage?) {
+        backgroundImage.image = image
+    }
+    
+    public func setDefaultBackgroundImage() {
+            backgroundImage.image = .bottomButton // 기본 이미지로 설정
+        }
+    
     func getTitleLabel() -> String? {
         return buttonTitleLabel.text
     }

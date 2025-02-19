@@ -71,7 +71,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
                     DispatchQueue.main.async {
                         self.homeView.addDrinkingHistoryButton.setTitleLabel(to: "술 마시는 중")
                         self.homeView.addDrinkingHistoryButton.setSubTitleLabel(to: "...")
-                        self.homeView.addDrinkingHistoryButton.setBackgroundColor(to: UIColor(hex: "#C3E9DF"))
+                        self.homeView.addDrinkingHistoryButton.setBackgroundImage(to: UIImage(named: "BottomMintButtonImage"))
                     }
                 } else {
                     print("오늘 날짜의 ONGOING 약속이 없습니다.")
@@ -82,7 +82,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
                             print("가장 가까운 예약된 술 약속이 없습니다.")
                             self.homeView.addDrinkingHistoryButton.setTitleLabel(to: "음주 기록")
                             self.homeView.addDrinkingHistoryButton.setSubTitleLabel(to: "어제 마셨어요")
-                            self.homeView.addDrinkingHistoryButton.setBackgroundColor(to: UIColor(hex: "#FFFFFF"))
+                            self.homeView.addDrinkingHistoryButton.setDefaultBackgroundImage()
                             return
                         }
                         
@@ -547,7 +547,7 @@ extension HomeViewController {
                             DispatchQueue.main.async {
                                 self.homeView.addDrinkingHistoryButton.setTitleLabel(to: "술 마시는 중")
                                 self.homeView.addDrinkingHistoryButton.setSubTitleLabel(to: "...")
-                                self.homeView.addDrinkingHistoryButton.setBackgroundColor(to: UIColor(hex: "#C3E9DF"))
+                                self.homeView.addDrinkingHistoryButton.setBackgroundImage(to: UIImage(named: "BottomMintButtonImage"))
                             }
                         } else {
                             // ONGOING이 아닌 경우 startAppointment 호출
@@ -559,7 +559,7 @@ extension HomeViewController {
                         DispatchQueue.main.async {
                             self.homeView.addDrinkingHistoryButton.setTitleLabel(to: "음주 기록")
                             self.homeView.addDrinkingHistoryButton.setSubTitleLabel(to: "어제 마셨어요")
-                            self.homeView.addDrinkingHistoryButton.setBackgroundColor(to: UIColor(hex: "#FFFFFF"))
+                            self.homeView.addDrinkingHistoryButton.setDefaultBackgroundImage()
                             
                         }
                     }
@@ -612,12 +612,12 @@ extension HomeViewController {
                             
                             self.homeView.addDrinkingHistoryButton.setTitleLabel(to: "술 마시는 중")
                             self.homeView.addDrinkingHistoryButton.setSubTitleLabel(to: "...")
-                            self.homeView.addDrinkingHistoryButton.setBackgroundColor(to: UIColor(hex: "#C3E9DF"))
+                            self.homeView.addDrinkingHistoryButton.setBackgroundImage(to: UIImage(named: "BottomMintButtonImage"))
                         } else {
                             print("응답 코드가 SUCCESS_START_DRINKING_APPOINTMENT가 아닙니다.")
                             self.homeView.addDrinkingHistoryButton.setTitleLabel(to: "음주 기록")
                             self.homeView.addDrinkingHistoryButton.setSubTitleLabel(to: "어제 마셨어요")
-                            self.homeView.addDrinkingHistoryButton.setBackgroundColor(to: UIColor(hex: "#FFFFFF"))
+                            self.homeView.addDrinkingHistoryButton.setDefaultBackgroundImage()
                         }
                     }
                 } catch {
