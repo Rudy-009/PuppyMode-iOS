@@ -332,9 +332,9 @@ extension HomeViewController {
             if repeatCount >= maxRepeatCount * 2 { // (두 개의 이미지를 번갈아 바꾸므로 *2)
                 timer.invalidate() // 애니메이션 종료
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    self.getPupptInfo()
-                }
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+//                    self.getPupptInfo()
+//                }
             }
         }
     }
