@@ -20,7 +20,9 @@ class BaseViewController: UITabBarController {
     
     private var homeVC: UINavigationController = {
         let homeViewController = HomeViewController()
-        homeViewController.getPupptInfo()
+        Task {
+            await homeViewController.getPupptInfo()
+        }
         return UINavigationController(rootViewController: homeViewController)
     }()
     

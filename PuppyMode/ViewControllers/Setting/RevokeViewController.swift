@@ -20,6 +20,15 @@ class RevokeViewController: UIViewController {
         defineButtonActions()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        Task {
+            if let puppyInfo = try await PuppyInfoService.fetchPuppyInfo() {
+                revokeView.configure(puppy: puppyInfo.result)
+            }
+        }
+    }
+    
 }
 
 extension RevokeViewController {
@@ -63,10 +72,6 @@ extension RevokeViewController {
         _ = UserInfoService.deleteAllKeys()
         self.kakaoRevoke()
         RootViewControllerService.toLoginViewController()
-    }
-    
-    public func setPuppyInfo(puppy: PuppyInfoResult) {
-        self.revokeView.configure(puppy: puppy)
     }
         
     private func kakaoRevoke() {
