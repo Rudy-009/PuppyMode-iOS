@@ -75,6 +75,7 @@ class SettingView: UIView {
         
         logoutButton.imageView?.snp.makeConstraints { make in
             make.edges.equalToSuperview().inset(10)
+            make.center.equalToSuperview()
         }
         
         stackView.snp.makeConstraints {
