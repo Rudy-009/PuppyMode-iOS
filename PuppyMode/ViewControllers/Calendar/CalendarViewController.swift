@@ -228,17 +228,22 @@ class CalendarViewController: UIViewController {
     
     @objc
     private func recordButtonTapped() {
-        // 어제 & 기록X
         let today = Date()
         let calendar = Calendar.current
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
-        if let selectedDate = selectedDate, let yesterday = calendar.date(byAdding: .day, value: -1, to: today), dateFormatter.string(from: selectedDate) == dateFormatter.string(from: yesterday), selectedDrinkHistoryId == nil {
-            let hangoverVC = HangoverViewController()
-            hangoverVC.hidesBottomBarWhenPushed = true
-            self.navigationController?.pushViewController(hangoverVC, animated: true)
-            
-            return
+        
+        // 기록X
+        if selectedDrinkHistoryId == nil {
+            // 어제
+            if let selectedDate = selectedDate, let yesterday = calendar.date(byAdding: .day, value: -1, to: today), dateFormatter.string(from: selectedDate) == dateFormatter.string(from: yesterday) {
+                let hangoverVC = HangoverViewController()
+                hangoverVC.hidesBottomBarWhenPushed = true
+                self.navigationController?.pushViewController(hangoverVC, animated: true)
+                return
+            } else {
+                return
+            }
         }
         
         // 기록O
