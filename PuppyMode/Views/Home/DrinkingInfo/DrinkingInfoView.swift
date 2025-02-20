@@ -133,7 +133,7 @@ class DrinkingInfoView: UIView, UICollectionViewDelegate, UICollectionViewDataSo
         }
     
         DrinkingProgressBar.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().offset(-140)
+            make.bottom.equalToSuperview().offset(-230)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(175)
         }

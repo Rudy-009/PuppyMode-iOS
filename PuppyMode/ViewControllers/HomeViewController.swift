@@ -486,7 +486,7 @@ extension HomeViewController {
 extension HomeViewController {
     
     // GET /appointments API 호출 함수
-    private func fetchAppointments(completion: @escaping ([SingleAppointment]) -> Void) {
+    private func fetchAppointments(completion: @escaping ([Appointment]) -> Void) {
         guard let authToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else {
             print("인증 토큰을 가져올 수 없습니다.")
             completion([])
