@@ -27,9 +27,11 @@ class DrinkingProgressBarView: UIView {
         
         $0.progressTintColor = UIColor(hex: "#73C8B1")
         $0.trackTintColor = UIColor(hex: "#F9F9F9")
-        $0.layer.cornerRadius = 10
         
         $0.clipsToBounds = true
+        $0.layer.cornerRadius = 10.5
+        $0.subviews[1].clipsToBounds = true
+        $0.layer.sublayers?[1].cornerRadius = 10.5
     }
 
     // Safe Label

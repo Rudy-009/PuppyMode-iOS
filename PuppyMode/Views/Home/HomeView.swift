@@ -114,6 +114,8 @@ class HomeView: UIView {
         pro.largeContentImage = UIImage(named: "ProgressBarBackground")
         pro.clipsToBounds = true
         pro.layer.cornerRadius = 10.5
+        pro.subviews[1].clipsToBounds = true
+        pro.layer.sublayers?[1].cornerRadius = 10.5
     }
     
     //MARK: Drinking Capacity Button

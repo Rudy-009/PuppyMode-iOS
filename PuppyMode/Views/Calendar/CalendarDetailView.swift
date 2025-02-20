@@ -80,24 +80,24 @@ class CalendarDetailView: UIView {
     }
     
     // 안전주량
-    private let safeLabel = UILabel().then {
+    public let safeLabel = UILabel().then {
         $0.text = "안전주량"
         $0.textColor = UIColor(red: 0.541, green: 0.541, blue: 0.557, alpha: 1)
-        $0.font = UIFont(name: "NotoSansKR-Medium", size: 15)
+        $0.font = UIFont(name: "NotoSansKR-Medium", size: 13)
     }
     
-    private let safePointImage = UIImageView().then {
+    public let safePointImage = UIImageView().then {
         $0.image = .imgProgressPointer
     }
     
     // 치사량
-    private let deadLabel = UILabel().then {
+    public let deadLabel = UILabel().then {
         $0.text = "치사량"
         $0.textColor = UIColor(red: 1, green: 0.327, blue: 0.327, alpha: 1)
-        $0.font = UIFont(name: "NotoSansKR-Medium", size: 15)
+        $0.font = UIFont(name: "NotoSansKR-Medium", size: 13)
     }
     
-    private let deadPointImage = UIImageView().then {
+    public let deadPointImage = UIImageView().then {
         $0.image = .imgProgressPointer
     }
     
@@ -246,22 +246,22 @@ class CalendarDetailView: UIView {
         backgroundLine.snp.makeConstraints {
             $0.height.equalTo(1)
             $0.horizontalEdges.equalTo(intakeBackgroundView)
-            $0.top.equalTo(intakeBackgroundView.snp.top).offset(170)
+            $0.top.equalTo(intakeBackgroundView.snp.top).offset(160)
         }
         
         intakeLabel.snp.makeConstraints {
-            $0.top.equalTo(intakeBackgroundView.snp.top).offset(34)
+            $0.top.equalTo(intakeBackgroundView.snp.top).offset(24)
             $0.left.equalTo(intakeBackgroundView.snp.left).offset(21)
         }
         
         progressView.snp.makeConstraints {
-            $0.top.equalTo(intakeLabel.snp.bottom).offset(33)
-            $0.horizontalEdges.equalTo(intakeBackgroundView).inset(14)
+            $0.top.equalTo(intakeLabel.snp.bottom).offset(50)
+            $0.horizontalEdges.equalTo(intakeBackgroundView).inset(28)
             $0.height.equalTo(21)
         }
         
         safeLabel.snp.makeConstraints {
-            $0.centerY.equalTo(intakeLabel)
+            $0.bottom.equalTo(safePointImage.snp.top).offset(-5)
             $0.right.equalTo(deadLabel.snp.left).offset(-16)
         }
         
@@ -271,7 +271,7 @@ class CalendarDetailView: UIView {
         }
         
         deadLabel.snp.makeConstraints {
-            $0.centerY.equalTo(intakeLabel)
+            $0.bottom.equalTo(deadPointImage.snp.top).offset(-5)
             $0.right.equalTo(intakeBackgroundView.snp.right).offset(-11)
         }
         

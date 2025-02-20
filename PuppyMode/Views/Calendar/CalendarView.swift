@@ -39,7 +39,7 @@ class CalendarView: UIView {
     }
     
     // 날짜 타이틀 스택뷰
-    private let dateTitleStackView = UIStackView().then {
+    public let dateTitleStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.spacing = 5
         $0.distribution = .fillEqually
@@ -170,7 +170,7 @@ class CalendarView: UIView {
 
     
     private func setStackView() {
-        [ afterYearLabel, afterMonthLabel ].forEach { dateTitleStackView.addArrangedSubview($0) }
+        [ afterYearLabel, afterMonthLabel, afterChangeButton ].forEach { dateTitleStackView.addArrangedSubview($0) }
     }
     
     private func setView() {
@@ -204,7 +204,8 @@ class CalendarView: UIView {
         
         afterChangeButton.snp.makeConstraints {
             $0.centerY.equalTo(dateTitleStackView)
-            $0.left.equalTo(dateTitleStackView.snp.right).offset(-5)
+            $0.left.equalTo(dateTitleStackView.snp.right)
+            $0.width.equalTo(10)
         }
         
         yearLabel.snp.makeConstraints {
