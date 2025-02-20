@@ -10,9 +10,9 @@ import UIKit
 class EndDrinkingView: UIView {
 
     // Dog Image
-    private let dogImageView = UIImageView().then {
-        $0.image = UIImage(named: "drinkingPuppy") // Replace with your actual image name
-        $0.contentMode = .scaleAspectFit
+    lazy var dogImageView = UIImageView().then {
+        $0.contentMode = .scaleAspectFill
+        $0.clipsToBounds = true
     }
 
     // Title Label

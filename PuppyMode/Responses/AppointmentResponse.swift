@@ -11,10 +11,10 @@ struct StartAppointmentResponse: Codable {
     let isSuccess: Bool
     let code: String
     let message: String
-    let result: AppointmentResult?
+    let result: StartAppointmentResult?
 }
 
-struct AppointmentResult: Codable {
+struct StartAppointmentResult: Codable {
     let appointmentId: Int
     let address: String
     let locationName: String
@@ -84,6 +84,7 @@ struct DrinkingStatusResult: Codable {
     let appointmentStatus: String
     let puppyName: String
     let drinkingHours: Int
+    let drinkingImageUrls: [String] // 이미지 URL 배열 추가
 }
 
 struct RescheduleAppointmentResponse: Codable {
@@ -137,8 +138,11 @@ struct DrinkCapacityResult: Codable {
     let drinkItemName: String
     let imageUrl: String?
     let alcoholPercentage: Float
-    let safetyValue: Int
-    let maxValue: Int
+    let safetyValueBottle: Float
+    let safetyValueGlass: Int
+    let maxValueBottle: Int
+    let maxValueGlass: Int
+    let average: Float
 }
 
 struct NearestScheduledAppointmentResponse: Codable {
@@ -174,4 +178,51 @@ struct UpdateAppointmentResult: Codable {
     let address: String
     let locationName: String
     let appointmentStatus: String
+}
+
+struct AppointmentStatusResponse: Codable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: AppointmentStatusResult?
+}
+
+struct AppointmentStatusResult: Codable {
+    let appointmentId: Int
+    let isDrinking: Bool
+    let appointmentStatus: String
+    let puppyName: String
+    let drinkingHours: Int
+    let drinkingImageUrls: [String]
+}
+
+struct NaverGeocodeResponse: Codable {
+    struct Address: Codable {
+        let roadAddress: String?
+        let jibunAddress: String?
+        let x: String // 경도 (Longitude)
+        let y: String // 위도 (Latitude)
+    }
+    
+    let addresses: [Address]
+}
+
+struct GetAllAppointmentsResponse: Codable {
+    let isSuccess: Bool
+    let code: String
+    let message: String?
+    let result: GetAppointmentsResult?
+}
+
+struct GetAppointmentsResult: Codable {
+    let totalCount: Int?
+    let appointments: [SingleAppointment]?
+}
+
+struct SingleAppointment: Codable {
+    let appointmentId: Int
+    let dateTime: String // ISO 8601 형식 (예: "2025-02-14T00:32:18")
+    let address: String
+    let locationName: String
+    let status: String // 예: "scheduled", "ONGOING"
 }

@@ -10,20 +10,10 @@ import SnapKit
 import Then
 
 class DrinkingView: UIView {
-
-    // Dog Image
-    private let dogImageView = UIImageView().then {
-        $0.image = UIImage(named: "drinkingPuppy") // Replace with your actual image name
-        $0.contentMode = .scaleAspectFit
-    }
-
-    // Title Label
-    let titleLabel = UILabel().then {
-        $0.text = "술 마시는 중"
-        $0.textAlignment = .center
-        
-        $0.textColor = UIColor(hex: "#3C3C3C")
-        $0.font = UIFont(name: "NotoSansKR-Medium", size: 20)
+    
+    lazy var imageView = UIImageView().then {
+        $0.contentMode = .scaleAspectFill
+        $0.clipsToBounds = true
     }
 
     // Progress Label
@@ -42,20 +32,6 @@ class DrinkingView: UIView {
         $0.textAlignment = .center
         $0.textColor = UIColor(hex: "#8A8A8E")
         $0.font = UIFont(name: "NotoSansKR-Medium", size: 18)
-    }
-
-    let promiseButton = UIButton(type: .system).then {
-        let title = "술 약속 미루기"
-        let attributedTitle = NSAttributedString(
-            string: title,
-            attributes: [
-                .font: UIFont(name: "NotoSansKR-Medium", size: 18),
-                .foregroundColor: UIColor(hex: "#3C3C3C"),
-                .underlineStyle: NSUnderlineStyle.single.rawValue // Add underline
-            ]
-        )
-        $0.setAttributedTitle(attributedTitle, for: .normal)
-        $0.backgroundColor = UIColor(hex: "#FBFBFB")
     }
 
     let endButton = UIButton(type: .system).then {
@@ -79,24 +55,23 @@ class DrinkingView: UIView {
     private func setupUI() {
         self.backgroundColor = UIColor(hex: "#FBFBFB")
 
-        addSubview(dogImageView)
+        addSubview(imageView)
         addSubview(progressNameLabel)
         addSubview(progressTimeLabel)
         
-        addSubview(promiseButton)
         addSubview(endButton)
     }
 
     private func setupLayout() {
 
-        dogImageView.snp.makeConstraints { make in
+        imageView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(165)
             make.centerX.equalToSuperview()
             make.width.height.equalTo(250) // Adjust size as needed
         }
 
         progressNameLabel.snp.makeConstraints { make in
-            make.top.equalTo(dogImageView.snp.bottom).offset(47)
+            make.top.equalTo(imageView.snp.bottom).offset(47)
             make.centerX.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(20)
         }
@@ -107,14 +82,8 @@ class DrinkingView: UIView {
             make.leading.trailing.equalToSuperview().inset(20)
         }
 
-        promiseButton.snp.makeConstraints { make in
-            make.bottom.equalTo(endButton.snp.top).offset(-10)
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(30)
-        }
-
         endButton.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().offset(-30)
+            make.bottom.equalToSuperview().offset(-50)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(60)
         }

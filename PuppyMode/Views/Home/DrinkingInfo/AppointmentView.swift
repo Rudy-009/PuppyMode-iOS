@@ -116,6 +116,18 @@ class AppointmentView: UIView {
         $0.clipsToBounds = true
     }
     
+    let makeAppointmentButton = UIButton(type: .system).then {
+        $0.setTitle("입력 완료", for: .normal)
+        
+        $0.backgroundColor = UIColor(hex: "#73C8B1")
+        $0.layer.cornerRadius = 10
+        $0.clipsToBounds = true
+        
+        $0.setTitleColor(UIColor(hex: "#3C3C3C"), for: .normal)
+        $0.titleLabel?.textAlignment = .center
+        $0.titleLabel?.font = UIFont(name: "NotoSansKR-Medium", size: 16)
+    }
+    
     // MARK: - Initializer
     
     override init(frame: CGRect) {
@@ -156,6 +168,7 @@ class AppointmentView: UIView {
         containerView.addSubview(detailAddressDivider)
         
         addSubview(deleteAppointmentButton)
+        addSubview(makeAppointmentButton)
     }
     
     // MARK: - Setup Layout
@@ -236,8 +249,16 @@ class AppointmentView: UIView {
         }
         
         deleteAppointmentButton.snp.makeConstraints{ make in
-            make.bottom.equalToSuperview().offset(-60)
+            make.bottom.equalToSuperview().offset(-265)
             make.centerX.equalToSuperview()
+        }
+        
+        makeAppointmentButton.snp.makeConstraints{ make in
+            make.bottom.equalToSuperview().offset(-50)
+            make.centerX.equalToSuperview()
+            make.leading.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview().offset(-20)
+            make.height.equalTo(52)
         }
         
     }

@@ -41,6 +41,14 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
         appointmentView.dateLabel.text = inputDate
         
         fetchAppointments(for: inputDate)
+        
+        appointmentView.detailAddressTextField.delegate = self
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        updateMakeAppointmentButtonVisibility(selectedAppointmentId: selectedAppointmentId)
     }
     
     // 네비게이션 바 설정
@@ -92,25 +100,17 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
         appointmentView.timeButton.addTarget(self, action: #selector(didTapTimeButton), for: .touchUpInside)
         appointmentView.addressButton.addTarget(self, action: #selector(didTapAddressButton), for: .touchUpInside)
         appointmentView.deleteAppointmentButton.addTarget(self, action: #selector(didTapDeleteAppointmentButton), for: .touchUpInside)
+        appointmentView.makeAppointmentButton.addTarget(self, action: #selector(didMakeAppointmentButton), for: .touchUpInside)
+        
+        appointmentView.timeButton.addTarget(self, action: #selector(updateMakeAppointmentButton), for: .valueChanged)
+        appointmentView.addressButton.addTarget(self, action: #selector(updateMakeAppointmentButton), for: .valueChanged)
+        
     }
     
     // MARK: - Button Actions
     
     // 뒤로가기 버튼 동작 처리
     @objc private func didTapBackButton() {
-        if selectedAppointmentId == nil {
-            // 해당 날짜의 약속이 없으면 술 약속 생성 기능 실행
-            print("해당 날짜의 약속이 없습니다. 술 약속 생성 API를 호출합니다.")
-            didTapCreateAppointmentButton()
-        } else if hasDataChanged() {
-            // 데이터가 변경된 경우 수정 API 호출
-            print("데이터가 변경되었습니다. 수정 API를 호출합니다.")
-            updateAppointment()
-        } else {
-            // 데이터가 변경되지 않은 경우
-            print("데이터가 변경되지 않았습니다.")
-        }
-        
         if let navigationController = self.navigationController {
             // 네비게이션 스택에서 이전 화면으로 이동
             navigationController.popViewController(animated: true)
@@ -169,7 +169,7 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
         appointmentView.addressButton.setTitleColor(.black, for: .normal)
     }
     
-    // 주소로 위도, 경도를 구하는 함수
+    // 주소로 위도, 경도를 구하는 함수 (CLGeocoder, 글로벌 지오코더)
     private func getCoordinates(for address: String, completion: @escaping (CLLocationCoordinate2D?) -> Void) {
         let geocoder = CLGeocoder()
         
@@ -192,32 +192,127 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
         }
     }
     
+    // 네이버 MAP API 지오코더 이용
+    private func getCoordinatesUsingNaver(for address: String, completion: @escaping (CLLocationCoordinate2D?) -> Void) {
+        let clientId = "--" // 발급받은 Naver Client ID 입력.
+        let clientSecret = "--" // 발급받은 Naver Client Secret 입력.
+        let urlString = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=\(address.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"
+        
+        guard let url = URL(string: urlString) else {
+            print("유효하지 않은 URL입니다.")
+            completion(nil)
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.addValue(clientId, forHTTPHeaderField: "X-NCP-APIGW-API-KEY-ID")
+        request.addValue(clientSecret, forHTTPHeaderField: "X-NCP-APIGW-API-KEY")
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Naver Maps API 요청 실패: \(error.localizedDescription)")
+                completion(nil)
+                return
+            }
+            
+            guard let data = data else {
+                print("응답 데이터가 없습니다.")
+                completion(nil)
+                return
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                let naverResponse = try decoder.decode(NaverGeocodeResponse.self, from: data)
+                
+                if let firstResult = naverResponse.addresses.first,
+                   let latitude = Double(firstResult.y),
+                   let longitude = Double(firstResult.x) {
+                    let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+                    completion(coordinate)
+                } else {
+                    print("결과를 찾을 수 없습니다.")
+                    completion(nil)
+                }
+            } catch {
+                print("JSON 디코딩 실패: \(error.localizedDescription)")
+                completion(nil)
+            }
+        }
+        
+        task.resume()
+    }
+
+    // 술 약속 입력 완료 버튼 가시성 처리 함수
+    private func updateMakeAppointmentButtonVisibility(selectedAppointmentId: Int?) {
+        // selectedAppointmentId가 있는 경우 항상 버튼을 표시
+        if let _ = selectedAppointmentId {
+            appointmentView.makeAppointmentButton.isHidden = false
+            return
+        }
+        
+        // 조건: 시간, 장소, 상세주소가 모두 입력된 경우에만 버튼 표시
+        let isTimeSelected = appointmentView.timeButton.title(for: .normal) != "시간을 선택해주세요"
+        let isAddressSelected = appointmentView.addressButton.title(for: .normal) != "장소를 선택해주세요"
+        let isDetailAddressFilled = !(appointmentView.detailAddressTextField.text?.isEmpty ?? true)
+        
+        appointmentView.makeAppointmentButton.isHidden = !(isTimeSelected && isAddressSelected && isDetailAddressFilled)
+    }
+    
+    // 입력 완료 가시성 실행 함수
+    @objc private func updateMakeAppointmentButton() {
+        updateMakeAppointmentButtonVisibility(selectedAppointmentId: selectedAppointmentId)
+    }
+    
+    // 술 약속 입력 완료 버튼 동작 처리
+    @objc private func didMakeAppointmentButton() {
+        if selectedAppointmentId == nil {
+            // 해당 날짜의 약속이 없으면 술 약속 생성 기능 실행
+            print("해당 날짜의 약속이 없습니다. 술 약속 생성 API를 호출합니다.")
+            didTapCreateAppointmentButton()
+        } else if hasDataChanged() {
+            // 데이터가 변경된 경우 수정 API 호출
+            print("데이터가 변경되었습니다. 수정 API를 호출합니다.")
+            updateAppointment()
+        } else {
+            // 데이터가 변경되지 않은 경우
+            print("데이터가 변경되지 않았습니다.")
+        }
+    }
+    
     // 술 약속 생성 처리
     @objc private func didTapCreateAppointmentButton() {
         print("술 약속 생성 버튼 클릭됨")
         
         // 입력 데이터 가져오기
         guard let dateTime = appointmentView.timeButton.title(for: .normal), !dateTime.isEmpty else {
+            print("날짜와 시간이 입력되지 않았습니다.")
             return
         }
         
         guard let address = appointmentView.addressButton.title(for: .normal), !address.isEmpty else {
+            print("주소가 입력되지 않았습니다.")
             return
         }
         
         guard let detailAddress = appointmentView.detailAddressTextField.text, !detailAddress.isEmpty else {
+            print("상세 주소가 입력되지 않았습니다.")
             return
         }
         
-        // Geocoding을 통해 위도와 경도를 가져옴
+        // Naver API를 사용하여 주소로부터 좌표 가져오기
         getCoordinates(for: address) { [weak self] coordinate in
             guard let self = self else { return }
             
             guard let coordinate = coordinate else {
                 print("위치 정보를 가져올 수 없습니다.")
-                self.showAlert(title: "오류", message: "주소에 해당하는 위치 정보를 가져올 수 없습니다.")
+                DispatchQueue.main.async {
+                    self.showAlert(title: "오류", message: "주소에 해당하는 위치 정보를 가져올 수 없습니다.")
+                }
                 return
             }
+            
+            print("네이버 지오코드 적용")
             
             // API 요청 데이터 생성
             let parameters: [String: Any] = [
@@ -231,7 +326,9 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
             print("request parameters:", parameters)
             
             // API 호출
-            self.createAppointment(parameters: parameters)
+            DispatchQueue.main.async {
+                self.createAppointment(parameters: parameters)
+            }
         }
     }
     
@@ -260,6 +357,11 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
             case .success(let data):
                 if data.code == "SUCCESS_POST_APPOINTMENT" {
                     print("술 약속 생성 성공:", data.result)
+                    self.showAlert(title: "약속 생성", message:
+                            """
+                            술 약속 생성에 성공하였습니다!
+                            """)
+                    self.fetchAppointments(for: self.inputDate)
                 } else {
                     print("술 약속 생성 실패:", data.message)
                     self.showAlert(title: "실패", message:
@@ -464,6 +566,7 @@ class AppointmentViewController: UIViewController, AddressSearchDelegate {
                 case .success(let data):
                     print("약속 조회 성공:", data)
                     self.handleAppointments(data.result, for: inputDate)
+                    self.updateMakeAppointmentButtonVisibility(selectedAppointmentId: self.selectedAppointmentId)
                 case .failure(let error):
                     print("API 요청 실패:", error.localizedDescription)
                     self.showAlert(title: "오류", message: "네트워크 오류가 발생했습니다. 다시 시도해주세요.")
@@ -706,5 +809,11 @@ class DeleteConfirmationModalView: UIView {
             make.height.equalTo(44)
             make.bottom.equalToSuperview().offset(-32).priority(.medium)
         }
+    }
+}
+
+extension AppointmentViewController: UITextFieldDelegate {
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        updateMakeAppointmentButtonVisibility(selectedAppointmentId: selectedAppointmentId)
     }
 }
