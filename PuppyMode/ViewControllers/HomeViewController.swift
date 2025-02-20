@@ -51,7 +51,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         Task {
-            await getPupptInfo()
+            await getPuppyInfo()
         }
     }
     
@@ -107,7 +107,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
 //MARK: GET Puppy Character Info
 extension HomeViewController {
     
-    func getPupptInfo() async {
+    func getPuppyInfo() async {
         do {
             if let puppyInfo = try await PuppyInfoService.fetchPuppyInfo()?.result {
                 DispatchQueue.main.async {
@@ -262,7 +262,7 @@ extension HomeViewController {
                     print("놀아주기 서버 연동 성공")
                     print("성공")
                     Task {
-                        await self.getPupptInfo()
+                        await self.getPuppyInfo()
                     }
                 } else {
                     print("Puppy Play API Error: \(puppyResponse.message)")

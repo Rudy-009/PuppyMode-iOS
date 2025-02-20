@@ -21,7 +21,7 @@ class BaseViewController: UITabBarController {
     private var homeVC: UINavigationController = {
         let homeViewController = HomeViewController()
         Task {
-            await homeViewController.getPupptInfo()
+            await homeViewController.getPuppyInfo()
         }
         return UINavigationController(rootViewController: homeViewController)
     }()
@@ -42,7 +42,7 @@ class BaseViewController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBar()
-        SocialService.fetchGlobalRankData()
+        RankingService.fetchGlobalRankData()
         
         // 탭바 아이템 설정
         homeVC.tabBarItem = UITabBarItem(title: "홈", image: UIImage(systemName: "house.fill"), tag: 0)
