@@ -35,6 +35,9 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
         
         setupLocationManager()
         self.defineButtonActions()
+        
+        // 먹이주기 성공 이벤트를 감지
+        NotificationCenter.default.addObserver(self, selector: #selector(handleFeedNotification), name: .feed, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -367,7 +370,7 @@ extension HomeViewController {
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     Task {
-                        await self.getPupptInfo()
+                        await self.getPuppyInfo()
                     }
                 }
             }
