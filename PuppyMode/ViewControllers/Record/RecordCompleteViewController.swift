@@ -71,14 +71,10 @@ class RecordCompleteViewController: UIViewController {
         print("[\(feedType)]")
         // 보상
         switch feedType.uppercased() {
-        case "블루베리", "고구마", "사과", "바나나", "연어":
+        case "블루베리", "고구마", "사과", "바나나", "연어", "소고기", "닭고기":
             completionView.rewardLabel.text = "\(feedType)를 획득했어요!"
         case "호박", "당근", "달걀":
             completionView.rewardLabel.text = "\(feedType)을 획득했어요!"
-        case "소 고기":
-            completionView.rewardLabel.text = "소고기를 획득했어요!"
-        case "닭 고기":
-            completionView.rewardLabel.text = "닭고기를 획득했어요!"
         default:
             completionView.rewardLabel.text = "보상을 획득했어요!"
         }

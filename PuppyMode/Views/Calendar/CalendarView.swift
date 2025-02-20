@@ -63,6 +63,24 @@ class CalendarView: UIView {
         $0.isHidden = true
     }
     
+    public let todayButton = UIButton().then {
+        $0.setImage(.iconCalendarToday, for: .normal)
+        $0.semanticContentAttribute = .forceRightToLeft
+        $0.imageEdgeInsets = UIEdgeInsets(top: 0, left: 2, bottom: 0, right: -2)
+        
+        $0.setTitle("오늘로 이동", for: .normal)
+        $0.setTitleColor(UIColor(red: 0.527, green: 0.527, blue: 0.527, alpha: 1), for: .normal)
+        $0.titleLabel?.font = UIFont(name: "NotoSansKR-Bold", size: 11)
+        $0.titleEdgeInsets = UIEdgeInsets(top: -1, left: 0, bottom: 1, right: 0)
+        
+        $0.layer.backgroundColor = UIColor(red: 0.97, green: 0.97, blue: 0.97, alpha: 1).cgColor
+        $0.layer.cornerRadius = 5
+        $0.layer.borderWidth = 1
+        $0.layer.borderColor = UIColor(red: 0.907, green: 0.907, blue: 0.907, alpha: 1).cgColor
+        
+        $0.isHidden = true
+    }
+    
     // 캘린더
     public let calendar = FSCalendar().then {
         // 배경
@@ -164,9 +182,10 @@ class CalendarView: UIView {
             yearLabel,
             changeButton,
             monthLabel,
+            todayButton,
             calendar,
             dateView,
-            modalBackgroundView
+            modalBackgroundView,
         ].forEach {
             addSubview($0)
         }
@@ -202,6 +221,13 @@ class CalendarView: UIView {
         monthLabel.snp.makeConstraints {
             $0.left.equalToSuperview().offset(23)
             $0.bottom.equalTo(calendar.snp.top).offset(-30)
+        }
+        
+        todayButton.snp.makeConstraints {
+            $0.right.equalToSuperview().offset(-7)
+            $0.top.equalTo(dateTitleStackView.snp.bottom).offset(19)
+            $0.height.equalTo(24)
+            $0.width.equalTo(91)
         }
         
         calendar.snp.makeConstraints {

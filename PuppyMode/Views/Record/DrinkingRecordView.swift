@@ -33,12 +33,18 @@ class DrinkingRecordView: UIView {
     
     // 입력 완료 버튼
     public let completeButton = UIButton().then {
+        var configuration = UIButton.Configuration.plain()
+        configuration.title = "입력 완료"
+        configuration.baseForegroundColor = UIColor(red: 0.35, green: 0.35, blue: 0.35, alpha: 1)
+        configuration.titleAlignment = .center
+        configuration.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 3, trailing: 0)
+        
+        var titleAttr = AttributedString("입력 완료")
+        titleAttr.font = UIFont(name: "NotoSansKR-Medium", size: 20)
+        configuration.attributedTitle = titleAttr
+        
+        $0.configuration = configuration
         $0.backgroundColor = .main
-
-        $0.setTitle("입력 완료", for: .normal)
-        $0.setTitleColor(UIColor(red: 0.235, green: 0.235, blue: 0.235, alpha: 1), for: .normal)
-        $0.titleLabel?.font = UIFont(name: "NotoSansKR-Medium", size: 20)
-
         $0.layer.borderWidth = 1
         $0.layer.borderColor = UIColor(red: 212/255, green: 212/255, blue: 212/255, alpha: 1).cgColor
         $0.layer.cornerRadius = 10
