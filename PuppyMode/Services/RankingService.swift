@@ -8,7 +8,7 @@
 import Alamofire
 import Foundation
 
-class SocialService {
+class RankingService {
     
     static var isFetchingGlobalRankData: Bool = false
     static var isFetchingFriendRankData: Bool = false
@@ -40,6 +40,9 @@ class SocialService {
                 if !response.result.rankings.isEmpty { // 빈 페이지가 아니어야만 다음 페이지가 가능
                     globalRankPage += pageSize
                 }
+                
+                print("fetchGlobalRankData called")
+                
             case .failure(let error):
                 print("Global fetch error: \(error)")
             }

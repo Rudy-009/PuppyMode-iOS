@@ -69,12 +69,12 @@ class SettingView: UIView {
         
         logoutButton.snp.makeConstraints { make in
             make.centerY.equalTo(titleLabel.snp.centerY)
-            make.trailing.equalToSuperview().inset(16)
-            make.height.width.equalTo(50)
+            make.trailing.equalToSuperview().inset(6)
+            make.height.width.equalTo(70)
         }
         
         logoutButton.imageView?.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(10)
+            make.edges.equalToSuperview().inset(20)
             make.center.equalToSuperview()
         }
         

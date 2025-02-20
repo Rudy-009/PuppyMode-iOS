@@ -187,6 +187,7 @@ class CalendarViewController: UIViewController {
         calendarView.changeButton.addTarget(self, action: #selector(changeButtonTapped), for: .touchUpInside)
         calendarView.afterChangeButton.addTarget(self, action: #selector(changeButtonTapped), for: .touchUpInside)
         calendarView.dateView.recordButton.backView.addTarget(self, action: #selector(recordButtonTapped), for: .touchUpInside)
+        calendarView.todayButton.addTarget(self, action: #selector(todayButtonTapped), for: .touchUpInside)
     }
     
     @objc
@@ -199,6 +200,7 @@ class CalendarViewController: UIViewController {
         self.calendarView.afterYearLabel.isHidden = true
         self.calendarView.afterMonthLabel.isHidden = true
         self.calendarView.afterChangeButton.isHidden = true
+        self.calendarView.todayButton.isHidden = true
         
         self.calendarView.dateView.isHidden = true
         
@@ -226,17 +228,22 @@ class CalendarViewController: UIViewController {
     
     @objc
     private func recordButtonTapped() {
-        // 어제 & 기록X
         let today = Date()
         let calendar = Calendar.current
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
-        if let selectedDate = selectedDate, let yesterday = calendar.date(byAdding: .day, value: -1, to: today), dateFormatter.string(from: selectedDate) == dateFormatter.string(from: yesterday), selectedDrinkHistoryId == nil {
-            let hangoverVC = HangoverViewController()
-            hangoverVC.hidesBottomBarWhenPushed = true
-            self.navigationController?.pushViewController(hangoverVC, animated: true)
-            
-            return
+        
+        // 기록X
+        if selectedDrinkHistoryId == nil {
+            // 어제
+            if let selectedDate = selectedDate, let yesterday = calendar.date(byAdding: .day, value: -1, to: today), dateFormatter.string(from: selectedDate) == dateFormatter.string(from: yesterday) {
+                let hangoverVC = HangoverViewController()
+                hangoverVC.hidesBottomBarWhenPushed = true
+                self.navigationController?.pushViewController(hangoverVC, animated: true)
+                return
+            } else {
+                return
+            }
         }
         
         // 기록O
@@ -269,6 +276,23 @@ class CalendarViewController: UIViewController {
         appointmentVC.hidesBottomBarWhenPushed = true
         self.navigationController?.isNavigationBarHidden = true
         self.navigationController?.pushViewController(appointmentVC, animated: true)
+    }
+    
+    @objc
+    private func todayButtonTapped() {
+        let today = Date()
+        calendarView.calendar.setCurrentPage(today, animated: true)
+        calendarView.calendar.select(today)
+        selectedDate = today
+        
+        // 상태 업데이트
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        let todayString = dateFormatter.string(from: today)
+        
+        updateStatus(dateString: todayString, status: drinkRecords[todayString]?.status)
+        calendar(self.calendarView.calendar, didSelect: today, at: .current)
     }
 
 }
@@ -366,6 +390,7 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
             self.calendarView.afterYearLabel.isHidden = false
             self.calendarView.afterMonthLabel.isHidden = false
             self.calendarView.afterChangeButton.isHidden = false
+            self.calendarView.todayButton.isHidden = false
             
             self.calendarView.dateView.isHidden = false
             
