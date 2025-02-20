@@ -232,7 +232,8 @@ class DecoViewController: UIViewController {
                 let puppyName = response.result.puppyName
                 print(puppyName)
                 self.currentLevel = response.result.level
-                self.decoView.puppyImageButton.setImageFromURL(response.result.imageUrl!)
+                
+                self.decoView.puppyImageButton.load(url: URL(string: response.result.imageUrl!)!)
                 self.decoView.puppyNameLabel.text = puppyName
                 
             case .failure(let error):

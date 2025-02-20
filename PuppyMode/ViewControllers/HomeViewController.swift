@@ -35,6 +35,9 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
         
         setupLocationManager()
         self.defineButtonActions()
+        
+        // 먹이주기 성공 이벤트를 감지
+        NotificationCenter.default.addObserver(self, selector: #selector(handleFeedNotification), name: .feed, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -358,7 +361,8 @@ extension HomeViewController {
         let timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] timer in
             guard let self = self else { return }
             
-            self.homeView.puppyImageButton.setImageFromURL(animationImages[index]) // 공통 함수 사용
+            
+            self.homeView.puppyImageButton.load(url: URL(string: animationImages[index])!) // 공통 함수 사용
             index = (index + 1) % animationImages.count
             
             repeatCount += 1
@@ -366,7 +370,9 @@ extension HomeViewController {
                 timer.invalidate() // 애니메이션 종료
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    // self.getPupptInfo()
+                    Task {
+                        await self.getPuppyInfo()
+                    }
                 }
             }
         }

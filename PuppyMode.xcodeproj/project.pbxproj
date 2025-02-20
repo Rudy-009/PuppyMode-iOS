@@ -212,7 +212,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = G8X4BWGTSS;
+				DEVELOPMENT_TEAM = 35G773T358;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PuppyMode/Info.plist;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "사용자의 위치 정보를 이용하여 맞춤형 서비스를 제공합니다.";
@@ -246,7 +246,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = G8X4BWGTSS;
+				DEVELOPMENT_TEAM = 35G773T358;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PuppyMode/Info.plist;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "사용자의 위치 정보를 이용하여 맞춤형 서비스를 제공합니다.";

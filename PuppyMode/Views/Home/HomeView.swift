@@ -26,7 +26,7 @@ class HomeView: UIView {
     }
     
     //MARK: Top Buttons
-    lazy private var topButtonStack = UIView()
+    lazy public var topButtonStack = UIView()
     
     lazy public var decorationButton = UIButton().then { button in
         button.setImage(UIImage(named: "DecorationButtonImage"), for: .normal)
@@ -158,7 +158,7 @@ extension HomeView {
         
         self.puppyImageButton.load(url: url)
     }
-    
+
 }
 
 //MARK: Add Compoments
