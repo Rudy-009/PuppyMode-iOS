@@ -15,6 +15,7 @@ class CalendarViewController: UIViewController {
     private var selectedDate: Date?
     private var selectedDrinkHistoryId: Int?
     private var selectedAppointmentId: Int?
+    private var selectedAppointmentTime: String?
     private var status: String?
 
     override func viewDidLoad() {
@@ -204,6 +205,20 @@ class CalendarViewController: UIViewController {
         }
     }
     
+    private func updateAppointmentButton(title: String) {
+        let appointmentButton = calendarView.dateView.appointmentButton
+        appointmentButton.titleLabel.text = title
+        makeShadow(view: appointmentButton)
+        
+        if title == "미입력" {
+            appointmentButton.titleLabel.textColor = UIColor(red: 0.72, green: 0.72, blue: 0.72, alpha: 1)
+            appointmentButton.titleLabel.font = UIFont(name: "NotoSansKR-Medium", size: 20)
+        } else {
+            appointmentButton.titleLabel.textColor = UIColor(red: 0.34, green: 0.34, blue: 0.34, alpha: 1)
+            appointmentButton.titleLabel.font = UIFont(name: "NotoSansKR-Medium", size: 20)
+        }
+    }
+    
     // MARK: - action
     private func setAction() {
         calendarView.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
@@ -351,6 +366,7 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
         if let record = drinkRecords[dateString] {
             selectedDrinkHistoryId = record.drinkHistoryId
             selectedAppointmentId = record.appointmentId
+            selectedAppointmentTime = record.appointmentTime
             status = record.status.trimmingCharacters(in: .whitespacesAndNewlines)
         } else {
             selectedDrinkHistoryId = nil
@@ -383,22 +399,26 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDelegateAppearan
         // 술 약속
         if selectedAppointmentId == nil {
             if date < today {
-                appointmentButton.titleLabel.text = "미입력"
+                updateAppointmentButton(title: "미입력")
                 appointmentButton.plusButton.isHidden = true
                 appointmentButton.titleLabel.isHidden = false
+                appointmentButton.rightButton.isHidden = true
                 appointmentButton.layer.shadowOpacity = 0
                 appointmentButton.backView.isUserInteractionEnabled = false
             } else {
+                updateAppointmentButton(title: "")
                 appointmentButton.plusButton.isHidden = false
                 appointmentButton.titleLabel.isHidden = true
-                makeShadow(view: appointmentButton)
+                appointmentButton.rightButton.isHidden = true
                 appointmentButton.backView.isUserInteractionEnabled = true
                 appointmentButton.backView.addTarget(self, action: #selector(appointmentButtonTapped), for: .touchUpInside)
             }
         } else {
             print("약속 있음")
+            updateAppointmentButton(title: selectedAppointmentTime!)
             appointmentButton.plusButton.isHidden = true
             appointmentButton.titleLabel.isHidden = false
+            appointmentButton.rightButton.isHidden = false
             appointmentButton.backView.isUserInteractionEnabled = true
             appointmentButton.backView.addTarget(self, action: #selector(appointmentButtonTapped), for: .touchUpInside)
         }
