@@ -28,7 +28,7 @@ class RankingViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // Update 호출!
-        SocialService.updateRankData {
+        RankingService.updateRankData {
             print("update complete")
             print("Updated Global User Data ", RankModel.globalRankData)
             print("Updated Friends Data ", RankModel.friendsRankData)
@@ -43,10 +43,10 @@ class RankingViewController: UIViewController {
     
     // Global & Friend 데이터 요청 fetchGlobalRankData(), fetchFriendRankData()
     private func initialData() {
-        SocialService.fetchGlobalRankData {
+        RankingService.fetchGlobalRankData {
             self.fetchData()
         }
-        SocialService.fetchFriendRankData {
+        RankingService.fetchFriendRankData {
             self.fetchData()
         }
     }
@@ -66,7 +66,7 @@ class RankingViewController: UIViewController {
                 }
             } else {
                 self.rankingView.hideFailedFetchFriendView()
-                SocialService.fetchFriendRankData {
+                RankingService.fetchFriendRankData {
                     DispatchQueue.main.async {
                         self.rankDataToShow = RankModel.friendsRankData
                         self.rankingView.rankingTableView.reloadData()
@@ -162,9 +162,9 @@ extension RankingViewController: UITableViewDelegate, UITableViewDataSource {
             throttleWorkItem = DispatchWorkItem { [weak self] in
                 switch RankModel.currentState {
                 case .global:
-                    SocialService.fetchGlobalRankData()
+                    RankingService.fetchGlobalRankData()
                 case .friends:
-                    SocialService.fetchFriendRankData()
+                    RankingService.fetchFriendRankData()
                 }
                 self?.rankingView.rankingTableView.reloadData()
             }

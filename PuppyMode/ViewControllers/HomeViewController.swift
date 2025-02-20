@@ -39,58 +39,60 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // getPupptInfo()
+        Task {
+            await getPuppyInfo()
+        }
         
         // 홈 화면에 접속할 떄 마다 가장 가까운 예약된 술 약속 확인 && 음주 중인지 검증
         handleAppointments()
-        
-        func handleAppointments() {
-            // 오늘 날짜 가져오기
-            let currentDate = Date()
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd"
-            let todayStr = dateFormatter.string(from: currentDate)
-            
-            // GET /appointments API 호출
-            fetchAppointments { [weak self] appointments in
-                guard let self = self else { return }
-                
-                // 오늘 날짜의 ONGOING 상태 약속 찾기
-                print("오늘 날짜 : ", todayStr)
-                print("전체 술 약속 : ", appointments)
-                if let ongoingAppointment = appointments.first(where: { appointment in
-                    let appointmentDate = String(appointment.dateTime.prefix(10)) // "YYYY-MM-DD" 추출
-                    return appointmentDate == todayStr && appointment.status == "ongoing"
-                }) {
-                    print("오늘의 ONGOING 약속:", ongoingAppointment)
-                    
-                    // ONGOING 상태인 경우 ID 저장
-                    self.ongoingAppointmentId = ongoingAppointment.appointmentId
-                    
-                    // ONGOING 상태인 경우 버튼 업데이트
-                    DispatchQueue.main.async {
-                        self.homeView.addDrinkingHistoryButton.setTitleLabel(to: "술 마시는 중")
-                        self.homeView.addDrinkingHistoryButton.setSubTitleLabel(to: "...")
-                        self.homeView.addDrinkingHistoryButton.setBackgroundImage(to: UIImage(named: "BottomMintButtonImage"))
+    }
+  
+    func handleAppointments() {
+        // 오늘 날짜 가져오기
+        let currentDate = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let todayStr = dateFormatter.string(from: currentDate)
+
+        // GET /appointments API 호출
+        fetchAppointments { [weak self] appointments in
+            guard let self = self else { return }
+
+            // 오늘 날짜의 ONGOING 상태 약속 찾기
+            print("오늘 날짜 : ", todayStr)
+            print("전체 술 약속 : ", appointments)
+            if let ongoingAppointment = appointments.first(where: { appointment in
+                let appointmentDate = String(appointment.dateTime.prefix(10)) // "YYYY-MM-DD" 추출
+                return appointmentDate == todayStr && appointment.status == "ongoing"
+            }) {
+                print("오늘의 ONGOING 약속:", ongoingAppointment)
+
+                // ONGOING 상태인 경우 ID 저장
+                self.ongoingAppointmentId = ongoingAppointment.appointmentId
+
+                // ONGOING 상태인 경우 버튼 업데이트
+                DispatchQueue.main.async {
+                    self.homeView.addDrinkingHistoryButton.setTitleLabel(to: "술 마시는 중")
+                    self.homeView.addDrinkingHistoryButton.setSubTitleLabel(to: "...")
+                    self.homeView.addDrinkingHistoryButton.setBackgroundImage(to: UIImage(named: "BottomMintButtonImage"))
+                }
+            } else {
+                print("오늘 날짜의 ONGOING 약속이 없습니다.")
+
+                // 가장 가까운 SCHEDULED 상태 약속 확인
+                self.checkNearestScheduledAppointment { nearestAppointmentId in
+                    guard let nearestAppointmentId = nearestAppointmentId else {
+                        print("가장 가까운 예약된 술 약속이 없습니다.")
+                        self.homeView.addDrinkingHistoryButton.setTitleLabel(to: "음주 기록")
+                        self.homeView.addDrinkingHistoryButton.setSubTitleLabel(to: "어제 마셨어요")
+                        self.homeView.addDrinkingHistoryButton.setDefaultBackgroundImage()
+                        return
                     }
-                } else {
-                    print("오늘 날짜의 ONGOING 약속이 없습니다.")
-                    
-                    // 가장 가까운 SCHEDULED 상태 약속 확인
-                    self.checkNearestScheduledAppointment { nearestAppointmentId in
-                        guard let nearestAppointmentId = nearestAppointmentId else {
-                            print("가장 가까운 예약된 술 약속이 없습니다.")
-                            self.homeView.addDrinkingHistoryButton.setTitleLabel(to: "음주 기록")
-                            self.homeView.addDrinkingHistoryButton.setSubTitleLabel(to: "어제 마셨어요")
-                            self.homeView.addDrinkingHistoryButton.setDefaultBackgroundImage()
-                            return
-                        }
-                        
-                        print("가장 가까운 예약된 술 약속 ID:", nearestAppointmentId)
-                        
-                        // 예약된 술 약속 상태 확인
-                        self.checkAppointmentStatus(appointmentId: nearestAppointmentId)
-                    }
+
+                    print("가장 가까운 예약된 술 약속 ID:", nearestAppointmentId)
+
+                    // 예약된 술 약속 상태 확인
+                    self.checkAppointmentStatus(appointmentId: nearestAppointmentId)
                 }
             }
         }
@@ -149,7 +151,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
 //MARK: GET Puppy Character Info
 extension HomeViewController {
     
-    func getPupptInfo() async {
+    func getPuppyInfo() async {
         do {
             if let puppyInfo = try await PuppyInfoService.fetchPuppyInfo()?.result {
                 DispatchQueue.main.async {
@@ -300,7 +302,7 @@ extension HomeViewController {
                     print("놀아주기 서버 연동 성공")
                     print("성공")
                     Task {
-                        await self.getPupptInfo()
+                        await self.getPuppyInfo()
                     }
                 } else {
                     print("Puppy Play API Error: \(puppyResponse.message)")
