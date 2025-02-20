@@ -33,6 +33,7 @@ class DrinkingInfoViewController: UIViewController, UICollectionViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setupNavigationBar()
         setupActions()
         configureData()

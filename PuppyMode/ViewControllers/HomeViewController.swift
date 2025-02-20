@@ -361,7 +361,8 @@ extension HomeViewController {
         let timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] timer in
             guard let self = self else { return }
             
-            self.homeView.puppyImageButton.setImageFromURL(animationImages[index]) // 공통 함수 사용
+            
+            self.homeView.puppyImageButton.load(url: URL(string: animationImages[index])!) // 공통 함수 사용
             index = (index + 1) % animationImages.count
             
             repeatCount += 1
