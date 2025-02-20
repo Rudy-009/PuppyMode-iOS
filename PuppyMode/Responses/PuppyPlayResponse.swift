@@ -20,3 +20,14 @@ struct PuppyPlayResult: Decodable {
     let levelMaxExp: Int
     let puppyExp: Int
 }
+
+struct PuppyPlayNotiResponse: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+    let result: PuppyPlayNotiResult?
+}
+
+struct PuppyPlayNotiResult: Decodable {
+    let message: String
+}

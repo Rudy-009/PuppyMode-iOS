@@ -211,6 +211,9 @@ extension HomeViewController {
         // 버튼 비활성화 & 타이머 시작
         startCooldown()
         
+        // 놀아주기 푸시 알림 발송
+        sendPlayNotification()
+        
     }
     
     @objc
@@ -429,6 +432,7 @@ extension HomeViewController {
     
     // 30분 후 버튼 활성화
     private func resetButton() {
+        remainingTime = 10
         timer?.invalidate()
         timer = nil
         
@@ -445,6 +449,34 @@ extension HomeViewController {
         }
 
         showDogAnimation(animationType: animationType) // 기존 함수 호출!
+    }
+    
+    private func sendPlayNotification() {
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.accessToken.rawValue)!)"
+        ]
+        
+        AF.request(K.String.puppymodeLink + "/fcm/notifications/playtimes",
+                   method: .post,
+                   headers: headers)
+        .responseDecodable(of: PuppyPlayNotiResponse.self) { [weak self] response in
+            
+            guard let self = self else { return }
+            
+            switch response.result {
+            case .success(let response) :
+                if response.isSuccess {
+                    print("놀아주기 푸시 알림 성공 ")
+                    
+                } else {
+                    print("놀아주기 푸시 알림 API Error: \(response.message)")
+                }
+            case .failure(let error) :
+                print("놀아주기 푸시 알림 Network Error: \(error.localizedDescription)")
+            }
+        }
+
     }
 
 }
