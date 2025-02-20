@@ -333,7 +333,9 @@ extension HomeViewController {
                 timer.invalidate() // 애니메이션 종료
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    self.getPupptInfo()
+                    Task {
+                        await self.getPupptInfo()
+                    }
                 }
             }
         }

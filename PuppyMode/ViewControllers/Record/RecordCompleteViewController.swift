@@ -109,8 +109,8 @@ class RecordCompleteViewController: UIViewController {
             case .success(let data):
                 print("✅ 먹이 주기 성공: \(data)")
                 
+                // 먹이 주기 성공 후 애니메이션 작동 위해 notification을 보내기
                 DispatchQueue.main.async {
-                    // 먹이 주기 성공 후 notification을 보내기
                     NotificationCenter.default.post(name: .feed, object: nil, userInfo: ["animationType": "FEEDING"])
                     self.navigationController?.popToRootViewController(animated: true)
                 }
