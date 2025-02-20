@@ -111,7 +111,7 @@ class CalendarDetailViewController: UIViewController {
                 $0.centerX.equalTo(self.calendarDetailView.progressView.snp.leading).offset(safePointX)
             }
             self.calendarDetailView.safeLabel.snp.remakeConstraints {
-                $0.top.equalTo(self.calendarDetailView.safePointImage.snp.bottom).offset(5)
+                $0.bottom.equalTo(self.calendarDetailView.safePointImage.snp.top).offset(-5)
                 $0.centerX.equalTo(self.calendarDetailView.safePointImage)
             }
 
@@ -121,7 +121,7 @@ class CalendarDetailViewController: UIViewController {
                 $0.centerX.equalTo(self.calendarDetailView.progressView.snp.leading).offset(deadPointX)
             }
             self.calendarDetailView.deadLabel.snp.remakeConstraints {
-                $0.top.equalTo(self.calendarDetailView.deadPointImage.snp.bottom).offset(5)
+                $0.bottom.equalTo(self.calendarDetailView.deadPointImage.snp.top).offset(-5)
                 $0.centerX.equalTo(self.calendarDetailView.deadPointImage)
             }
         }

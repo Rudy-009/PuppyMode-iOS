@@ -81,9 +81,7 @@ class CalendarDetailView: UIView {
     
     // 안전주량
     public let safeLabel = UILabel().then {
-        $0.text = "안전\n주량"
-        $0.numberOfLines = 2
-        $0.textAlignment = .center
+        $0.text = "안전주량"
         $0.textColor = UIColor(red: 0.541, green: 0.541, blue: 0.557, alpha: 1)
         $0.font = UIFont(name: "NotoSansKR-Medium", size: 13)
     }
@@ -131,7 +129,6 @@ class CalendarDetailView: UIView {
     public let hangoverTableView = UITableView().then {
         $0.register(CalendarHangoverTableViewCell.self, forCellReuseIdentifier: CalendarHangoverTableViewCell.identifier)
         $0.showsVerticalScrollIndicator = false
-        $0.isScrollEnabled = false
         $0.separatorStyle = .none
     }
     
@@ -249,37 +246,37 @@ class CalendarDetailView: UIView {
         backgroundLine.snp.makeConstraints {
             $0.height.equalTo(1)
             $0.horizontalEdges.equalTo(intakeBackgroundView)
-            $0.top.equalTo(intakeBackgroundView.snp.top).offset(180)
+            $0.top.equalTo(intakeBackgroundView.snp.top).offset(160)
         }
         
         intakeLabel.snp.makeConstraints {
-            $0.top.equalTo(intakeBackgroundView.snp.top).offset(34)
+            $0.top.equalTo(intakeBackgroundView.snp.top).offset(24)
             $0.left.equalTo(intakeBackgroundView.snp.left).offset(21)
         }
         
         progressView.snp.makeConstraints {
-            $0.top.equalTo(intakeLabel.snp.bottom).offset(33)
-            $0.horizontalEdges.equalTo(intakeBackgroundView).inset(14)
+            $0.top.equalTo(intakeLabel.snp.bottom).offset(50)
+            $0.horizontalEdges.equalTo(intakeBackgroundView).inset(28)
             $0.height.equalTo(21)
         }
         
         safeLabel.snp.makeConstraints {
-            $0.centerX.equalTo(safePointImage)
-            $0.top.equalTo(safePointImage.snp.bottom).offset(5)
+            $0.bottom.equalTo(safePointImage.snp.top).offset(-5)
+            $0.right.equalTo(deadLabel.snp.left).offset(-16)
         }
         
         safePointImage.snp.makeConstraints {
-            $0.right.equalTo(progressView.snp.right).offset(-50)
+            $0.centerX.equalTo(safeLabel)
             $0.centerY.equalTo(progressView)
         }
         
         deadLabel.snp.makeConstraints {
-            $0.centerX.equalTo(deadPointImage)
-            $0.top.equalTo(deadPointImage.snp.bottom).offset(5)
+            $0.bottom.equalTo(deadPointImage.snp.top).offset(-5)
+            $0.right.equalTo(intakeBackgroundView.snp.right).offset(-11)
         }
         
         deadPointImage.snp.makeConstraints {
-            $0.right.equalTo(progressView.snp.right).offset(-10)
+            $0.centerX.equalTo(deadLabel)
             $0.centerY.equalTo(progressView)
         }
         
