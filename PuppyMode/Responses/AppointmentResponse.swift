@@ -216,7 +216,7 @@ struct GetAllAppointmentsResponse: Codable {
 
 struct GetAppointmentsResult: Codable {
     let totalCount: Int?
-    let appointments: [SingleAppointment]?
+    let appointments: [Appointment]? // SingleAppointment 대신 Appointment 사용
 }
 
 struct SingleAppointment: Codable {
@@ -226,3 +226,4 @@ struct SingleAppointment: Codable {
     let locationName: String
     let status: String // 예: "scheduled", "ONGOING"
 }
+

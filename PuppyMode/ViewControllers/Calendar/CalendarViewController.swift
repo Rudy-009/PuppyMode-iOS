@@ -12,7 +12,7 @@ import Alamofire
 class CalendarViewController: UIViewController {
     private let calendarView = CalendarView()
     private var drinkRecords: [String: DrinkRecord] = [:] // 날짜별 상태 저장
-    private var selectedDate: Date?
+    var selectedDate: Date?
     private var selectedDrinkHistoryId: Int?
     private var selectedAppointmentId: Int?
     private var selectedAppointmentTime: String?
@@ -26,12 +26,22 @@ class CalendarViewController: UIViewController {
         
         setDelegate()
         setAction()
+        
         fetchDrinkRecords(for: calendarView.calendar.currentPage)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         backButtonTapped() // 초기 상태로 되돌리기
+        
+        // 캘린더에 선택된 날짜 복원 및 didSelect 호출
+        if let selectedDate = self.selectedDate {
+            calendarView.calendar.select(selectedDate)  // 캘린더에서 해당 날짜 선택
+            
+            // 직접 didSelect 메서드 호출
+            self.calendar(calendarView.calendar, didSelect: selectedDate, at: .current)
+        }
+        
         fetchDrinkRecords(for: calendarView.calendar.currentPage) // 데이터 다시 가져오기
     }
     
