@@ -33,131 +33,60 @@ class DrinkingViewController: UIViewController {
         
         checkDrinkingStatus()
         
-        drinkingView.promiseButton.addTarget(self, action: #selector(didTapPromiseButton), for: .touchUpInside)
         drinkingView.endButton.addTarget(self, action: #selector(didTapEndButton), for: .touchUpInside)
     }
 
+    // 네비게이션 바 설정
     private func setupNavigationBar() {
-        self.title = "술 마시는 중"
+        // Create a custom navigation bar container
+        let navigationBar = UIView()
+        navigationBar.backgroundColor = UIColor(hex: "#FBFBFB")
+        view.addSubview(navigationBar)
         
-        let backButton = UIButton(type: .custom)
-        backButton.setImage(UIImage(systemName: "chevron.left"), for: .normal) // Use SF Symbols or your own image asset.
-        backButton.tintColor = UIColor.black
-        backButton.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
-
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
-
-        self.navigationController?.navigationBar.titleTextAttributes = [
-            NSAttributedString.Key.foregroundColor : UIColor.black,
-            NSAttributedString.Key.font : UIFont.systemFont(ofSize: 18, weight: .medium)
-        ]
-    }
-
-    @objc private func didTapBackButton() {
-        dismiss(animated: true, completion: nil)
-    }
-
-    @objc private func didTapPromiseButton() {
-       print("Promise button tapped!")
-        // Create a container view for the picker and toolbar
-        let pickerContainerView = UIView()
-        pickerContainerView.backgroundColor = UIColor.white
-        pickerContainerView.layer.cornerRadius = 10
-        pickerContainerView.clipsToBounds = true
-        
-        
-        // Create UIDatePicker
-        let datePicker = UIDatePicker()
-        datePicker.datePickerMode = .time
-        datePicker.preferredDatePickerStyle = .wheels
-        pickerContainerView.addSubview(datePicker)
-        
-        // Create Toolbar
-        let toolbar = UIToolbar()
-        toolbar.sizeToFit()
-        
-        // Customizing the toolbar appearance
-        toolbar.barTintColor = UIColor(hex: "#FFFFFF") // Toolbar 배경색
-        toolbar.tintColor = UIColor(hex: "#3C3C3C")   // 버튼 텍스트 색상
-        
-        // Toolbar buttons
-        let cancelButton = UIBarButtonItem(title: "취소", style: .plain, target: self, action: #selector(didTapCancelPicker))
-        cancelButton.setTitleTextAttributes([.font: UIFont(name: "NotoSansKR-Medium", size: 14)!], for: .normal)
-        
-        let confirmButton = UIBarButtonItem(title: "확인", style: .plain, target: self, action: #selector(didTapConfirmPicker))
-        confirmButton.setTitleTextAttributes([.font: UIFont(name: "NotoSansKR-Medium", size: 14)!], for: .normal)
-        
-        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        
-        toolbar.setItems([cancelButton, flexibleSpace, confirmButton], animated: false)
-        
-        pickerContainerView.addSubview(toolbar)
-        
-        // Add to the main view
-        view.addSubview(pickerContainerView)
-        
-        // Layout for pickerContainerView
-        pickerContainerView.snp.makeConstraints { make in
+        // Add constraints for the navigation bar using SnapKit
+        navigationBar.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top) // safeAreaLayoutGuide 기준으로 설정
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(300) // Adjust height as needed
-            make.bottom.equalTo(self.view.snp.bottom).offset(300) // Start below the screen
+            make.height.equalTo(56) // Adjust height as needed
         }
         
-        // Layout for datePicker
-        datePicker.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-30)
-            make.height.equalTo(216) // Standard height for UIDatePicker
+        // Create a title label for the navigation bar
+        let titleLabel = UILabel()
+        titleLabel.text = "술 마시는 중"
+        titleLabel.textColor = UIColor(hex: "#3C3C3C")
+        titleLabel.font = UIFont(name: "NotoSansKR-Regular", size: 20) ?? UIFont.systemFont(ofSize: 20, weight: .medium)
+        titleLabel.textAlignment = .center
+        navigationBar.addSubview(titleLabel)
+        
+        // Add constraints for the title label using SnapKit
+        titleLabel.snp.makeConstraints { make in
+            make.center.equalTo(navigationBar) // 네비게이션 바의 중앙에 위치
         }
         
-        // Layout for toolbar
-        toolbar.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.bottom.equalTo(datePicker.snp.top).offset(-10)
-            make.height.equalTo(44) // Standard height for toolbar
-        }
+        // Create a close button (back button) for the left side of the navigation bar
+        let closeButton = UIButton(type: .custom)
+        closeButton.setImage(UIImage(named: "left_arrow"), for: .normal) // Replace with your back arrow image name
+        closeButton.contentMode = .scaleAspectFit
+        closeButton.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
+        navigationBar.addSubview(closeButton)
         
-        // Animate Picker Container View to slide up from the bottom
-        UIView.animate(withDuration: 0.3) {
-            pickerContainerView.snp.updateConstraints { make in
-                make.bottom.equalTo(self.view.snp.bottom) // Move to the bottom of the screen (visible)
-            }
-            self.view.layoutIfNeeded() // Apply layout changes immediately during animation
+        // Add constraints for the close button using SnapKit
+        closeButton.snp.makeConstraints { make in
+            make.leading.equalTo(navigationBar.snp.leading).offset(16) // safeAreaLayoutGuide와 동일한 위치로 설정
+            make.centerY.equalTo(navigationBar) // 네비게이션 바의 수직 중앙에 위치
+            make.width.equalTo(13)
+            make.height.equalTo(20)
         }
     }
     
-    @objc private func didTapCancelPicker() {
-        guard let pickerContainerView = view.subviews.last else { return }
-
-            UIView.animate(withDuration: 0.3, animations: {
-                pickerContainerView.snp.updateConstraints { make in
-                    make.bottom.equalTo(self.view.snp.bottom).offset(300) // Slide down below the screen
-                }
-                self.view.layoutIfNeeded() // Apply layout changes immediately during animation
-            }) { _ in
-                pickerContainerView.removeFromSuperview() // Remove from superview after animation completes
-           }
-    }
-
-    @objc private func didTapConfirmPicker() {
-        guard let pickerContainerView = view.subviews.last as? UIView,
-              let datePicker = pickerContainerView.subviews.compactMap({ $0 as? UIDatePicker }).first else { return }
-        
-        // 선택된 시간 가져오기
-        let selectedTime = datePicker.date
-        
-        // Format the selected time to ISO8601 format for the API request
-        let formatter = ISO8601DateFormatter()
-        formatter.timeZone = TimeZone.current
-        let formattedDateTime = formatter.string(from: selectedTime)
-        
-        print("선택된 시간:", formattedDateTime)
-        
-        // Picker를 닫습니다.
-        pickerContainerView.removeFromSuperview()
-        
-        // API 요청 보내기
-        sendRescheduleRequest(appointmentId: appointmentId, dateTime: formattedDateTime)
+    @objc private func didTapBackButton() {
+        if let navigationController = self.navigationController {
+            // 네비게이션 스택에서 이전 화면으로 이동
+            navigationController.popViewController(animated: true)
+        } else {
+            // 네비게이션 컨트롤러가 없으면 모달 닫기
+            dismiss(animated: true, completion: nil)
+        }
     }
     
     // MARK: Connect Api
@@ -194,6 +123,7 @@ class DrinkingViewController: UIViewController {
         }
     }
     
+    // 음주 상태 현황 label 업데이트 함수
     private func updateDrinkingView(with result: DrinkingStatusResult?) {
         guard let result = result else { return }
         
@@ -202,58 +132,53 @@ class DrinkingViewController: UIViewController {
         
         // progressTimeLabel 업데이트
         drinkingView.progressTimeLabel.text = "\(result.drinkingHours)시간 째 술마시는 중"
+        
+        // 이미지 애니메이션 시작
+        if !result.drinkingImageUrls.isEmpty {
+            startImageAnimation(with: result.drinkingImageUrls)
+        }
     }
     
-    // 술 약속 미루기 API
-    private func sendRescheduleRequest(appointmentId: Int, dateTime: String) {
-        guard let authToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else {
-            print("인증 토큰을 가져올 수 없습니다.")
+    private func startImageAnimation(with imageUrls: [String]) {
+        var currentIndex = 0
+        
+        // 애니메이션을 위한 타이머 설정 (1초 간격으로 이미지 변경)
+        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
+            guard let self = self else { return }
+            
+            // 현재 인덱스의 URL로 이미지 로드
+            let imageUrl = imageUrls[currentIndex]
+            self.loadImage(from: imageUrl) { image in
+                DispatchQueue.main.async {
+                    self.drinkingView.imageView.image = image // 이미지 뷰 업데이트
+                }
+            }
+            
+            // 다음 인덱스로 이동 (순환)
+            currentIndex = (currentIndex + 1) % imageUrls.count
+        }
+    }
+    
+    private func loadImage(from urlString: String, completion: @escaping (UIImage?) -> Void) {
+        guard let url = URL(string: urlString) else {
+            completion(nil)
             return
         }
         
-        let headers: HTTPHeaders = [
-            "Content-Type": "application/json",
-            "Authorization": "Bearer \(authToken)"
-        ]
-        
-        let parameters: [String: Any] = [
-            "dateTime": dateTime
-        ]
-        
-        let url = "\(K.String.puppymodeLink)/appointments/\(appointmentId)"
-        
-        AF.request(url,
-                   method: .patch,
-                   parameters: parameters,
-                   encoding: JSONEncoding.default,
-                   headers: headers)
-            .responseDecodable(of: RescheduleAppointmentResponse.self) { response in
-                switch response.result {
-                case .success(let data):
-                    if data.code == "SUCCESS_PUT_APPOINTMENT_RESCHEDULED" {
-                        print("술 약속 수정 성공!")
-                        
-                        // 모달 창 표시
-                        self.showSuccessModal(message: data.result?.message ?? "술 약속이 성공적으로 수정되었습니다.")
-                    } else {
-                        print("응답 코드가 SUCCESS_PUT_APPOINTMENT_RESCHEDULED가 아닙니다.")
-                        self.showSuccessModal(message: data.result?.message ?? "술 약속 수정에 실패하였습니다.")
-                    }
-                case .failure(let error):
-                    print("API 요청 실패:", error.localizedDescription)
-                }
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                print("이미지 로드 실패:", error.localizedDescription)
+                completion(nil)
+                return
             }
-    }
-
-    // 술 약속 미루기 결과 모달 창
-    private func showSuccessModal(message: String) {
-        let alertController = UIAlertController(title: "성공", message: message, preferredStyle: .alert)
-        let confirmAction = UIAlertAction(title: "확인", style: .default, handler: nil)
-        alertController.addAction(confirmAction)
-        
-        DispatchQueue.main.async {
-            self.present(alertController, animated: true, completion: nil)
-        }
+            
+            guard let data = data, let image = UIImage(data: data) else {
+                completion(nil)
+                return
+            }
+            
+            completion(image)
+        }.resume()
     }
     
     // 음주 상태 종료하기 API
@@ -297,8 +222,7 @@ class DrinkingViewController: UIViewController {
                     // EndDrinkingViewController로 이동
                     DispatchQueue.main.async {
                         let endDrinkingVC = EndDrinkingViewController()
-                        endDrinkingVC.modalPresentationStyle = .fullScreen
-                        self.present(endDrinkingVC, animated: true, completion: nil)
+                        self.navigationController?.pushViewController(endDrinkingVC, animated: true)
                     }
                 } else {
                     print("응답 코드가 SUCCESS_END_DRINKING_APPOINTMENT가 아닙니다.")
