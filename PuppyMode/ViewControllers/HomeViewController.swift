@@ -15,7 +15,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
     private var animationTimer: Timer?
     
     private var timer: Timer?
-    private var remainingTime: Int = 1 // 24시간 = 86400 (초 단위)
+    private var remainingTime: Int = 10 // 24시간 = 86400 (초 단위)
     public var coinAlermButton = AlermView()
     
     private let locationManager = CLLocationManager()
