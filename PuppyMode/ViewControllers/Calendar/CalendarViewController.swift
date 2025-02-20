@@ -226,6 +226,10 @@ class CalendarViewController: UIViewController {
         calendarView.afterChangeButton.addTarget(self, action: #selector(changeButtonTapped), for: .touchUpInside)
         calendarView.dateView.recordButton.backView.addTarget(self, action: #selector(recordButtonTapped), for: .touchUpInside)
         calendarView.todayButton.addTarget(self, action: #selector(todayButtonTapped), for: .touchUpInside)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(changeButtonTapped))
+        calendarView.dateTitleStackView.addGestureRecognizer(tapGesture)
+        calendarView.dateTitleStackView.isUserInteractionEnabled = true
     }
     
     @objc
