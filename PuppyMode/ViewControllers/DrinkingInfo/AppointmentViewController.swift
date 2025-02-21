@@ -945,4 +945,9 @@ extension AppointmentViewController: UITextFieldDelegate {
     func textFieldDidChangeSelection(_ textField: UITextField) {
         updateMakeAppointmentButtonVisibility(selectedAppointmentId: selectedAppointmentId)
     }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder() // Dismiss keyboard
+        return true
+    }
 }
