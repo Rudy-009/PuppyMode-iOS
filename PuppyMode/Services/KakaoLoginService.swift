@@ -50,6 +50,7 @@ class KakaoLoginService {
 //                        print("AccessToken: \(accessToken)")
 //                    }
 //                    if loginResponse.result.userInfo.isNewUser {
+                    print("AccessToken: \(loginResponse.result.accessToken)")
                     RootViewControllerService.toPuppySelectionViewController()
 //                    } else {
 //                        RootViewControllerService.toBaseViewController()
