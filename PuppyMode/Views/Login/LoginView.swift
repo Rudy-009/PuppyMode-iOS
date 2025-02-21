@@ -67,7 +67,7 @@ class LoginView: UIView {
         self.addSubview(underline)
         self.addSubview(slogunLabel)
         self.addSubview(subLabel)
-        self.addSubview(appleLoginButton)
+        // self.addSubview(appleLoginButton)
         self.addSubview(kakaoLoginButton)
         
         underline.snp.makeConstraints { make in
@@ -93,16 +93,16 @@ class LoginView: UIView {
         
         kakaoLoginButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
-            make.bottom.equalTo(appleLoginButton.snp.top).offset(-20)
-        }
-        
-        appleLoginButton.configure(name: "Apple로 로그인", logo: UIImage(named: "AppleLogin")!, backgroundColor: .white)
-        appleLoginButton.addFrame()
-        
-        appleLoginButton.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(16)
             make.bottom.equalToSuperview().inset(60)
         }
+        
+//        appleLoginButton.configure(name: "Apple로 로그인", logo: UIImage(named: "AppleLogin")!, backgroundColor: .white)
+//        appleLoginButton.addFrame()
+//        
+//        appleLoginButton.snp.makeConstraints { make in
+//            make.leading.trailing.equalToSuperview().inset(16)
+//            make.bottom.equalToSuperview().inset(60)
+//        }
         
     }
     

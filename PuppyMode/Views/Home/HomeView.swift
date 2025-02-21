@@ -292,7 +292,7 @@ extension HomeView {
         buttonStack.addSubview(drinkingCapacityButton)
         
         drinkingCapacityButton.setTitleLabel(to: "주량 확인")
-        drinkingCapacityButton.setSubTitleLabel(to: "술 마실 거에요")
+        drinkingCapacityButton.setSubTitleLabel(to: "술 마실 거예요")
         
         drinkingCapacityButton.snp.makeConstraints { make in
             make.leading.equalToSuperview()
