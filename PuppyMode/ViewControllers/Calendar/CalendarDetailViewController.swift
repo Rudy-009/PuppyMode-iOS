@@ -103,7 +103,7 @@ class CalendarDetailViewController: UIViewController {
             
             let progressBarWidth = self.calendarDetailView.progressView.frame.width
             let safePointX = progressBarWidth * (safetyValue / maxValue)
-            let deadPointX = progressBarWidth - 10
+            let deadPointX = progressBarWidth
             
             // 안전 주량 위치 설정
             self.calendarDetailView.safePointImage.snp.remakeConstraints {
@@ -111,7 +111,7 @@ class CalendarDetailViewController: UIViewController {
                 $0.centerX.equalTo(self.calendarDetailView.progressView.snp.leading).offset(safePointX)
             }
             self.calendarDetailView.safeLabel.snp.remakeConstraints {
-                $0.bottom.equalTo(self.calendarDetailView.safePointImage.snp.top).offset(-5)
+                $0.top.equalTo(self.calendarDetailView.safePointImage.snp.bottom).offset(5)
                 $0.centerX.equalTo(self.calendarDetailView.safePointImage)
             }
 
