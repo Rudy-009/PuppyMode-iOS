@@ -246,7 +246,7 @@ class CalendarDetailView: UIView {
         backgroundLine.snp.makeConstraints {
             $0.height.equalTo(1)
             $0.horizontalEdges.equalTo(intakeBackgroundView)
-            $0.top.equalTo(intakeBackgroundView.snp.top).offset(160)
+            $0.top.equalTo(intakeBackgroundView.snp.top).offset(170)
         }
         
         intakeLabel.snp.makeConstraints {
