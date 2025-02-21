@@ -183,11 +183,11 @@ class AppointmentView: UIView {
         containerView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(20) // 좌우 여백 설정
             make.top.equalToSuperview().offset(250)            // 상단 여백 설정
-            make.height.equalTo(300)                           // 높이 설정 (필요 시 조정 가능)
+            make.height.equalTo(350)                           // 높이 설정 (필요 시 조정 가능)
         }
         
         questionLabel.snp.makeConstraints { make in
-            make.top.equalTo(containerView).offset(20)
+            make.top.equalTo(containerView).offset(45)
             make.centerX.equalTo(containerView)
             make.height.equalTo(24)
         }
@@ -199,7 +199,7 @@ class AppointmentView: UIView {
         }
         
         timeButton.snp.makeConstraints { make in
-            make.top.equalTo(subQuestionLabel.snp.bottom).offset(20)
+            make.top.equalTo(subQuestionLabel.snp.bottom).offset(50)
             make.leading.equalTo(containerView).offset(20)
             make.trailing.equalTo(timeArrowImageView.snp.leading).offset(-10)
             make.height.equalTo(40)
