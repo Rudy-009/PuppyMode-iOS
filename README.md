@@ -6,4 +6,4 @@
 
 | Kakao Login | Kakao Signup | Apple Login |
 | --- | --- | --- |
-|<center> <img src = "https://github.com/user-attachments/assets/6cd333c4-c92d-4ce1-b6e4-9c37fd8c2d4c"> </center>|
+|<center> <img src = "https://github.com/user-attachments/assets/6cd333c4-c92d-4ce1-b6e4-9c37fd8c2d4c"> </center>| <center> <img src = ""> </center> | <center> <img src = ""> </center> | 
