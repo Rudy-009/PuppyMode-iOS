@@ -232,7 +232,8 @@ class DecoViewController: UIViewController {
                 let puppyName = response.result.puppyName
                 print(puppyName)
                 self.currentLevel = response.result.level
-                self.decoView.puppyImageButton.setImageFromURL(response.result.imageUrl!)
+                
+                self.decoView.puppyImageButton.load(url: URL(string: response.result.imageUrl!)!)
                 self.decoView.puppyNameLabel.text = puppyName
                 
             case .failure(let error):
@@ -389,7 +390,6 @@ extension DecoViewController: UICollectionViewDelegate {
             
             let purchaseAction = UIAlertAction(title: "구매", style: .default) { _ in
                 self.postPurchaseItemToServer(categoryId: categoryId!, itemId: selectedItem.itemId)
-                self.fetchPointFromServer()
             }
             let cancelAction = UIAlertAction(title: "취소", style: .cancel)
             
@@ -452,6 +452,7 @@ extension DecoViewController {
                             if let index = self?.items.firstIndex(where: { $0.itemId == response.result!.itemId }) {
                                 self?.items[index].isPurchased = true
                             }
+                            self!.fetchPointFromServer()
                             
                         case "잔여 포인트가 부족합니다.":
                             self?.showAlert(title: "", message: "포인트가 부족합니다.")

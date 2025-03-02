@@ -46,14 +46,15 @@ class KakaoLoginService {
             switch response.result {
             case .success(let loginResponse):
                 if UserInfoService.addUserInfoToKeychainService(userInfo: loginResponse.result) {
-                    if let accessToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue ) {
-                        print("AccessToken: \(accessToken)")
-                    }
-                    if loginResponse.result.userInfo.isNewUser {
-                        RootViewControllerService.toPuppySelectionViewController()
-                    } else {
-                        RootViewControllerService.toBaseViewController()
-                    }
+//                    if let accessToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue ) {
+//                        print("AccessToken: \(accessToken)")
+//                    }
+//                    if loginResponse.result.userInfo.isNewUser {
+                    print("AccessToken: \(loginResponse.result.accessToken)")
+                    RootViewControllerService.toPuppySelectionViewController()
+//                    } else {
+//                        RootViewControllerService.toBaseViewController()
+//                    }
                 }
             case .failure(let error):
                 print("Error LoginResponse \(K.String.puppymodeLink)/auth/kakao/login: \(error)")

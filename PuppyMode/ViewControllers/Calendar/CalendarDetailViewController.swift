@@ -91,12 +91,40 @@ class CalendarDetailViewController: UIViewController {
         }
         
         let drinkAmount = result.drinkAmount
-
-        let safetyValue = result.drinkItems.first?.safetyValue ?? 0
-        let maxValue = result.drinkItems.first?.maxValue ?? 0
+        let safetyValue = result.totalSafetyValue
+        let maxValue = result.totalMaxValue
         
-        let progress = min(Float(drinkAmount) / Float(maxValue), 1.0)
-        calendarDetailView.progressView.progress = progress
+        let progress = min(drinkAmount / maxValue, 1.0)
+        calendarDetailView.progressView.progress = Float(progress)
+        
+        // 안전 주량 & 치사량 위치 조정
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            let progressBarWidth = self.calendarDetailView.progressView.frame.width
+            let safePointX = progressBarWidth * (safetyValue / maxValue)
+            let deadPointX = progressBarWidth
+            
+            // 안전 주량 위치 설정
+            self.calendarDetailView.safePointImage.snp.remakeConstraints {
+                $0.centerY.equalTo(self.calendarDetailView.progressView)
+                $0.centerX.equalTo(self.calendarDetailView.progressView.snp.leading).offset(safePointX)
+            }
+            self.calendarDetailView.safeLabel.snp.remakeConstraints {
+                $0.top.equalTo(self.calendarDetailView.safePointImage.snp.bottom).offset(5)
+                $0.centerX.equalTo(self.calendarDetailView.safePointImage)
+            }
+
+            // 치사량 위치 설정
+            self.calendarDetailView.deadPointImage.snp.remakeConstraints {
+                $0.centerY.equalTo(self.calendarDetailView.progressView)
+                $0.centerX.equalTo(self.calendarDetailView.progressView.snp.leading).offset(deadPointX)
+            }
+            self.calendarDetailView.deadLabel.snp.remakeConstraints {
+                $0.bottom.equalTo(self.calendarDetailView.deadPointImage.snp.top).offset(-5)
+                $0.centerX.equalTo(self.calendarDetailView.deadPointImage)
+            }
+        }
     }
     
     private func updateTableViewHeight() {
@@ -199,6 +227,7 @@ extension CalendarDetailViewController: UITableViewDataSource, UITableViewDelega
                 return UITableViewCell()
             }
             let item = hangoverDetails[indexPath.row]
+            print(item.imageUrl)
             cell.hangoverLabel.text = item.hangoverName
             cell.hangoverImage.sd_setImage(with: URL(string: item.imageUrl), placeholderImage: UIImage(named: "placeholder"))
             return cell

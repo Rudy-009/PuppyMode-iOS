@@ -203,7 +203,7 @@ extension PuppySelectionView {
             "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.accessToken.rawValue)!)"
         ]
         
-        AF.request(K.String.puppymodeLink + "/puppies",
+        AF.request(K.String.puppymodeLink + "/puppies/random",
                    method: .post,
                    headers: headers)
         .responseDecodable(of: PuppySelectionResponse.self) { [weak self] response in
@@ -216,7 +216,7 @@ extension PuppySelectionView {
                     self.puppy = convertToPuppyType(str: puppyResponse.result.puppyType)
                 }
             case .failure(let error) :
-                print("Network Error: \(error.localizedDescription)")
+                print("Network Error Post Puppy: \(error.localizedDescription)")
             }
         }
     }
@@ -235,27 +235,27 @@ extension PuppySelectionView {
         }
     }
 
-    //    private func deletePuppy() {
-    //        let headers: HTTPHeaders = [
-    //            "accept": "*/*",
-    //            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.accessToken.rawValue)!)"
-    //        ]
-    //
-    //        AF.request(K.String.puppymodeLink + "/puppies",
-    //                   method: .delete,
-    //                   headers: headers)
-    //            .responseDecodable(of: PuppyDeletionResponse.self)  { [weak self] response in
-    //
-    //                guard let _ = self else { return }
-    //
-    //                switch response.result {
-    //                case .success(let response) :
-    //                    print(response.result)
-    //                case .failure(let error) :
-    //                    print("Network Error: \(error.localizedDescription)")
-    //                }
-    //            }
-    //    }
+    public func deletePuppy() {
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(KeychainService.get(key: UserInfoKey.accessToken.rawValue)!)"
+        ]
+
+        AF.request(K.String.puppymodeLink + "/puppies",
+                   method: .delete,
+                   headers: headers)
+            .responseDecodable(of: PuppyDeletionResponse.self)  { [weak self] response in
+
+                guard let _ = self else { return }
+
+                switch response.result {
+                case .success(let response) :
+                    print(response.result)
+                case .failure(let error) :
+                    print("Network Error: \(error.localizedDescription)")
+                }
+            }
+    }
 
 }
 

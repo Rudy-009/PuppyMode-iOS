@@ -71,14 +71,10 @@ class RecordCompleteViewController: UIViewController {
         print("[\(feedType)]")
         // 보상
         switch feedType.uppercased() {
-        case "블루베리", "고구마", "사과", "바나나", "연어":
+        case "블루베리", "고구마", "사과", "바나나", "연어", "소고기", "닭고기":
             completionView.rewardLabel.text = "\(feedType)를 획득했어요!"
         case "호박", "당근", "달걀":
             completionView.rewardLabel.text = "\(feedType)을 획득했어요!"
-        case "소 고기":
-            completionView.rewardLabel.text = "소고기를 획득했어요!"
-        case "닭 고기":
-            completionView.rewardLabel.text = "닭고기를 획득했어요!"
         default:
             completionView.rewardLabel.text = "보상을 획득했어요!"
         }
@@ -108,7 +104,10 @@ class RecordCompleteViewController: UIViewController {
             switch response.result {
             case .success(let data):
                 print("✅ 먹이 주기 성공: \(data)")
+                
+                // 먹이 주기 성공 후 애니메이션 작동 위해 notification을 보내기
                 DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: .feed, object: nil, userInfo: ["animationType": "FEEDING"])
                     self.navigationController?.popToRootViewController(animated: true)
                 }
             case .failure(let error):
@@ -122,4 +121,8 @@ class RecordCompleteViewController: UIViewController {
         print("먹이주러 가기 버튼이 눌렸습니다.")
         setFeedAPI()
     }
+}
+
+extension Notification.Name {
+    static let feed = Notification.Name("feed")
 }

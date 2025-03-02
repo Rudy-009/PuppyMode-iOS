@@ -116,6 +116,18 @@ class AppointmentView: UIView {
         $0.clipsToBounds = true
     }
     
+    let makeAppointmentButton = UIButton(type: .system).then {
+        $0.setTitle("입력 완료", for: .normal)
+        
+        $0.backgroundColor = UIColor(hex: "#73C8B1")
+        $0.layer.cornerRadius = 10
+        $0.clipsToBounds = true
+        
+        $0.setTitleColor(UIColor(hex: "#3C3C3C"), for: .normal)
+        $0.titleLabel?.textAlignment = .center
+        $0.titleLabel?.font = UIFont(name: "NotoSansKR-Medium", size: 16)
+    }
+    
     // MARK: - Initializer
     
     override init(frame: CGRect) {
@@ -156,6 +168,7 @@ class AppointmentView: UIView {
         containerView.addSubview(detailAddressDivider)
         
         addSubview(deleteAppointmentButton)
+        addSubview(makeAppointmentButton)
     }
     
     // MARK: - Setup Layout
@@ -170,11 +183,11 @@ class AppointmentView: UIView {
         containerView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(20) // 좌우 여백 설정
             make.top.equalToSuperview().offset(250)            // 상단 여백 설정
-            make.height.equalTo(300)                           // 높이 설정 (필요 시 조정 가능)
+            make.height.equalTo(350)                           // 높이 설정 (필요 시 조정 가능)
         }
         
         questionLabel.snp.makeConstraints { make in
-            make.top.equalTo(containerView).offset(20)
+            make.top.equalTo(containerView).offset(45)
             make.centerX.equalTo(containerView)
             make.height.equalTo(24)
         }
@@ -186,7 +199,7 @@ class AppointmentView: UIView {
         }
         
         timeButton.snp.makeConstraints { make in
-            make.top.equalTo(subQuestionLabel.snp.bottom).offset(20)
+            make.top.equalTo(subQuestionLabel.snp.bottom).offset(50)
             make.leading.equalTo(containerView).offset(20)
             make.trailing.equalTo(timeArrowImageView.snp.leading).offset(-10)
             make.height.equalTo(40)
@@ -236,8 +249,16 @@ class AppointmentView: UIView {
         }
         
         deleteAppointmentButton.snp.makeConstraints{ make in
-            make.bottom.equalToSuperview().offset(-60)
+            make.bottom.equalToSuperview().offset(-265)
             make.centerX.equalToSuperview()
+        }
+        
+        makeAppointmentButton.snp.makeConstraints{ make in
+            make.bottom.equalToSuperview().offset(-50)
+            make.centerX.equalToSuperview()
+            make.leading.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview().offset(-20)
+            make.height.equalTo(52)
         }
         
     }

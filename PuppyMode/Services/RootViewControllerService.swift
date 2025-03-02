@@ -16,6 +16,7 @@ class RootViewControllerService {
     private static let puppySelectionViewController = PuppySelectionViewController()
     
     static func toBaseViewController() {
+        baseViewController.selectedIndex = 0
         sceneDelegate?.changeRootViewController(baseViewController, animated: false)
     }
     
@@ -26,4 +27,5 @@ class RootViewControllerService {
     static func toLoginViewController() {
         sceneDelegate?.changeRootViewController(loginViewController, animated: false)
     }
+    
 }

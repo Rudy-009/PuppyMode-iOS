@@ -24,6 +24,18 @@ class DrinkingInfoViewController: UIViewController, UICollectionViewDelegate {
     // 캐러셀 데이터 저장
     private var alcoholItems: [AlcoholItem] = []
     
+    private var sojuSafeBottle : Int?
+    private var sojuMaxBottle : Int?
+    private var sojuSafeGlass : Int?
+    private var sojuMaxGlass : Int?
+    
+    private var beerSafeBottle : Int?
+    private var beerMaxBottle : Int?
+    private var beerSafeGlass : Int?
+    private var beerMaxGlass : Int?
+    
+    private var dummyAverage : Float?
+    
     // UICollectionView 인스턴스 생성
     private var carouselCollectionView: UICollectionView!
     
@@ -33,14 +45,15 @@ class DrinkingInfoViewController: UIViewController, UICollectionViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setupNavigationBar()
         setupActions()
         configureData()
         setupCarousel()
         
         drinkingInfoView.setCarouselData(alcoholItems)
-        carouselCollectionView.delegate = self // UIScrollViewDelegate 설정
-        carouselCollectionView.dataSource = self
+        drinkingInfoView.carouselCollectionView.delegate = self
+        drinkingInfoView.carouselCollectionView.dataSource = self
     }
     
     private func setupCarousel() {
@@ -131,28 +144,7 @@ class DrinkingInfoViewController: UIViewController, UICollectionViewDelegate {
     }
     
     // 버튼 액션 설정
-    private func setupActions() {
-        drinkingInfoView.makeAppointmentButton.addTarget(self, action: #selector(didTapMakeAppointmentButton), for: .touchUpInside)
-    }
-    
-    // 오늘 술 마실 거에요! 버튼 클릭 이벤트
-    @objc private func didTapMakeAppointmentButton() {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy.MM.dd"
-        let inputDate = formatter.string(from: Date()) // 현재 날짜 가져오기
-        
-        let appointmentVC = AppointmentViewController(inputDate: inputDate)
-        
-        // 네비게이션 컨트롤러가 있는지 확인
-        if let navigationController = self.navigationController {
-            navigationController.pushViewController(appointmentVC, animated: true)
-        } else {
-            // 네비게이션 컨트롤러가 없는 경우 수동으로 추가
-            let navController = UINavigationController(rootViewController: appointmentVC)
-            navController.modalPresentationStyle = .fullScreen
-            present(navController, animated: true, completion: nil)
-        }
-    }
+    private func setupActions() {}
     
     // 캐러셀 데이터 구성
     private func configureData() {
@@ -183,12 +175,12 @@ class DrinkingInfoViewController: UIViewController, UICollectionViewDelegate {
         guard index < alcoholItems.count else { return } // 데이터 범위 확인
         
         let item = alcoholItems[index] // 활성화된 아이템 가져오기
-        // print("현재 활성화 인덱스:", item) // 디버깅용 출력
         
         // 라벨 업데이트
         drinkingInfoView.alcoholNameLabel.text = item.name
         drinkingInfoView.alcoholPercentageLabel.text = item.percentage
         
+        fetchDrinkCapacity(drinkItemId: item.id)
         // print("현재 활성화된 아이템:", item.name, item.percentage) // 디버깅용 출력
     }
     
@@ -205,33 +197,54 @@ class DrinkingInfoViewController: UIViewController, UICollectionViewDelegate {
         ]
         
         // URL에 쿼리 파라미터 추가
-        let url = "\(K.String.puppymodeLink)/drinks/capacity"
-        let parameters: [String: Any] = [
-            "drinkItemId": drinkItemId
-        ]
+        // let url = "\(K.String.puppymodeLink)/drinks/capacity"
+//        let parameters: [String: Any] = [
+//            "drinkItemId": 4
+//        ]
+        
+        let url = "\(K.String.puppymodeLink)/drinks/capacity?drinkItemId=\(drinkItemId)"
+        
+        print("drinkItemId In APIAPIAPI:", drinkItemId)
+        //print("parameters In APIAPIAPI:", parameters)
         
         AF.request(url,
                    method: .get,
-                   parameters: parameters, // 쿼리 파라미터 추가
-                   encoding: URLEncoding.default, // URL 인코딩 사용
                    headers: headers)
             .responseDecodable(of: DrinkCapacityResponse.self) { response in
                 switch response.result {
                 case .success(let data):
                     if data.code == "COMMON200" {
-                        DispatchQueue.main.async {
-                            self.updateDrinkInfoView(with: data.result)
+                        print("주량 정보 조회 성공!")
+                        // print("data for debug: ", data.result)
+                        // data.result가 nil인지 체크
+                        if let result = data.result {
+                            DispatchQueue.main.async {
+                                if drinkItemId == 1 {
+                                    self.processSojuAndBeerData(with: result)
+                                }
+                                
+                                self.updateDrinkInfoView(with: result)
+                            }
+                        } else {
+                            print("data.result가 nil입니다. 기본값으로 업데이트합니다.")
+                            DispatchQueue.main.async {
+                                self.updateDrinkInfoView(with: nil)
+                                self.updateGlobalDrinkInfoView(with: drinkItemId)
+                            }
                         }
                     } else {
                         // COMMON200이 아니면 기본값으로 ProgressBar와 라벨 업데이트
+                        print("COMMON200이 아님. 기본값으로 업데이트합니다.")
                         DispatchQueue.main.async {
                             self.updateDrinkInfoView(with: nil)
+                            self.updateGlobalDrinkInfoView(with: drinkItemId)
                         }
                     }
                 case .failure(let error):
                     // API 요청 실패 시 기본값으로 ProgressBar와 라벨 업데이트
                     DispatchQueue.main.async {
                         self.updateDrinkInfoView(with: nil)
+                        self.updateGlobalDrinkInfoView(with: drinkItemId)
                     }
                 }
             }
@@ -240,19 +253,22 @@ class DrinkingInfoViewController: UIViewController, UICollectionViewDelegate {
     // 캐러셀 인덱스에 맞는 술 이름, 도수 라벨 업데이트
     private func updateDrinkInfoView(with result: DrinkCapacityResult?) {
         if let result = result {
+            
             // 이름과 도수 업데이트
             drinkingInfoView.alcoholNameLabel.text = result.drinkItemName
             drinkingInfoView.alcoholPercentageLabel.text = "\(result.alcoholPercentage)도"
             
-            // 소주 기준 병과 잔 계산 (1병=360ml, 1잔=50ml)
-            let (safeBottles, safeGlasses) = convertToBottlesAndGlasses(valueML: result.safetyValue, bottleML: 360.0, glassML: 50)
-            let (dangerBottles, dangerGlasses) = convertToBottlesAndGlasses(valueML: result.maxValue, bottleML: 360.0, glassML: 50)
+            print("currenet drink's name : ", result.drinkItemName)
             
-            // ProgressBar 업데이트
+            // 안전 주량 및 치사량 업데이트
+            let safeText = "\(round(result.safetyValueBottle * 10) / 10)병\n\(result.safetyValueGlass)잔"
+            let dangerText = "\(result.maxValueBottle)병\n\(result.maxValueGlass)잔"
+            
+            // ProgressBar 업데이트 (average 사용)
             DrinkingProgressBar.configure(
-                progress: Float(result.safetyValue) / Float(result.maxValue),
-                safeText: "\(safeBottles)병\n\(safeGlasses)잔",
-                dangerText: "\(dangerBottles)병\n\(dangerGlasses)잔"
+                progress: result.average / 100.0, // average 값을 퍼센트로 처리 (0.0 ~ 1.0)
+                safeText: safeText,
+                dangerText: dangerText
             )
         } else {
             // 기본값 설정 (result가 nil인 경우)
@@ -262,6 +278,88 @@ class DrinkingInfoViewController: UIViewController, UICollectionViewDelegate {
                 dangerText: "0.0병\n0잔"
             )
         }
+    }
+    
+    // 전역변수를 이용한 술 이름, 도수 라벨 업데이트
+    private func updateGlobalDrinkInfoView(with drinkItemId: Int) {
+        // 안전 주량 및 치사량 업데이트
+        
+        if drinkItemId < 7 {
+            let safeText = "\(self.sojuSafeBottle ?? 0)병\n\(self.sojuSafeGlass ?? 0)잔"
+            let dangerText = "\(self.sojuMaxBottle ?? 0)병\n\(self.sojuMaxGlass ?? 0)잔"
+            
+            print("safeText:", safeText)
+            print("dangerText:", dangerText)
+            
+            print("self.dummyAverage: ",self.dummyAverage)
+            
+            // ProgressBar 업데이트 (예: DrinkingProgressBar가 있는 경우)
+            DrinkingProgressBar.configure(
+                progress: (self.dummyAverage ?? 0.0) / 100.0, // 기본 평균값 사용
+                safeText: safeText,
+                dangerText: dangerText
+            )
+        } else {
+            let safeText = "\(self.beerSafeBottle ?? 0)병\n\(self.beerSafeGlass ?? 0)잔"
+            let dangerText = "\(self.beerMaxBottle ?? 0)병\n\(self.beerMaxGlass ?? 0)잔"
+            
+            print("safeText:", safeText)
+            print("dangerText:", dangerText)
+            
+            print("self.dummyAverage: ",self.dummyAverage)
+            
+            let beerAverage = (self.dummyAverage ?? 0) * 2 / 3
+            
+            // ProgressBar 업데이트 (예: DrinkingProgressBar가 있는 경우)
+            DrinkingProgressBar.configure(
+                progress: beerAverage / 100.0, // 기본 평균값 사용
+                safeText: safeText,
+                dangerText: dangerText
+            )
+        }
+    }
+    
+    // 신도 돌봐주실 함수
+    private func processSojuAndBeerData(with result: DrinkCapacityResult) {
+        // 소주 데이터 저장
+        self.sojuSafeBottle = Int(result.safetyValueBottle)
+        self.sojuMaxBottle = result.maxValueBottle
+        self.sojuSafeGlass = result.safetyValueGlass
+        self.sojuMaxGlass = result.maxValueGlass
+        
+        // 평균값 저장
+        let average = result.average
+        print("평균값 저장 완료: \(average)")
+        
+        // 소주의 알코올 총량 계산 (1병 = 360ml, 16도 알코올 농도)
+        let sojuAlcoholPerMl = 0.16 // 소주의 알코올 농도 (16%)
+        let sojuBottleVolume = 360.0 // 소주 1병의 용량 (ml)
+        
+        let safeSojuAlcoholMl = Double(self.sojuSafeBottle ?? 0) * sojuBottleVolume * sojuAlcoholPerMl
+        let maxSojuAlcoholMl = Double(self.sojuMaxBottle ?? 0) * sojuBottleVolume * sojuAlcoholPerMl
+        
+        // 맥주의 알코올 총량 계산 (맥주는 4.5도 알코올 농도, 1병 = 640ml, 1잔 = 200ml)
+        let beerAlcoholPerMl = 0.045 // 맥주의 알코올 농도 (4.5%)
+        let beerBottleVolume = 640.0 // 맥주 1병의 용량 (ml)
+        let beerGlassVolume = 200.0 // 맥주 1잔의 용량 (ml)
+        
+        // 안전 주량(병, 잔) 계산
+        self.beerSafeBottle = Int(safeSojuAlcoholMl / (beerBottleVolume * beerAlcoholPerMl))
+        self.beerSafeGlass = Int(safeSojuAlcoholMl / (beerGlassVolume * beerAlcoholPerMl))
+        
+        // 최대 주량(병, 잔) 계산
+        self.beerMaxBottle = Int(maxSojuAlcoholMl / (beerBottleVolume * beerAlcoholPerMl))
+        self.beerMaxGlass = Int(maxSojuAlcoholMl / (beerGlassVolume * beerAlcoholPerMl))
+        
+        self.dummyAverage = average
+        
+        print("소주 데이터 저장 완료:")
+        print("sojuSafeBottle: \(self.sojuSafeBottle ?? 0), sojuMaxBottle: \(self.sojuMaxBottle ?? 0)")
+        print("sojuSafeGlass: \(self.sojuSafeGlass ?? 0), sojuMaxGlass: \(self.sojuMaxGlass ?? 0)")
+        
+        print("맥주 데이터 계산 완료:")
+        print("beerSafeBottle: \(self.beerSafeBottle ?? 0), beerMaxBottle: \(self.beerMaxBottle ?? 0)")
+        print("beerSafeGlass: \(self.beerSafeGlass ?? 0), beerMaxGlass: \(self.beerMaxGlass ?? 0)")
     }
 
     // 병과 잔 계산 함수
@@ -291,7 +389,9 @@ extension DrinkingInfoViewController: UICollectionViewDataSource, UICollectionVi
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("Selected item at index \(indexPath.item): \(alcoholItems[indexPath.item].name)")
         
-        fetchDrinkCapacity(drinkItemId: indexPath.item + 1)
+        let selectedItem = alcoholItems[indexPath.item]
+        print("selected item's id: ", selectedItem.id)
+        fetchDrinkCapacity(drinkItemId: selectedItem.id)
     }
 }
 
@@ -320,10 +420,6 @@ extension DrinkingInfoViewController: UIScrollViewDelegate {
         // Update labels based on the closest cell to the center
         if let closestIndex = closestIndex {
             updateLabels(forItemAt: closestIndex)
-            
-            // Get drinkItemId based on active index
-            let drinkItemId = alcoholItems[closestIndex].id
-            fetchDrinkCapacity(drinkItemId: drinkItemId)
         }
     }
 }

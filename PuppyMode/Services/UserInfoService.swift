@@ -10,8 +10,10 @@ import Alamofire
 class UserInfoService {
     
     static func addUserInfoToKeychainService(userInfo: LoginResult) -> Bool {
-        return  KeychainService.add(key: UserInfoKey.accessToken.rawValue, value: userInfo.accessToken) &&
-                KeychainService.add(key: UserInfoKey.username.rawValue, value: userInfo.userInfo.username)
+        if let username = userInfo.userInfo.username {
+            _ = KeychainService.add(key: UserInfoKey.username.rawValue, value: username )
+        }
+        return  KeychainService.add(key: UserInfoKey.accessToken.rawValue, value: userInfo.accessToken)
     }
     
     static func deleteAllUserInfoFromKeychainService() -> Bool {

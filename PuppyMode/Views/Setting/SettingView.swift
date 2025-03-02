@@ -18,7 +18,7 @@ class SettingView: UIView {
     
     private lazy var stackView = UIStackView().then {
         $0.axis = .vertical
-        $0.spacing = 7
+        $0.spacing = 10
     }
     
     //Notification
@@ -64,17 +64,18 @@ class SettingView: UIView {
         
         titleLabel.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.top.equalTo(safeAreaLayoutGuide.snp.top).offset(30)
+            make.top.equalToSuperview().offset(75)
         }
         
         logoutButton.snp.makeConstraints { make in
             make.centerY.equalTo(titleLabel.snp.centerY)
-            make.trailing.equalToSuperview().inset(16)
-            make.height.width.equalTo(50)
+            make.trailing.equalToSuperview().inset(6)
+            make.height.width.equalTo(70)
         }
         
         logoutButton.imageView?.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(10)
+            make.edges.equalToSuperview().inset(20)
+            make.center.equalToSuperview()
         }
         
         stackView.snp.makeConstraints {

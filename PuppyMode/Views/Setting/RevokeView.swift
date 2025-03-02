@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Kingfisher
+import SDWebImage
 
 class RevokeView: UIView {
     
@@ -102,8 +104,8 @@ class RevokeView: UIView {
         self.addSubview(characterImage)
         
         characterImage.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(20)
-            make.bottom.equalTo(revokeButton.snp.top).offset(-30)
+            make.trailing.equalToSuperview()
+            make.bottom.equalTo(revokeButton.snp.top)
             make.width.equalTo(200)
             make.height.equalTo(300)
         }
@@ -112,7 +114,7 @@ class RevokeView: UIView {
     
     public func configure(puppy: PuppyInfoResult) {
         subMessageLabel.text = String.sliceText(string: puppy.puppyName, max: 13) + "(이)를 이제 볼 수 없을지도 몰라요.."
-        characterImage.load(url: URL(string: puppy.imageUrl!)!)
+        characterImage.kf.setImage(with: URL(string: puppy.imageUrl!)!)
     }
 }
 

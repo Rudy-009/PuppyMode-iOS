@@ -10,62 +10,6 @@ import Alamofire
 
 class AppleLoginService {
     
-    static func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
-        //로그인 성공
-        switch authorization.credential {
-        case let appleIDCredential as ASAuthorizationAppleIDCredential:
-            // AppleUserID KeyChain에 저장
-            _ = KeychainService.add(key: AppleAPIKey.appleUserID.rawValue, value: appleIDCredential.user)
-            
-            let authorizationCode = appleIDCredential.authorizationCode
-            let identityToken = appleIDCredential.identityToken
-            let fullName = appleIDCredential.fullName
-            guard let fcm = KeychainService.get(key: FCMTokenKey.fcm.rawValue ) else { return }
-            
-            print("authorizationCode: \(String(describing: authorizationCode))")
-            print("identityToken: \(String(describing: identityToken))")
-            print("fullName: \(String(describing: fullName)))")
-            
-            
-//            AF.request(K.String.puppymodeLink + "/auth/apple/login",
-//                       method: .get,
-//                       parameters: ["authorizationCode": authorizationCode,
-//                                    "identityToken": identityToken,
-//                                    "user": [
-//                                        "name" : [
-//                                            "firstName": fullName?.familyName,
-//                                            "lastName": fullName?.givenName
-//                                                 ]
-//                                            ],
-//                                    "fcmToken": fcm,
-//                                    "username": (fullName?.familyName)! + (fullName?.givenName)!],
-//                       headers: ["accept": "*/*"])
-//            .responseDecodable(of: LoginResponse.self) { response in
-//                switch response.result {
-//                case .success(let loginResponse):
-//                    if UserInfoService.addUserInfoToKeychainService(userInfo: loginResponse.result) {
-//                        if let accessToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue ) {
-//                            print("AccessToken: \(accessToken)")
-//                        }
-//                        if loginResponse.result.userInfo.isNewUser {
-//                            RootViewControllerService.toPuppySelectionViewController()
-//                        } else {
-//                            RootViewControllerService.toBaseViewController()
-//                        }
-//                    }
-//                case .failure(let error):
-//                    print("Error LoginResponse \(K.String.puppymodeLink)/auth/kakao/login: \(error)")
-//                }
-//            }
-            
-        case let passwordCredential as ASPasswordCredential:
-            // iCloud Keychain credential. (AppleID & Password)
-            break
-        default:
-            break
-        }
-    }
-    
     // 로그인 실패 시
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: any Error) {
         print("Apple Login Failed", error.localizedDescription)

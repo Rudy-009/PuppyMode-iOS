@@ -24,6 +24,7 @@ class RenameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = renameView
+        renameView.renameTextField.delegate = self
         
         setupNavigationBar(title: "이름 수정", rightText: "")
     }
@@ -66,5 +67,12 @@ class RenameViewController: UIViewController {
                     print("Network Error: \(error.localizedDescription)")
                 }
             }
+    }
+}
+
+extension RenameViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder() // Dismiss keyboard
+        return true
     }
 }

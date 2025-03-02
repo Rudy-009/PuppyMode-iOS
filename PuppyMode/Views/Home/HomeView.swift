@@ -26,7 +26,7 @@ class HomeView: UIView {
     }
     
     //MARK: Top Buttons
-    lazy private var topButtonStack = UIView()
+    lazy public var topButtonStack = UIView()
     
     lazy public var decorationButton = UIButton().then { button in
         button.setImage(UIImage(named: "DecorationButtonImage"), for: .normal)
@@ -114,6 +114,8 @@ class HomeView: UIView {
         pro.largeContentImage = UIImage(named: "ProgressBarBackground")
         pro.clipsToBounds = true
         pro.layer.cornerRadius = 10.5
+        pro.subviews[1].clipsToBounds = true
+        pro.layer.sublayers?[1].cornerRadius = 10.5
     }
     
     //MARK: Drinking Capacity Button
@@ -158,7 +160,7 @@ extension HomeView {
         
         self.puppyImageButton.load(url: url)
     }
-    
+
 }
 
 //MARK: Add Compoments
@@ -290,7 +292,7 @@ extension HomeView {
         buttonStack.addSubview(drinkingCapacityButton)
         
         drinkingCapacityButton.setTitleLabel(to: "주량 확인")
-        drinkingCapacityButton.setSubTitleLabel(to: "술 마실 거에요")
+        drinkingCapacityButton.setSubTitleLabel(to: "술 마실 거예요")
         
         drinkingCapacityButton.snp.makeConstraints { make in
             make.leading.equalToSuperview()

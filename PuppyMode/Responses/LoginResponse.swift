@@ -21,7 +21,7 @@ struct LoginResult: Codable {
 }
 
 struct UserInfo: Codable {
-    let username: String
+    let username: String?
     let isNewUser: Bool
 }
 

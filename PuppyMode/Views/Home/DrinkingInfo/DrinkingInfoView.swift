@@ -86,20 +86,6 @@ class DrinkingInfoView: UIView, UICollectionViewDelegate, UICollectionViewDataSo
         $0.font = UIFont.systemFont(ofSize: 16, weight: .regular)
         $0.textColor = UIColor.gray
     }
-
-    // makeAppointment Button
-    let makeAppointmentButton = UIButton(type: .system).then {
-        $0.setTitle("오늘 술 마실 거에요!", for: .normal)
-        
-        $0.backgroundColor = UIColor(hex: "#73C8B1")
-        $0.layer.cornerRadius = 10
-        $0.clipsToBounds = true
-        
-        $0.setTitleColor(UIColor(hex: "#3C3C3C"), for: .normal)
-        $0.titleLabel?.textAlignment = .center
-        $0.titleLabel?.font = UIFont(name: "NotoSansKR-Medium", size: 20)
-        
-    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -122,11 +108,9 @@ class DrinkingInfoView: UIView, UICollectionViewDelegate, UICollectionViewDataSo
         addSubview(alcoholNameLabel)
         addSubview(alcoholPercentageLabel)
         
-        //addSubview(carouselCollectionView)
+        addSubview(carouselCollectionView)
         
         addSubview(DrinkingProgressBar)
-        
-        addSubview(makeAppointmentButton)
     }
     
     private func setupLayout() {
@@ -142,19 +126,16 @@ class DrinkingInfoView: UIView, UICollectionViewDelegate, UICollectionViewDataSo
             make.right.equalToSuperview().offset(-85)
             make.height.equalTo(20)
         }
-    
         
+        carouselCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(alcoholNameLabel).offset(20)
+
+        }
+    
         DrinkingProgressBar.snp.makeConstraints { make in
-            make.bottom.equalTo(makeAppointmentButton.snp.top).offset(-81)
+            make.bottom.equalToSuperview().offset(-230)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(175)
-        }
-        
-        makeAppointmentButton.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().offset(-60)
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().offset(-20)
-            make.height.equalTo(60)
         }
     }
     

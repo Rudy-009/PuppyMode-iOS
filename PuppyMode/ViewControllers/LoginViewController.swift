@@ -63,25 +63,70 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
     }
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
-        //로그인 성공
         switch authorization.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
             // AppleUserID KeyChain에 저장
-            _ = KeychainService.add(key: AppleAPIKey.appleUserID.rawValue, value: appleIDCredential.user)
+            // _ = KeychainService.add(key: AppleAPIKey.appleUserID.rawValue, value: appleIDCredential.user)
             
-            if let authorizationCode = appleIDCredential.authorizationCode,
-               let identityToken = appleIDCredential.identityToken,
-               let fullName = appleIDCredential.fullName {
-                print("authorizationCode \(String(data: authorizationCode, encoding: .utf8)!)")
-                print("identityToken \(String(data: identityToken, encoding: .utf8)!)")
-                let givenName = fullName.givenName ?? "No given name"
-                let familyName = fullName.familyName ?? "No family name"
-                print(givenName)
-                print(familyName)
+            guard
+                let authorizationCode = appleIDCredential.authorizationCode,
+                let identityToken = appleIDCredential.identityToken,
+                let authCodeString = String(data: authorizationCode, encoding: .utf8),
+                let identityTokenString = String(data: identityToken, encoding: .utf8),
+                let fcm = KeychainService.get(key: FCMTokenKey.fcm.rawValue)
+            else { return }
+            
+            let fullName = appleIDCredential.fullName
+            let familyName = fullName?.familyName ?? ""
+            let givenName = fullName?.givenName ?? ""
+            let username = "\(familyName)\(givenName)"
+            
+            print("authorizationCode \(authCodeString)")
+            print("identityToken \(identityTokenString)")
+            
+            let parameters: [String: Any] = [
+                "authorizationCode": authCodeString,
+                "identityToken": identityTokenString,
+                "user": [
+                    "name": [
+                        "firstName": familyName,
+                        "lastName": givenName
+                    ]
+                ],
+                "fcmToken": fcm,
+                "username": username
+            ]
+            
+            AF.request(
+                K.String.puppymodeLink + "/auth/apple/login",
+                method: .post,
+                parameters: parameters,
+                encoding: JSONEncoding.default,
+                headers: ["accept": "*/*"]
+            )
+            .responseDecodable(of: LoginResponse.self) { response in
+                switch response.result {
+                case .success(let loginResponse):
+                    if UserInfoService.addUserInfoToKeychainService(userInfo: loginResponse.result) {
+                        if let accessToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue ) {
+                            print("AccessToken: \(accessToken)")
+                        }
+                        //                        if loginResponse.result.userInfo.isNewUser {
+                        //                            RootViewControllerService.toPuppySelectionViewController()
+                        //                        } else {
+                        //                            RootViewControllerService.toBaseViewController()
+                        //                        }
+                    }
+                case .failure(let error):
+                    print("Error LoginResponse \(K.String.puppymodeLink)/auth/kakao/login: \(error)")
+                }
             }
             
+        case let passwordCredential as ASPasswordCredential:
+            // iCloud Keychain credential. (AppleID & Password)
+            break
         default:
-            print("")
+            break
         }
     }
     
