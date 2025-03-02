@@ -2,7 +2,7 @@
 
 | Kakao Login | Kakao Signup | Apple Login |
 | --- | --- | --- |
-|<center> <img src = "https://github.com/user-attachments/assets/6cd333c4-c92d-4ce1-b6e4-9c37fd8c2d4c" width = "50%" height = "50%"/>  </center>| <center> <img src = "https://github.com/user-attachments/assets/03eb990d-9d71-41aa-a681-3c2d7f798773" style = "width:100"></img> </center> | <center> <img src = "https://github.com/user-attachments/assets/255279a8-ee05-4c58-9663-ed31e7f6769e" style = "width:100"></img> </center> | 
+|<center> <img src = "https://github.com/user-attachments/assets/6cd333c4-c92d-4ce1-b6e4-9c37fd8c2d4c" width = "70%" height = "70%"/>  </center>| <center> <img src = "https://github.com/user-attachments/assets/03eb990d-9d71-41aa-a681-3c2d7f798773" width = "70%" height = "70%"/> </center> | <center> <img src = "https://github.com/user-attachments/assets/255279a8-ee05-4c58-9663-ed31e7f6769e" width = "70%" height = "70%"/> </center> | 
 
 
 
