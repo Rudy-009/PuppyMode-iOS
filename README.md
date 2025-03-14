@@ -12,6 +12,9 @@
 |<center> <img src = "https://github.com/user-attachments/assets/6bbdf8d4-8b04-44c5-b893-be53ec256c85" width = "90%" height = "90%"/>  </center>| <center> <img src = "https://github.com/user-attachments/assets/b6cfc560-6c7c-4d26-aa89-bd7646d8f1ab" width = "90%" height = "90%"/> </center> | <center> <img src = "https://github.com/user-attachments/assets/07b861d6-7178-438d-be6a-d99de0d3ab40" width = "90%" height = "90%"/> </center> | 
 
 
+### 전체 시연 영상 링크
+https://youtu.be/3n0UB5gy4kM?si=xlhlhn2Jb3BG2ZtP
+
 
 # iOS 팀원 명단
 | 마티 / 김미주 | 푸린 / 김민지 | 봉석 / 박준석 | 루디 / 이승준 |
