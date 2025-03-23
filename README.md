@@ -64,9 +64,41 @@ if offsetY > contentHeight - height {
 }
 ```
 
+## Async/Await를 이용한 코드 재사용성 증가
+
+1. 같은 fetch 함수를 여러 곳에서 호출. (HomeViewController.swift, RevokeViewController.swift, 등 PuppyInfo를 호출하는 여러 ViewController가 존재. 시간상 본인 파트에 해당하는 부분에만 코드를 적용 )
+2. Async/Await 를 이용해 fetch를 PuppyInfoService 라는 class의 타입 함수로 구현
+3. viewWillAppear 에서 함수를 호출하여, View에 접근할 때마다 fetch를 호출하여 강아지 정보를 업데이트함
+
+```swift
+@MainActor
+static func fetchPuppyInfo() async throws -> PuppyInfoResponse? {
+    guard let accessToken = KeychainService.get(key: UserInfoKey.accessToken.rawValue) else { return nil }
+    
+    return try await AF.request( K.String.puppymodeLink + "/puppies",
+                headers: [
+                    "accept": "*/*",
+                    "Authorization": "Bearer " + accessToken
+                ])
+    .serializingDecodable(PuppyInfoResponse.self)
+    .value
+}
+```
+
+```swift
+override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    Task {
+        if let puppyInfo = try await PuppyInfoService.fetchPuppyInfo() {
+            configure(puppy: puppyInfo.result)
+        }
+    }
+}
+```
+
+
 ### 전체 시연 영상 링크
 https://youtu.be/3n0UB5gy4kM?si=xlhlhn2Jb3BG2ZtP
-
 
 # iOS 팀원 명단
 | 마티 / 김미주 | 푸린 / 김민지 | 봉석 / 박준석 | 루디 / 이승준 |
