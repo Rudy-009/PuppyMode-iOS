@@ -47,12 +47,12 @@ class RankingServie {
 
 |디바운스 적용 이전 스크롤|디바운스 적용 이전 함수 호출횟수 디버깅|
 |---|---|
-|<center> <img src = "https://github.com/user-attachments/assets/9f6d8607-b3ee-4e7c-991e-5cf8579a5954" width = "100%" height = "100%" > </center>|<center> <img src = "https://github.com/user-attachments/assets/9d2471be-2998-449f-8178-475df77b11f3" width = "60%" height = "60%" > </center>|
+|<center> <img src = "https://github.com/user-attachments/assets/9f6d8607-b3ee-4e7c-991e-5cf8579a5954" width = "120%" height = "120%" > </center>|<center> <img src = "https://github.com/user-attachments/assets/9d2471be-2998-449f-8178-475df77b11f3" width = "80%" height = "80%" > </center>|
 |||
 
 |디바운스 적용 이후 스크롤|디바운스 적용 이후 함수 호출횟수 디버깅|
 |---|---|
-|<center> <img src = "https://github.com/user-attachments/assets/4c856ea6-07ea-4ca1-b937-efdbf880394e" width = "100%" height = "100%" > </center>|<center> <img src = "https://github.com/user-attachments/assets/578d539c-3ce2-4117-9330-789cbdc9e84f" width = "60%" height = "60%" > </center>|
+|<center> <img src = "https://github.com/user-attachments/assets/4c856ea6-07ea-4ca1-b937-efdbf880394e" width = "120%" height = "120%" > </center>|<center> <img src = "https://github.com/user-attachments/assets/578d539c-3ce2-4117-9330-789cbdc9e84f" width = "80%" height = "80%" > </center>|
 |||
 
 1. 실행중인 throttleWorkItem이 있다면 취소 시킨다.
