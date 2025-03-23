@@ -13,7 +13,7 @@
 
 # 이번 프로젝트를 통해 얻게된 것
 
-## Pagination 개선
+## 1. 페이지네이션 개선
 이전 프로젝트에서 겪은 페이지네이션의 문제 <br>
 ### 문제1. 중복 호출
 호출을 제어하지 못하여, 1,2,3,4,5,6,7,8,9,10,... 이 되어야 하는데 1,2,3,1,2,3,1,2,3,1,2,3,4,5,6,4,5,6,4,5,6,4,5,6 인 결과가 나타남. 같은 인덱스 호출을 하지 못하게 제어해야함. <br>
@@ -45,6 +45,16 @@ class RankingServie {
 
 ### 해결2. Debounce 를 이용한 이벤트당 호출 횟수 제한
 
+|디바운스 적용 이전 스크롤|디바운스 적용 이전 함수 호출횟수 디버깅|
+|---|---|
+|<center></center>|<center></center>|
+|||
+
+|디바운스 적용 이후 스크롤|디바운스 적용 이후 함수 호출횟수 디버깅|
+|---|---|
+|<center></center>|<center></center>|
+|||
+
 1. 실행중인 throttleWorkItem이 있다면 취소 시킨다.
 2. throttleWorkItem 을 생성한다.
 3. 0.3초 후 실행 시킨다.
@@ -64,7 +74,7 @@ if offsetY > contentHeight - height {
 }
 ```
 
-## Async/Await를 이용한 코드 재사용성 증가
+## 2. Async/Await를 이용한 코드 재사용성 증가
 
 1. 같은 fetch 함수를 여러 곳에서 호출. (HomeViewController.swift, RevokeViewController.swift, 등 PuppyInfo를 호출하는 여러 ViewController가 존재. 시간상 본인 파트에 해당하는 부분에만 코드를 적용 )
 2. Async/Await 를 이용해 fetch를 PuppyInfoService 라는 class의 타입 함수로 구현
