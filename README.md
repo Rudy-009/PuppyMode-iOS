@@ -47,12 +47,12 @@ class RankingServie {
 
 |디바운스 적용 이전 스크롤|디바운스 적용 이전 함수 호출횟수 디버깅|
 |---|---|
-|<center></center>|<center></center>|
+|<center> <img src = "https://github.com/user-attachments/assets/9f6d8607-b3ee-4e7c-991e-5cf8579a5954" width = "40%" height = "40%" > </center>|<center> <img src = "" width = "80%" height = "80%" > </center>|
 |||
 
 |디바운스 적용 이후 스크롤|디바운스 적용 이후 함수 호출횟수 디버깅|
 |---|---|
-|<center></center>|<center></center>|
+|<center> <img src = "https://github.com/user-attachments/assets/4c856ea6-07ea-4ca1-b937-efdbf880394e" width = "40%" height = "40%" > </center>|<center> <img src = "" width = "80%" height = "80%" > </center>|
 |||
 
 1. 실행중인 throttleWorkItem이 있다면 취소 시킨다.
