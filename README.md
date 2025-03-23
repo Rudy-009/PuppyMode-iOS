@@ -15,12 +15,14 @@
 
 ## Pagination 개선
 이전 프로젝트에서 구현한 페이지네이션의 문제
-1. 호출을 제어하지 못하여, 1,2,3,4,5,6,7,8,9,10,... 이 되어야 하는데 1,2,3,1,2,3,1,2,3,1,2,3,4,5,6,4,5,6,4,5,6,4,5,6 인 결과가 나타남. 같은 인덱스 호출을 하지 못하게 제어해야함.
-2. ScrollView의 바닥에 다다랐을 때, 7,8회 정도의 API를 호출함.
+문제1. 호출을 제어하지 못하여, 1,2,3,4,5,6,7,8,9,10,... 이 되어야 하는데 1,2,3,1,2,3,1,2,3,1,2,3,4,5,6,4,5,6,4,5,6,4,5,6 인 결과가 나타남. 같은 인덱스 호출을 하지 못하게 제어해야함.
+문제2. ScrollView의 바닥에 다다랐을 때, 7,8회 정도의 API를 호출함.
 
-### 문제1.
+### 해결1. 인덱스 호출 제어
+
 RankingService.swift 파일 참고
 `isFetchingData` 타입 변수를 통해, API를 호출할지 말지를 결정. 이로써 중복 호출을 방지할 수 있다.
+
 ```swift
 class RankingServie {
     static var isFetchingData: Bool = false
@@ -36,6 +38,27 @@ class RankingServie {
             isFetchingData = false
         }
     }
+}
+```
+
+### 해결2. Debounce 를 이용한 이벤트당 호출 횟수 제한
+
+1. 실행중인 throttleWorkItem이 있다면 취소 시킨다.
+2. throttleWorkItem 을 생성한다.
+3. 0.3초 후 실행 시킨다.
+4. 하나의 이벤트에 대해 1번의 호출만 일어나게 된다.
+
+```swift
+if offsetY > contentHeight - height {
+
+    throttleWorkItem?.cancel()
+    
+    throttleWorkItem = DispatchWorkItem { [weak self] in
+        fetchMoreData()
+        tableView.reloadData()
+    }
+    
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: throttleWorkItem!)
 }
 ```
 
