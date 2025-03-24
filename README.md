@@ -76,7 +76,7 @@ if offsetY > contentHeight - height {
 
 ## 2. Async/Await를 이용한 코드 재사용성 증가
 
-1. 같은 fetch 함수를 여러 곳에서 호출. (HomeViewController.swift, RevokeViewController.swift, 등 PuppyInfo를 호출하는 여러 ViewController가 존재. 시간상 본인 파트에 해당하는 부분에만 코드를 적용 )
+1. (문제 인식) 같은 fetch 함수를 여러 곳에서 호출. (HomeViewController.swift, RevokeViewController.swift, 등 PuppyInfo를 호출하는 여러 ViewController가 존재. 시간상 본인 파트에 해당하는 부분에만 코드를 적용 )
 2. Async/Await 를 이용해 fetch를 PuppyInfoService 라는 class의 타입 함수로 구현
 3. viewWillAppear 에서 함수를 호출하여, View에 접근할 때마다 fetch를 호출하여 강아지 정보를 업데이트함
 
@@ -106,6 +106,23 @@ override func viewWillAppear(_ animated: Bool) {
 }
 ```
 
+## 3. UIButton 컴포넌트 제작
+
+1. (문제 인식) 설정 화면에는 동일 스타일 버튼 존재한다. 이 버튼의 차이점은 버튼내 이름 뿐이다.
+2. ArrowSettingButton 라는 UIButton을 상속받는 Class를 만들고, setTitle() 함수를 통해 각각 이름만 서로 바뀌게 만들었다.
+3. 장점, 디자인 피드백 때, 폰트가 수정되거나 버튼의 위치를 조절해야하는 경우가 생겼을 때, 유용했다.
+
+적용 예시
+```swift
+    //Notification
+    public lazy var alarmSettingView = AlarmSettingView()
+    //Terms of Service
+    public lazy var termsOfServiceButton = ArrowSettingButton()
+    //Privacy Policy
+    public lazy var PrivacyPolicyButton = ArrowSettingButton()
+    //Revoke
+    public lazy var revokeButton = ArrowSettingButton()
+```
 
 ### 전체 시연 영상 링크
 https://youtu.be/3n0UB5gy4kM?si=xlhlhn2Jb3BG2ZtP
