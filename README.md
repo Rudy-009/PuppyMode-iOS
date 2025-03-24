@@ -114,14 +114,16 @@ override func viewWillAppear(_ animated: Bool) {
 
 적용 예시
 ```swift
-    //Notification
-    public lazy var alarmSettingView = AlarmSettingView()
     //Terms of Service
     public lazy var termsOfServiceButton = ArrowSettingButton()
     //Privacy Policy
-    public lazy var PrivacyPolicyButton = ArrowSettingButton()
+    public lazy var privacyPolicyButton = ArrowSettingButton()
     //Revoke
     public lazy var revokeButton = ArrowSettingButton()
+
+    termsOfServiceButton.setTitle(text: "")
+    privacyPolicyButton.setTitle(text: "개인정보 이용 약관")
+    revokeButton.setTitle(text: "탈퇴하기")
 ```
 
 ### 전체 시연 영상 링크
