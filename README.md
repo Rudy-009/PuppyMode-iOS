@@ -1,6 +1,6 @@
 # 🐶 강아지모드 iOS 🍎
 
-## UMC 7th 데모데이 최우수 수상작 🏆
+## UMC 7th 데모데이 최우수상 수상작 🏆
 
 ## 강아지 모드 담당 파트 영상
 | Kakao Login | Kakao Signup | Apple Login |
