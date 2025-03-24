@@ -55,22 +55,22 @@ class RankingServie {
 |<center> <img src = "https://github.com/user-attachments/assets/4c856ea6-07ea-4ca1-b937-efdbf880394e" width = "120%" height = "120%" > </center>|<center> <img src = "https://github.com/user-attachments/assets/578d539c-3ce2-4117-9330-789cbdc9e84f" width = "70%" height = "70%" > </center>|
 |버벅임이 없어짐|호출횟수가 줄었음을 알 수 있다.|
 
-1. 실행중인 throttleWorkItem이 있다면 취소 시킨다.
-2. throttleWorkItem 을 생성한다.
+1. 실행중인 workItem이 있다면 취소 시킨다.
+2. workItem 을 생성한다.
 3. 0.3초 후 실행 시킨다.
 4. 하나의 이벤트에 대해 1번의 호출만 일어나게 된다.
 
 ```swift
 if offsetY > contentHeight - height {
 
-    throttleWorkItem?.cancel()
+    workItem이?.cancel()
     
-    throttleWorkItem = DispatchWorkItem { [weak self] in
+    workItem이 = DispatchWorkItem { [weak self] in
         fetchMoreData()
         tableView.reloadData()
     }
     
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: throttleWorkItem!)
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: workItem이!)
 }
 ```
 
