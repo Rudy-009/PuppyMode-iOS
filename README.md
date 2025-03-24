@@ -121,8 +121,8 @@ override func viewWillAppear(_ animated: Bool) {
     //Revoke
     public lazy var revokeButton = ArrowSettingButton()
 
-    termsOfServiceButton.setTitle(text: "")
-    privacyPolicyButton.setTitle(text: "개인정보 이용 약관")
+    termsOfServiceButton.setTitle(text: "이용약관")
+    privacyPolicyButton.setTitle(text: "개인정보 처리 동의")
     revokeButton.setTitle(text: "탈퇴하기")
 ```
 
