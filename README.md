@@ -2,7 +2,7 @@
 
 ## UMC 7th 데모데이 최우수상 수상작 🏆
 
-## 강아지 모드 담당 파트 영상
+## 강아지 모드 담당 파트 구현 영상
 | Kakao Login | Kakao Signup | Kakao Friends |Apple Login |
 | --- | --- | --- | --- |
 |<center> <img src = "https://github.com/user-attachments/assets/1463352c-f031-4046-951c-0d727d318d24" width = "80%" height = "80%"/>  </center>| <center> <img src = "https://github.com/user-attachments/assets/6ac8ebf7-02c0-4da7-b64a-523c029e4300" width = "80%" height = "80%"/> </center> | <center> <img src = "https://github.com/user-attachments/assets/b6cfc560-6c7c-4d26-aa89-bd7646d8f1ab" width = "90%" height = "90%"/> </center> | <center> <img src = "https://github.com/user-attachments/assets/380a0f87-a4fc-4b30-9d59-847ae23351a5" width = "110%" height = "110%"/> </center> |
