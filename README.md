@@ -48,7 +48,7 @@ class RankingServie {
 |디바운스 적용 이전 스크롤|디바운스 적용 이전 함수 호출횟수 디버깅|
 |---|---|
 |<center> <img src = "https://github.com/user-attachments/assets/9f6d8607-b3ee-4e7c-991e-5cf8579a5954" width = "150%" height = "150%" > </center>|<center> <img src = "https://github.com/user-attachments/assets/9d2471be-2998-449f-8178-475df77b11f3" width = "70%" height = "70%" > </center>|
-|스크롤 시 버벅임이 발생|한 번 ScrollView의 바닥에 다다랐을 때, 평균적으로 18회 정도의 호출이 일어났음을 볼 수 있다. (총 3번 스크롤)|
+|스크롤 시 버벅임이 발생|한 번 ScrollView의 바닥에 다다랐을 때, 평균적으로 18회 정도의 호출이 일어남|
 
 |디바운스 적용 이후 스크롤|디바운스 적용 이후 함수 호출횟수 디버깅|
 |---|---|
