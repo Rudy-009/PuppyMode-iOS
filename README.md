@@ -127,8 +127,8 @@ override func viewWillAppear(_ animated: Bool) {
 ```
 
 ### 전체 시연 영상 링크
-https://youtu.be/3n0UB5gy4kM?si=xlhlhn2Jb3BG2ZtP
-https://www.youtube.com/watch?v=3XgiBklE6A4
+https://youtu.be/3n0UB5gy4kM?si=xlhlhn2Jb3BG2ZtP <br>
+https://www.youtube.com/watch?v=3XgiBklE6A4 <br>
 
 # iOS 팀원 명단
 | 마티 / 김미주 | 푸린 / 김민지 | 봉석 / 박준석 | 루디 / 이승준 |
