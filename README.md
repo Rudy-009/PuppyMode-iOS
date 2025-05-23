@@ -7,7 +7,7 @@
 | --- | --- | --- | --- |
 |<center> <img src = "https://github.com/user-attachments/assets/1463352c-f031-4046-951c-0d727d318d24" width = "80%" height = "80%"/>  </center>| <center> <img src = "https://github.com/user-attachments/assets/6ac8ebf7-02c0-4da7-b64a-523c029e4300" width = "80%" height = "80%"/> </center> | <center> <img src = "https://github.com/user-attachments/assets/b6cfc560-6c7c-4d26-aa89-bd7646d8f1ab" width = "90%" height = "90%"/> </center> | <center> <img src = "https://github.com/user-attachments/assets/380a0f87-a4fc-4b30-9d59-847ae23351a5" width = "110%" height = "110%"/> </center> |
 
-| Animation | FCM, Setting | Pagination |
+| Animation | FCM, Setting | Debounce |
 | --- | --- | --- |
 |<center> <img src = "https://github.com/user-attachments/assets/6bbdf8d4-8b04-44c5-b893-be53ec256c85" width = "90%" height = "90%"/>  </center>| <center> <img src = "https://github.com/user-attachments/assets/f17b95ec-63be-4835-abaa-1f4dadda712d" width = "110%" height = "110%"/> </center> | <center> <img src = "https://github.com/user-attachments/assets/07b861d6-7178-438d-be6a-d99de0d3ab40" width = "90%" height = "90%"/> </center> | 
 
