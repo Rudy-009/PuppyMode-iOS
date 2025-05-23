@@ -70,7 +70,7 @@ if offsetY > contentHeight - height {
         tableView.reloadData()
     }
     
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: workItem이!)
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: workItem!)
 }
 ```
 
