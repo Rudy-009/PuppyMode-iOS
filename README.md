@@ -63,9 +63,9 @@ class RankingServie {
 ```swift
 if offsetY > contentHeight - height {
 
-    workItem이?.cancel()
+    workItem?.cancel()
     
-    workItem이 = DispatchWorkItem { [weak self] in
+    workItem = DispatchWorkItem { [weak self] in
         fetchMoreData()
         tableView.reloadData()
     }
